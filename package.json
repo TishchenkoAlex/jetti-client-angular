@@ -1,6 +1,6 @@
 {
   "name": "jett-app",
-  "version": "0.0.2",
+  "version": "0.1.2",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -22,7 +22,7 @@
     "@angular/router": "^14.2.12",
     "@angular/service-worker": "^14.2.12",
     "@azure/msal-angular": "^2.5.1",
-    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@fortawesome/fontawesome-free": "^6.2.1",
     "@kolkov/angular-editor": "^2.1.0",
     "@ng-select/ng-select": "^9.1.0",
     "hammerjs": "^2.0.6",
@@ -32,9 +32,9 @@
     "primeicons": "^6.0.1",
     "primeng": "^14.2.2",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.6.3",
-    "socket.io-client": "^3.1.0",
-    "tslib": "^2.0.0",
+    "rxjs": "^7.8.0",
+    "socket.io-client": "^4.5.4",
+    "tslib": "^2.4.1",
     "uuid": "^9.0.0",
     "zone.js": "~0.11.4"
   },
@@ -47,11 +47,10 @@
     "@angular/cli": "^14.2.10",
     "@angular/compiler-cli": "^14.2.12",
     "@angular/language-service": "^14.2.12",
-    "@types/jsonwebtoken": "^8.5.9",
-    "@types/jwt-decode": "^2.2.1",
-    "@types/uuid": "^8.3.0",
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/uuid": "^9.0.0",
     "codelyzer": "^6.0.2",
-    "tslint": "~6.1.0",
+    "tslint": "~6.1.3",
     "typescript": "~4.6.4"
   }
 }
