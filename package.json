@@ -25,7 +25,7 @@
     "@azure/msal-angular": "^2.5.1",
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@kolkov/angular-editor": "^1.2.0",
-    "@ng-select/ng-select": "^6.1.0",
+    "@ng-select/ng-select": "^7.4.0",
     "hammerjs": "^2.0.6",
     "jetti-middle": "git+https://github.com/TishchenkoAlex/jetti-middle.git",
     "jwt-decode": "^3.1.2",
