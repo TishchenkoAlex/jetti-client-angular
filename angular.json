@@ -18,7 +18,6 @@
             "tsConfig": "tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "ngswConfigPath": "src/ngsw-config.json",
-            "aot": true,
             "assets": [
               "src/assets",
               "src/favicon.ico",
@@ -38,7 +37,13 @@
               "src/styles.scss",
               "src/theme.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -128,7 +133,8 @@
               ],
               "serviceWorker": true
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -185,7 +191,6 @@
       "skipTests": true
     },
     "@schematics/angular:module": {
-      "skipTests": true
     },
     "@schematics/angular:pipe": {
       "skipTests": true
