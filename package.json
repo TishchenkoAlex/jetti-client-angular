@@ -24,7 +24,7 @@
     "@angular/router": "^8.2.14",
     "@angular/service-worker": "^8.2.14",
     "@azure/msal-angular": "^1.1.2",
-    "@covalent/code-editor": "^2.1.1",
+    "@covalent/code-editor": "^4.15.0",
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@kolkov/angular-editor": "^1.2.0",
     "@ng-select/ng-select": "^3.7.3",
