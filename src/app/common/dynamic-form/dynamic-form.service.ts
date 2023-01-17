@@ -206,7 +206,9 @@ export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]:
   return formGroup;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DynamicFormService {
 
   constructor(public api: ApiService) { }

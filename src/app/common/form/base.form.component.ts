@@ -1,4 +1,4 @@
-import { _baseDocFormComponent } from './_base.form.component';
+import { BaseDocFormComponentParent } from './base.parent.form.component';
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoadingService } from '../loading.service';
@@ -12,13 +12,13 @@ import { DynamicFormService } from '../dynamic-form/dynamic-form.service';
   selector: 'j-form',
   templateUrl: './base.form.component.html'
 })
-export class BaseDocFormComponent extends _baseDocFormComponent implements OnInit, OnDestroy {
+export class BaseDocFormComponent extends BaseDocFormComponentParent implements OnInit, OnDestroy {
 
   constructor(
     public router: Router, public route: ActivatedRoute, public auth: AuthService,
     public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService,
     public lds: LoadingService, public cd: ChangeDetectorRef) {
-    super(router, route, auth, ds, tabStore, dss, cd);
+    super(router, route, auth, ds, tabStore, dss, lds, cd);
   }
 
   ngOnInit() {

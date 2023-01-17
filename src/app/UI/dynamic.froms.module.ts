@@ -17,6 +17,7 @@ import { DynamicComponent, DynamicComponentDirective } from './../common/dynamic
 import { DynamicFormControlComponent } from './../common/dynamic-form/dynamic-form-control.component';
 import { DynamicFormService } from './../common/dynamic-form/dynamic-form.service';
 import { BaseDocFormComponent } from './../common/form/base.form.component';
+import { BaseDocFormComponentParent } from './../common/form/base.parent.form.component';
 import { BaseFormComponent } from './../common/forms/base.form.component';
 import { RegisterAccountMovementsComponent } from '../common/register-movements/register-account.component';
 import { TabControllerComponent } from './../common/tabcontroller/tabcontroller.component';
@@ -29,7 +30,7 @@ import { DisableControlDirective } from '../common/directives/disabled-control';
 import { HistoryComponent } from '../common/history/history.component';
 import { DescendantsComponent } from '../common/descendants/descendants.component';
 import { TransformedRegisterMovementsComponent } from '../x100/transformed.register.movements.component';
-import { DialogService } from 'primeng/api';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputValueDialogComponent } from './../dialog/input-value.dialog.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { JNgSelectComponent } from '../common/multiselect/ng.select.component';
@@ -48,7 +49,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 
     DisableControlDirective,
 
-    // BaseDocListComponent,
+    BaseDocFormComponentParent,
     BaseDocFormComponent,
     BaseFormComponent,
     BaseTreeListComponent,
@@ -81,7 +82,8 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     MaterialModule,
     PipesModule,
     PrimeNGModule,
-    AngularEditorModule
+    AngularEditorModule,
+    DynamicDialogModule,
   ],
   exports: [
     CommonModule,
@@ -101,7 +103,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 
     DisableControlDirective,
 
-    // BaseDocListComponent,
+    BaseDocFormComponentParent,
     BaseDocFormComponent,
     BaseFormComponent,
     BaseTreeListComponent,
@@ -128,16 +130,6 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
     DynamicFormService,
     DocService,
     TabsStore,
-  ],
-  entryComponents: [
-    SuggestDialogComponent,
-    InputValueDialogComponent,
-    HomeComponent,
-    BaseDocFormComponent,
-    BaseFormComponent,
-    BaseTreeListComponent,
-    BaseHierarchyListComponent,
-    OperationListComponent,
   ]
 })
 export class DynamicFormsModule { }

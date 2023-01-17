@@ -1,9 +1,9 @@
-import { IFormControlPlacing } from './../dynamic-form/dynamic-form-base';
+import { IFormControlPlacing } from '../dynamic-form/dynamic-form-base';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { ChangeDetectorRef, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MenuItem } from 'primeng/components/common/menuitem';
+import { MenuItem } from 'primeng/api';
 import { merge, of as observableOf, Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { filter, take, map } from 'rxjs/operators';
 import { v1 } from 'uuid';
@@ -14,6 +14,7 @@ import { TabsStore } from '../tabcontroller/tabs.store';
 import { AuthService } from 'src/app/auth/auth.service';
 // tslint:disable-next-line: max-line-length
 import { DocumentBase, Type, DocumentOptions, Relation, CopyTo, FormBase, Command, calculateDescription, dateReviverLocal, Ref, IViewModel } from 'jetti-middle/dist';
+import { LoadingService } from '../loading.service';
 
 export declare interface IFormEventsModel {
   onOpen(): void;
@@ -25,8 +26,12 @@ export declare interface IFormEventsModel {
   beforeUnPost(): void;
 }
 
-// tslint:disable-next-line: class-name
-export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsModel {
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'j-form-parent',
+  templateUrl: './base.form.component.html'
+})
+export class BaseDocFormComponentParent implements OnDestroy, OnInit, IFormEventsModel {
 
   @Input() id: string;
   @Input() type: string;
@@ -136,7 +141,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
 
   constructor(
     public router: Router, public route: ActivatedRoute, public auth: AuthService,
-    public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService,
+    public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService, public lds: LoadingService,
     public cd: ChangeDetectorRef) { }
 
   ngOnInit() {

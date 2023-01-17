@@ -27,7 +27,9 @@ const initailState: TabsState = {
   }]
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TabsStore {
 
   private readonly _state: BehaviorSubject<TabsState> = new BehaviorSubject(initailState);

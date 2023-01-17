@@ -54,7 +54,6 @@ export function getJwtToken(): string {
     AuthService,
     { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true }
   ],
-  entryComponents: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

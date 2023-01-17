@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { _baseDocFormComponent, IFormEventsModel } from 'src/app/common/form/_base.form.component';
+import { IFormEventsModel, BaseDocFormComponentParent } from 'src/app/common/form/base.parent.form.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoadingService } from 'src/app/common/loading.service';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -15,7 +15,7 @@ import { DocumentBase } from 'jetti-middle/dist';
   selector: 'doc-CashRequest',
   templateUrl: 'Document.CashRequest.html'
 })
-export class DocumentCashRequestComponent extends _baseDocFormComponent implements OnInit, OnDestroy, IFormEventsModel {
+export class DocumentCashRequestComponent extends BaseDocFormComponentParent implements OnInit, OnDestroy, IFormEventsModel {
   get readonlyMode() { return !this.isSuperUser && !this.isNew && ['PREPARED', 'MODIFY'].indexOf(this.form.get('Status').value) === -1; }
   get isAvaliblePost() { return (!this.readonlyMode || this.isCommentEditorRule) && !this.isDeleted; }
   get Operation(): string { return this.form.get('Operation').value || ''; }
@@ -34,7 +34,7 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
   constructor(public router: Router, public route: ActivatedRoute, public lds: LoadingService, public auth: AuthService,
     public cd: ChangeDetectorRef, public ds: DocService, public tabStore: TabsStore,
     private bpApi: BPApi, public dss: DynamicFormService, private api: ApiService) {
-    super(router, route, auth, ds, tabStore, dss, cd);
+    super(router, route, auth, ds, tabStore, dss, lds, cd);
   }
 
   isSuperUser = false;

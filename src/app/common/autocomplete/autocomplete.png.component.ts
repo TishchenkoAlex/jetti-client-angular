@@ -2,7 +2,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AutoComplete } from 'primeng/components/autocomplete/autocomplete';
 import { Observable, Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { IComplexObject } from '../dynamic-form/dynamic-form-base';
@@ -12,6 +11,7 @@ import { DocService } from '../doc.service';
 import { filter } from 'rxjs/operators';
 import { patchOptionsNoEvents } from '../dynamic-form/dynamic-form.service';
 import { Type, ISuggest, OwnerRef, StorageType, FormListSettings, FormListFilter } from 'jetti-middle/dist';
+import { AutoComplete } from 'primeng/autocomplete';
 
 function AutocompleteValidator(component: AutocompleteComponent): ValidatorFn {
   return (c: AbstractControl) => {

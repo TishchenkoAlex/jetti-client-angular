@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
-import { _baseDocFormComponent } from '../form/_base.form.component';
+import { BaseDocFormComponentParent } from '../form/base.parent.form.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { DocService } from '../doc.service';
@@ -14,7 +14,7 @@ import { FormBase } from 'jetti-middle/dist';
   selector: 'j-forms',
   templateUrl: './base.form.component.html'
 })
-export class BaseFormComponent extends _baseDocFormComponent implements OnInit, OnDestroy {
+export class BaseFormComponent extends BaseDocFormComponentParent implements OnInit, OnDestroy {
 
   @Input() id = Math.random().toString();
 
@@ -22,7 +22,7 @@ export class BaseFormComponent extends _baseDocFormComponent implements OnInit, 
     public router: Router, public route: ActivatedRoute, public auth: AuthService,
     public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService,
     public lds: LoadingService, public cd: ChangeDetectorRef) {
-    super(router, route, auth, ds, tabStore, dss, cd);
+    super(router, route, auth, ds, tabStore, dss, lds, cd);
   }
 
   async Execute() {

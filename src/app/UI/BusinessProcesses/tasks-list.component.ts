@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { BPApi } from 'src/app/services/bpapi.service';
 import { take } from 'rxjs/operators';
 import { SelectItem } from 'primeng/api';
@@ -8,7 +8,7 @@ import { DocService } from 'src/app/common/doc.service';
 import { calendarLocale, dateFormat } from 'src/app/primeNG.module';
 import { Router } from '@angular/router';
 import { ITask } from './task.object';
-import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
+import {  } from '@angular/core';
 
 @Component({
   templateUrl: 'tasks-list.component.html',

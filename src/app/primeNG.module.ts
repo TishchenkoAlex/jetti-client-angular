@@ -1,12 +1,12 @@
 import locale from '@angular/common/locales/ru';
 import { NgModule } from '@angular/core';
-import { CovalentCodeEditorModule } from '@covalent/code-editor';
+// import { CovalentCodeEditorModule } from '@covalent/code-editor';
 import { ConfirmationService } from 'primeng/api';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
-import { MessageService } from 'primeng/components/common/messageservice';
+import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
@@ -33,7 +33,7 @@ import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
 import { DataViewModule } from 'primeng/dataview';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ListboxModule } from 'primeng/listbox';
-import { TableModule } from './common/datatable/table';
+import { TableModule } from 'primeng/table';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { SidebarModule } from 'primeng/sidebar';
 
@@ -91,7 +91,7 @@ import { SidebarModule } from 'primeng/sidebar';
     DataViewModule,
     FileUploadModule,
     ListboxModule,
-    CovalentCodeEditorModule
+    // CovalentCodeEditorModule
   ],
   providers: [ConfirmationService, MessageService]
 })

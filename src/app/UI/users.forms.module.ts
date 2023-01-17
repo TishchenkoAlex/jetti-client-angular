@@ -24,15 +24,6 @@ import { ObjectsGroupModifyComponent } from './Forms/ObjectsGroupModify.form.com
   exports: [
   ],
   providers: [
-  ],
-  entryComponents: [
-    SearchAndReplaceComponent,
-    ObjectsGroupModifyComponent,
-    SyncFormComponent,
-    TaskListComponent,
-    TaskComponent,
-    DocumentCashRequestComponent,
-    QueueManagerComponent
   ]
 })
 export class UserFormsModule { }

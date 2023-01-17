@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { _baseDocFormComponent } from 'src/app/common/form/_base.form.component';
+import { BaseDocFormComponentParent } from 'src/app/common/form/base.parent.form.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DocService } from 'src/app/common/doc.service';
@@ -17,7 +17,7 @@ import { IFormControlPlacing } from 'src/app/common/dynamic-form/dynamic-form-ba
   selector: 'j-queue-manager',
   templateUrl: './queue-manager.form.component.html'
 })
-export class QueueManagerComponent extends _baseDocFormComponent implements OnInit, OnDestroy {
+export class QueueManagerComponent extends BaseDocFormComponentParent implements OnInit, OnDestroy {
 
   splitCommands: {
     remove: MenuItem[],
@@ -33,7 +33,7 @@ export class QueueManagerComponent extends _baseDocFormComponent implements OnIn
     public router: Router, public route: ActivatedRoute, public auth: AuthService,
     public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService,
     public lds: LoadingService, public cd: ChangeDetectorRef) {
-    super(router, route, auth, ds, tabStore, dss, cd);
+    super(router, route, auth, ds, tabStore, dss, lds, cd);
   }
 
   ngOnInit() {

@@ -1,8 +1,7 @@
 import { AuthService } from 'src/app/auth/auth.service';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MenuItem } from 'primeng/components/common/menuitem';
-import { SortMeta } from 'primeng/components/common/sortmeta';
+
 import { merge, Observable, Subject, Subscription, of, BehaviorSubject, combineLatest, fromEvent } from 'rxjs';
 import { debounceTime, filter, map, take } from 'rxjs/operators';
 import { v1, v4 } from 'uuid';
@@ -12,9 +11,9 @@ import { UserSettingsService } from './../../auth/settings/user.settings.service
 import { ApiDataSource } from './../../common/datatable/api.datasource.v2';
 import { DocService } from './../../common/doc.service';
 import { LoadingService } from './../../common/loading.service';
-import { Table } from './table';
 import { DynamicFormService } from '../dynamic-form/dynamic-form.service';
-import { DialogService, TreeNode } from 'primeng/api';
+import { MenuItem, SortMeta, TreeNode } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { TreeTable } from 'primeng/treetable';
 import {
   buildColumnDef, ColumnDef, DocumentBase, DocumentOptions, FormListFilter,
@@ -22,6 +21,7 @@ import {
   IUserSettings, FormListColumnProps, IUserSettingsState,
 } from 'jetti-middle';
 import { settingsKind } from 'jetti-middle/dist/common/classes/user-settings';
+import { Table } from 'primeng/table';
 // tslint:disable: deprecation
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

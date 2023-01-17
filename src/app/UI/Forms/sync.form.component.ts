@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { _baseDocFormComponent } from 'src/app/common/form/_base.form.component';
+import { BaseDocFormComponentParent } from 'src/app/common/form/base.parent.form.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { DocService } from 'src/app/common/doc.service';
@@ -16,14 +16,14 @@ import { FormBase } from 'jetti-middle/dist';
   selector: 'j-sync-form',
   templateUrl: './sync.form.component.html'
 })
-export class SyncFormComponent extends _baseDocFormComponent implements OnInit, OnDestroy {
+export class SyncFormComponent extends BaseDocFormComponentParent implements OnInit, OnDestroy {
 
   IOData = [];
   constructor(
     public router: Router, public route: ActivatedRoute, public auth: AuthService,
     public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService,
     public lds: LoadingService, public cd: ChangeDetectorRef) {
-    super(router, route, auth, ds, tabStore, dss, cd);
+    super(router, route, auth, ds, tabStore, dss, lds, cd);
   }
 
   ngOnInit() {
