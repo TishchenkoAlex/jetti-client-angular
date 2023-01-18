@@ -31,7 +31,7 @@ export class BaseTreeListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this._docSubscription$ = merge(...[this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$]).pipe(
+    this._docSubscription$ = merge(this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$).pipe(
       filter(doc => doc && doc.type === this.type)).
       subscribe(doc => this.paginator.next(doc));
 
@@ -50,7 +50,8 @@ export class BaseTreeListComponent implements OnInit, OnDestroy {
             this.treeNodes = treeNodes;
           }));
       }));
-    setTimeout(() => this.paginator.next());
+
+    // setTimeout(() => this.paginator.next());
 
     // this.hotkeys.addShortcut({ keys: 'Insert', description: 'Add' }).subscribe(() => { this.add(); });
     // this.hotkeys.addShortcut({ keys: 'F2', description: 'Open' }).subscribe(() => { this.open(); });

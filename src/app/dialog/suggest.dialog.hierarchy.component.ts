@@ -129,8 +129,8 @@ export class SuggestDialogHierarchyComponent implements OnInit, OnDestroy {
       }
     });
 
-    this._docSubscription$ = merge(...[
-      this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$, this.ds.post$, this.ds.unpost$]).pipe(
+    this._docSubscription$ = merge(
+      this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$, this.ds.post$, this.ds.unpost$).pipe(
         filter(doc => doc && doc.type === this.type))
       .subscribe(doc => {
 

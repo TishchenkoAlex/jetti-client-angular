@@ -273,7 +273,7 @@ export class ApiService {
   deleteUserSettings(id: string): Promise<void> {
     if (!id) return;
     const query = `${environment.api}user/settings`;
-    return this.http.post<void>(query, { command: 'delete', id }).toPromise<void>();
+    return this.http.post<void>(query, { command: 'delete', id }).toPromise();
   }
 
   getDocDimensions(type: string) {

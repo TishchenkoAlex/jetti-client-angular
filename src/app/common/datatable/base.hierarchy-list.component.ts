@@ -197,8 +197,7 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
 
       .pipe(filter(e => e.apply && !this.isRelationList)).subscribe(e => this.onColumnsSettingsStateChanged(e));
 
-    this._docSubscription$ = merge(...[
-      this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$, this.ds.post$, this.ds.unpost$]).pipe(
+    this._docSubscription$ = merge(this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$, this.ds.post$, this.ds.unpost$).pipe(
         filter(doc => doc
           && doc.type === this.type
           && !!(!this.group || !doc['Group'] || this.group === doc['Group']['id'])))

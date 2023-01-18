@@ -150,7 +150,7 @@ export class BaseDocFormComponentParent implements OnDestroy, OnInit, IFormEvent
     this.isHistory = !!this.route.snapshot.queryParams.history;
     this.readonly = !this.isHistory && this.auth.isRoleAvailableReadonly();
 
-    this._subscription$ = merge(...[this.ds.save$, this.ds.delete$, this.ds.post$, this.ds.unpost$]).pipe(
+    this._subscription$ = merge(this.ds.save$, this.ds.delete$, this.ds.post$, this.ds.unpost$).pipe(
       filter(doc => doc.id === this.id))
       .subscribe(doc => {
         this.isCopy = false;
@@ -170,10 +170,10 @@ export class BaseDocFormComponentParent implements OnDestroy, OnInit, IFormEvent
       });
 
     setTimeout(() => {
-      this._descriptionSubscription$ = merge(...[
+      this._descriptionSubscription$ = merge(
         this.form.get('date')!.valueChanges,
         this.form.get('code')!.valueChanges,
-        this.form.get('Group') ? this.form.get('Group')!.valueChanges : observableOf('')])
+        this.form.get('Group') ? this.form.get('Group')!.valueChanges : observableOf(''))
         .pipe(filter(_ => this.isDoc)).subscribe(_ => this.showDescription());
     });
 

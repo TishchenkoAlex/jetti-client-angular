@@ -106,8 +106,8 @@ export class SuggestDialogComponent implements OnInit, OnDestroy {
     this._debonceSubscription$ = this.debonce$.pipe(debounceTime(500))
       .subscribe(event => this._update(event.col, event.event, event.center));
 
-    this._docSubscription$ = merge(...[
-      this.ds.delete$]).pipe(
+    this._docSubscription$ = merge(
+      this.ds.delete$).pipe(
         filter(doc => doc && doc.type === this.type))
       .subscribe(doc => {
         const exist = (this.dataSource.renderedData as DocumentBase[]).find(d => d.id === doc.id);
