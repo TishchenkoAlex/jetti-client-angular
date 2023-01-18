@@ -57,7 +57,7 @@ export class AutocompleteComponent implements ControlValueAccessor, Validator, O
   @Input() appendTo;
 
   form: FormGroup = new FormGroup({
-    suggest: new FormControl({ value: this.value }, AutocompleteValidator(this))
+    suggest: new FormControl(this.value, AutocompleteValidator(this))
   });
   suggest = this.form.controls['suggest'] as FormControl;
   Suggests$: Observable<ISuggest[]>;
