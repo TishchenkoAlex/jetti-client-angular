@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { MsalService } from '@azure/msal-angular';
+import { MsalGuardConfiguration, MsalService, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
 import { filter, map, shareReplay, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -25,15 +25,28 @@ export class AuthService {
   set token(value) { localStorage.setItem('jetti_token', value); }
   get tokenPayload() { return jwt_decode<JwtPayload>(this.token); }
 
-  constructor(private router: Router, private http: HttpClient, private msalService: MsalService) { }
+  constructor(@Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
+    private router: Router,
+    private http: HttpClient,
+    private msalService: MsalService) { }
 
   public async login() {
-    await this.msalService.loginPopup({ scopes: ['user.read'] });
-    const user = this.msalService.getAccount().userName;
-    const acquireTokenSilentResult = await this.msalService.acquireTokenSilent({ scopes: ['user.read'] });
+    await this.msalService.loginPopup();
+
+    const { username } = this.msalService.instance.getActiveAccount();
+
+    // .subscribe(response => {
+    //   debugger;
+    //   this.msalService.instance.setActiveAccount(response.account);
+    //   // response.accessToken
+
+    // })
+
+    // const user = this.msalService.getAccount().userName;
+    const acquireTokenSilentResult = await this.msalService.acquireTokenSilent({ scopes: ['user.read'] }).toPromise();
 
     return this.http.post<ILoginResponse>(`${environment.auth}login`,
-      { email: user, password: null, token: acquireTokenSilentResult.accessToken }).pipe(
+      { email: username, password: null, token: acquireTokenSilentResult.accessToken }).pipe(
         shareReplay(),
         tap(loginResponse => this.init(loginResponse))
       );
@@ -41,7 +54,7 @@ export class AuthService {
 
   public logout() {
     localStorage.removeItem('jetti_token');
-    const account = this.msalService.getAccount();
+    const account = this.msalService.instance.getActiveAccount();
     if (account) this.msalService.logout();
     this._userProfile$.next({ ...ANONYMOUS_USER });
     return this.router.navigate([''], { queryParams: {} });

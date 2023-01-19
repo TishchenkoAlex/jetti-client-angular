@@ -37,7 +37,7 @@ export class EventsService implements OnDestroy {
       };
 
       wsAuto(wsUrl, data => this.debonce$.next(data));
-      this.debonce$.next();
+      // this.debonce$.next();
     });
   }
 

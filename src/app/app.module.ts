@@ -10,7 +10,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { MsalModule } from '@azure/msal-angular';
 import 'reflect-metadata';
 import { take } from 'rxjs/operators';
-import { environment, MsalAngularConfig, MsalConfiguration } from '../environments/environment';
+import { environment, MSALGuardConfigFactory, MSALInstanceFactory, MSALInterceptorConfigFactory } from '../environments/environment';
 import { ApiInterceptor } from './api.interceptor';
 import { AppComponent } from './app.component';
 import { AppMenuComponent, AppSubMenuComponent } from './app.menu.component';
@@ -46,7 +46,7 @@ export function getJwtToken(): string {
     DynamicFormsModule,
     UserFormsModule,
     RoutingModule,
-    MsalModule.forRoot(MsalConfiguration, MsalAngularConfig),
+    MsalModule.forRoot(MSALInstanceFactory(), MSALGuardConfigFactory(), MSALInterceptorConfigFactory()),
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [

@@ -15,7 +15,7 @@ export class HomeComponent  {
   constructor(public ts: EventsService, public auth: AuthService) { }
 
   async login() {
-    (await this.auth.login()).pipe(take(1)).subscribe();
+    (await this.auth.login());//.pipe(take(1)).subscribe();
   }
 
   powerBi() {
