@@ -189,7 +189,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   calcTotals(field: string): number {
-    return this.dataSource.map(v => v[field]).reduce((a, b) => a + b, 0);
+    return (this.formGroup.value as any[]).map(v => v[field]).reduce((a, b) => a + b, 0);
   }
 
   isDate(value) {
