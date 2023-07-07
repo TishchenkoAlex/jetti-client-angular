@@ -81,7 +81,7 @@
       <th *ngFor="let col of columns" [ngStyle]="col.style">
         <span [ngSwitch]="col.type" *ngIf="col.totals">
           <span *ngSwitchCase="'number'" style="padding-right: 5px">
-            {{calcTotals(col.field) | number:'1.2-2'}}
+            {{totals[col.field] | number:'1.2-2'}}
           </span>
           <span *ngSwitchDefault></span>
         </span>

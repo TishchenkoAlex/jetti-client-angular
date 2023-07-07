@@ -32,6 +32,8 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   selection: any[] = [];
   showTotals = false;
   lastSelectedIndex = 42;
+  searchedValue = '';
+  totals: { [x: string]: number } = {};
 
   get pEditableColumnDisabled() {
     return !!this.onDoubleClick.observers.length;
@@ -56,16 +58,12 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     this.control.controls.forEach(v => v.showLabel = false);
     this.showTotals = this.control.controls.findIndex(v => v.totals > 0) !== -1;
     this.dataSource = this.formGroup.getRawValue();
-
+    this.recalcTotals();
     this._subscription$ = merge(...[this.ds.save$, this.ds.delete$]).pipe(
       filter(doc => doc.id === this.formGroup.root.value.id)).subscribe(doc => {
         this.dataSource = doc[this.control.key];
         this.cd.detectChanges();
       });
-
-    // this.hotkeys.addShortcut({ keys: 'Insert', description: 'Add' }).subscribe( () => {this.add(); });
-    // this.hotkeys.addShortcut({ keys: 'F9', description: 'Copy' }).subscribe( () => {this.copy(); });
-    // this.hotkeys.addShortcut({ keys: 'Delete', description: 'Delete' }).subscribe( () => {this.delete(); });
   }
 
   getControl(i: number) {
@@ -73,7 +71,6 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   getControlValue(index: number, field: string, type: string) {
-
     const control = this.getControl(index).get(field);
     if (!control) return null;
     const value = control.value;
@@ -107,6 +104,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   copy() {
     const newFormGroup = cloneFormGroup(this.formGroup.at(this.selection[0].index) as FormGroup);
     this.addCopy(newFormGroup);
+    this.recalcTotals();
   }
 
   delete() {
@@ -120,6 +118,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     const index = this.selection[0].index;
     const selectRow = this.dataSource[index] || this.dataSource[index - 1];
     this.selection = selectRow ? [selectRow] : [];
+    this.search(this.searchedValue);
   }
 
   private renum(fieldName = 'index') {
@@ -129,19 +128,22 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   search(searchedValue: string) {
+    this.searchedValue = searchedValue.toLowerCase();
     this.dataSource = this.formGroup.getRawValue();
-    if (!searchedValue) return;
-    searchedValue = searchedValue.toLowerCase();
-    const dataSourceFiltred = this.dataSource.filter(el => {
-      for (const key of Object.keys(el)) {
-        let curVal = el[key];
-        if (curVal && curVal.type && curVal.type.includes('.')) curVal = curVal.value;
-        if (curVal && curVal.toString().toLowerCase().includes(searchedValue)) return true;
-      }
-      return false;
-    });
-    this.dataSource = [...dataSourceFiltred];
+    if (searchedValue) {
+      const dataSourceFiltered = this.dataSource.filter(this.isVisibleRow.bind(this));
+      this.dataSource = [...dataSourceFiltered];
+    }
+    this.recalcTotals();
+  }
 
+  private isVisibleRow(row: {}) {
+    for (const key of Object.keys(row)) {
+      let curVal = row[key];
+      if (curVal && curVal.type && curVal.type.includes('.')) curVal = curVal.value;
+      if (curVal && curVal.toString().toLowerCase().includes(this.searchedValue)) return true;
+    }
+    return false;
   }
 
   onRowSelect(event) {
@@ -153,9 +155,9 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEditComplete(event) { }
-  onEditInit(event) { console.log('onEditInit', event) }
-  onEditCancel(event) { console.log('onEditCancel', event) }
+  onEditComplete(event) { this.recalcTotals(); }
+  onEditInit(event) { console.log('onEditInit', event); }
+  onEditCancel(event) { console.log('onEditCancel', event); }
 
   customSort(event: SortEvent) {
     event.data = this.formGroup.getRawValue();
@@ -188,8 +190,21 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     this.formGroup.markAsDirty();
   }
 
-  calcTotals(field: string): number {
-    return (this.formGroup.value as any[]).map(v => v[field]).reduce((a, b) => a + b, 0);
+  private calcTotals(field: string): number {
+    const res = (this.formGroup.value as any[])
+      .filter(this.isVisibleRow.bind(this))
+      .map(e => e[field])
+      .reduce((a, b) => a + b, 0);
+    return res;
+  }
+
+  recalcTotals() {
+    this.totals = this.columns
+      .filter(e => e.totals && e.type === 'number')
+      .reduce((prev, cur) => {
+        prev[cur.field] = this.calcTotals(cur.field);
+        return prev;
+      }, {});
   }
 
   isDate(value) {
