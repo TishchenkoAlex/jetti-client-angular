@@ -27,8 +27,11 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
 
   parseDate(dateString: string) {
     const date = dateString ? new Date(dateString) : null;
-    if (date instanceof Date) this.formControl.setValue(date);
-    else if (!date && this.control.required) this.formControl.setErrors({ 'invalid date': true });
+    if (date instanceof Date) {
+      if (!dateString.includes('T'))
+        date.setHours(0, 0, 0, 0);
+      this.formControl.setValue(date);
+    } else if (!date && this.control.required) this.formControl.setErrors({ 'invalid date': true });
     else if (!date && !this.control.required) this.formControl.setValue(date);
   }
 
