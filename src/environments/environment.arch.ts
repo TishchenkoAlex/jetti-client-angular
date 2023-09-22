@@ -40,7 +40,7 @@ export const MsalAngularConfig: MsalAngularConfiguration = {
     'user.read',
     'openid',
     'profile',
-    'https://ua.arch.jetti-app.com/access_as_user'
+    'https://ui.arch.jetti-app.com/access_as_user'
   ],
   unprotectedResources: ['https://www.microsoft.com/en-us/'],
   protectedResourceMap,
