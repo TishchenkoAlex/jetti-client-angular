@@ -1,6 +1,7 @@
 // ng build --configuration smv && firebase deploy --only hosting:smv
 import { Configuration } from 'msal';
 import { MsalAngularConfiguration } from '@azure/msal-angular';
+import { arch } from './common';
 
 const domain = 'https://smv.jetti-app.com';
 const BPAPI = 'https://bp.x100-group.com/JettiProcesses/hs';
@@ -14,7 +15,8 @@ export const environment = {
   PowerBIURL: 'https://app.powerbi.com/Redirect?action=OpenApp&appId=be0489b5-9ccc-4f9c-a224-cfec72a95c05&ctid=b91c98b1-d543-428b-9469-f5f8f25bc37b',
   title: 'Jetti [SMV]',
   path: '',
-  BPAPI
+  BPAPI,
+  arch
 };
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;

@@ -1,6 +1,7 @@
 // ng build --prod --aot && firebase deploy --only hosting:x100
 import { Configuration } from 'msal';
 import { MsalAngularConfiguration } from '@azure/msal-angular';
+import { arch } from './common';
 
 const domain = 'https://sm.jetti-app.com';
 const BPAPI = 'https://bp.x100-group.com/JettiProcesses/hs';
@@ -14,7 +15,8 @@ export const environment = {
   PowerBIURL: 'https://bi.x100-group.com/Reports/',
   title: 'Jetti',
   path: '',
-  BPAPI
+  BPAPI,
+  arch
 };
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;

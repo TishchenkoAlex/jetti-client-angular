@@ -1,5 +1,6 @@
 import { Configuration } from 'msal';
 import { MsalAngularConfiguration } from '@azure/msal-angular';
+import { arch } from './common';
 
 const domain = 'https://api.azure.jetti-app.com'; // 'https://jetti-api.azurewebsites.net'; // 'http://localhost:3000';
 const BPAPI = 'https://bp.x100-group.com/JettiProssscesses/hs';
@@ -13,7 +14,8 @@ export const environment = {
   PowerBIURL: 'https://bi.x100-group.com/Reports/',
   title: 'Jetti [RU]',
   path: '',
-  BPAPI
+  BPAPI,
+  arch
 };
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
