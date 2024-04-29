@@ -33,7 +33,12 @@ export class AuthService {
     const acquireTokenSilentResult = await this.msalService.acquireTokenSilent({ scopes: ['user.read'] });
 
     return this.http.post<ILoginResponse>(`${environment.auth}login`,
-      { email: user, password: null, token: acquireTokenSilentResult.accessToken }).pipe(
+      {
+        email: user,
+        password: null,
+        token: acquireTokenSilentResult.accessToken,
+        timezoneOffset: (new Date).getTimezoneOffset()
+      }).pipe(
         shareReplay(),
         tap(loginResponse => this.init(loginResponse))
       );
