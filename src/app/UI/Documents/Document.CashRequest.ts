@@ -83,7 +83,8 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
     if (`Выплата заработной платы
     Оплата по кредитам и займам полученным`.indexOf(operation) !== -1) this.form.get('PaymentKind').enable({ emitEvent: false }); else this.form.get('PaymentKind').disable({ emitEvent: false });
 
-    if (`Оплата поставщику
+    if (`${this.operationIssuanceOfALoan()}
+    Оплата поставщику
     Перечисление налогов и взносов
     Оплата ДС в другую организацию
     Выдача ДС подотчетнику
@@ -101,9 +102,11 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
     if (`Перечисление налогов и взносов
     Прочий расход ДС`.indexOf(operation) !== -1 || (operation !== 'Перечисление налогов и взносов' && this.CashKind === 'CASH')) this.form.get('ExpenseOrBalance').enable({ emitEvent: false }); else this.form.get('ExpenseOrBalance').disable({ emitEvent: false });
 
-    if (`Оплата по кредитам и займам полученным
+    if (`${this.operationIssuanceOfALoan()}
+    Оплата по кредитам и займам полученным
     Выдача займа контрагенту`.indexOf(operation) !== -1) this.form.get('Loan').enable({ emitEvent: false }); else this.form.get('Loan').disable({ emitEvent: false });
 
+    debugger
     if (Object.keys(this.vk).length) {
       `TaxPaymentCode
     TaxOfficeCode2
@@ -111,7 +114,8 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
     TaxBasisPayment
     TaxPaymentPeriod`.split('\n').forEach(el => { this.vk[el.trim()].required = false });
       this.vk['CashOrBank'].required = operation === 'Выплата заработной платы';
-      this.vk['SalaryAnalitics'].required = operation.includes('Выплата заработной платы');
+      this.vk['SalaryAnalitics'].required = operation.includes('Выплата заработной платы')
+      this.vk['CashRecipientBankAccount'].required = operation.includes(this.operationIssuanceOfALoan());
     }
 
     this.form.markAsTouched();
@@ -237,8 +241,11 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
         && this.Operation !== 'Оплата ДС в другую организацию'
         && this.Operation !== 'Выплата заработной платы'
         && this.Operation !== 'Перемещение ДС'
-        && this.Operation !== 'Внутренний займ');
-  }
+        && this.Operation !== 'Внутренний займ'
+      )
+  };
+
+  operationIssuanceOfALoan() { return 'Выдача займа (МУЛЬТИВАЛЮТНАЯ)' }
 
   onCashKindChange(event) {
     if (event === 'ANY') return;

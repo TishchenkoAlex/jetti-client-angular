@@ -85,16 +85,23 @@
           <j-control [control]="vk.ContractIntercompany" [form]="form"></j-control>
         </div>
 
-        <div *ngIf="Operation  === 'Оплата по кредитам и займам полученным'" fxLayout="row" fxLayout.xs="column"
-          fxLayoutGap="35px" fxLayoutGap.xs="0px">
+        <div *ngIf="['Оплата по кредитам и займам полученным', 'Выдача займа (МУЛЬТИВАЛЮТНАЯ)'].includes(Operation)"
+          fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px">
           <j-control [control]="vk.Loan" [form]="form"></j-control>
           <j-control [control]="vk.PaymentKind" [form]="form"></j-control>
         </div>
 
-        <div *ngIf="Operation === 'Прочий расход ДС' || CashKind === 'CASH'" fxLayout="row" fxLayout.xs="column"
-          fxLayoutGap="35px" fxLayoutGap.xs="0px">
+        <div
+          *ngIf="(Operation === 'Прочий расход ДС' || CashKind === 'CASH') && Operation !== operationIssuanceOfALoan()"
+          fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px">
           <j-control [control]="vk.ExpenseOrBalance" [form]="form"></j-control>
           <j-control [control]="vk.ExpenseAnalytics" [form]="form"></j-control>
+        </div>
+
+        <div *ngIf="Operation === operationIssuanceOfALoan()" fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px"
+          fxLayoutGap.xs="0px">
+          <j-control [control]="vk.AmountLoan" [form]="form"></j-control>
+          <j-control [control]="vk.CurrencyLoan" [form]="form"></j-control>
         </div>
 
         <div *ngIf="['Перемещение ДС','Оплата поставщику','Внутренний займ'].includes(Operation)" fxLayout="row"
