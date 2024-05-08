@@ -236,7 +236,8 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
   }
 
   useCashRecipientBankAccount() {
-    return this.Operation === 'Оплата по кредитам и займам полученным'
+    return this.operationIssuanceOfALoan()
+      || this.Operation === 'Оплата по кредитам и займам полученным'
       || (this.CashKind === 'BANK'
         && this.Operation !== 'Оплата ДС в другую организацию'
         && this.Operation !== 'Выплата заработной платы'
