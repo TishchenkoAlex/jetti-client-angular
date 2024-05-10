@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import { StorageType } from 'jetti-middle/dist';
+import { IViewModel, StorageType } from 'jetti-middle/dist';
 import { ApiService } from '../../services/api.service';
 // tslint:disable-next-line:max-line-length
 import { AutocompleteFormControl, BooleanFormControl, DateFormControl, DateTimeFormControl, EnumFormControl, FormControlInfo, IFormControlInfo, NumberFormControl, ScriptFormControl, TableDynamicControl, TextareaFormControl, TextboxFormControl, ControlTypes, LinkFormControl, URLFormControl, HTMLFormControl, IFormControlPlacing as IFormControlPlacement } from './dynamic-form-base';
@@ -232,12 +232,10 @@ export class DynamicFormService {
       }));
   }
 
-  // getFormView$(type: string) {
-  //   const form = createForm({ type: type });
-  //   const view = form.Props();
-  //   const result = getFormGroup(view, {}, false);
-  //   result['metadata'] = form.Prop();
-  //   return of(result);
-  // }
+  viewModelToFormGroup(viewModel: IViewModel) {
+    const form = getFormGroup(viewModel.schema, viewModel.model, true);
+    form['metadata'] = viewModel.metadata;
+    return form;
+  }
 
 }

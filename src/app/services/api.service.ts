@@ -134,6 +134,16 @@ export class ApiService {
     return this.http.post<DocListResponse>(query, { ...body, used });
   }
 
+  getAdditionalPropsView(ownerId: string, propsId: string): Observable<IViewModel> {
+    const query = `${environment.api}add-pops/view`;
+    return this.http.post<IViewModel>(query, { ownerId, propsId });
+  }
+
+  getAdditionalPropsList(type: string) {
+    const query = `${environment.api}add-pops/list`;
+    return this.http.post<{ id: string, description: string }[]>(query, { type });
+  }
+
   getView(type: string, params: { [key: string]: any } = {}): Observable<IViewModel> {
     const query = `${environment.api}view`;
     return this.http.post<IViewModel>(query, { type, ...params });

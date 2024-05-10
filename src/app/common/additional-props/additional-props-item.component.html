@@ -1,0 +1,52 @@
+<div *ngIf="form$ | async as form">
+
+    <form novalidate [formGroup]="form" cdkTrapFocus>
+
+        <p-splitButton styleClass="ui-button-success" label="Save" icon="pi pi-save" (onClick)="save()"
+            [model]="buttons"></p-splitButton>
+
+        <div fxLayout="column" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial *ngIf="v$ | async as v">
+
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+                *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
+                <div fxFlex *ngFor="let d of [0,1,2]">
+                    <j-control *ngIf="headFields[i+d]" [control]="headFields[i+d]" [form]="form">
+                    </j-control>
+                </div>
+            </div>
+
+            <div *ngIf="tables$ | async as tables">
+                <br *ngIf="tables.length">
+                <p-tabView *ngIf="tables.length > 1" class="tabViewClassInForm">
+                    <div *ngFor="let c of tables;">
+                        <p-tabPanel [header]="c.label">
+                            <j-control [control]="c" [form]="form"></j-control>
+                        </p-tabPanel>
+                    </div>
+                </p-tabView>
+                <j-control *ngIf="tables.length == 1" [control]="tables[0]" [form]="form"></j-control>
+            </div>
+
+            <ng-content></ng-content>
+        </div>
+
+    </form>
+
+    <br>
+
+    <p-panel [toggleable]="true" [collapsed]="true" header="History" #history *ngIf="(isNew$ | async) === false"
+        toggler="header">
+        <j-history *ngIf="!history.collapsed" [doc]="viewModel"></j-history>
+    </p-panel>
+
+
+    <p-confirmDialog [key]="id" [closeOnEscape]="true" [closable]="true" #cdlg appendTo="body">
+        <p-footer>
+            <div cdkTrapFocus>
+                <button type="button" pButton icon="fa fa-check" label="Yes" (click)="cdlg.accept()"></button>
+                <button type="button" pButton icon="fas fa-times" label="No" (click)="cdlg.reject()"></button>
+            </div>
+        </p-footer>
+    </p-confirmDialog>
+
+</div>

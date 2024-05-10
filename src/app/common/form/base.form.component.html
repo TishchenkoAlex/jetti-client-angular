@@ -122,6 +122,11 @@
 
         </p-panel>
 
+        <p-panel [toggleable]="true" [collapsed]="true" header="Additional props" #additionalProps
+          *ngIf="(isNew$ | async) === false" toggler="header">
+          <j-additional-props-list *ngIf="!additionalProps.collapsed" [owner]="viewModel"></j-additional-props-list>
+        </p-panel>
+
         <div *ngIf="!isHistory">
           <p-panel *ngIf="type === 'Catalog.Operation' && (isFolder$ | async) === false" [toggleable]="true"
             header="Post script (management)" [collapsed]="true" (collapsedChange)="mp.collapse($event);"

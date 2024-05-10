@@ -1,0 +1,7 @@
+<p-accordion [multiple]="true" *ngFor="let item of propsList$ | async">
+  <p-accordionTab [header]="item.description">
+    <ng-template pTemplate="content">
+      <j-additional-props-item [propsId]="item.id" [ownerId]="owner.id" [type]="type"></j-additional-props-item>
+    </ng-template>
+  </p-accordionTab>
+</p-accordion>

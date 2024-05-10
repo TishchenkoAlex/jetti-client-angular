@@ -35,6 +35,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { JNgSelectComponent } from '../common/multiselect/ng.select.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ImageModalComponent } from '../dialog/image.dialog.component';
+import { AdditionalPropsListComponent } from '../common/additional-props/additional-props-list.component';
+import { AdditionalPropsItemComponent } from '../common/additional-props/additional-props-item.component';
 
 @NgModule({
   declarations: [
@@ -72,8 +74,9 @@ import { ImageModalComponent } from '../dialog/image.dialog.component';
 
     HistoryComponent,
     AttachmentsComponent,
-    DescendantsComponent
-
+    DescendantsComponent,
+    AdditionalPropsListComponent,
+    AdditionalPropsItemComponent
   ],
   imports: [
     NgSelectModule,
@@ -124,7 +127,9 @@ import { ImageModalComponent } from '../dialog/image.dialog.component';
 
     HistoryComponent,
     AttachmentsComponent,
-    DescendantsComponent
+    DescendantsComponent,
+    AdditionalPropsListComponent,
+    AdditionalPropsItemComponent
   ],
   providers: [
     DialogService,
