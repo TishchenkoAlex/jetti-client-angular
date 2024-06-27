@@ -6,22 +6,18 @@
     <button pButton type="button" icon="pi pi-trash" class="ui-button-danger" (click)="delete()"
       *ngIf="selection?.length > 0"></button>
   </div>
-  <!-- <div class="ui-toolbar-group-right">
+  <div class="ui-toolbar-group-right">
     <div class="ui-inputgroup">
-      <input #searchKeyword type="text" placeholder="Keyword" style="width:auto">
-      <button pButton type="button" icon="pi pi-search" class="ui-button-success"
-        (click)="search(searchKeyword.value)"></button>
-      <button pButton type="button" icon="pi pi-ban" class="ui-button-danger"
-        (click)="searchKeyword.value = ''; search(searchKeyword.value)"></button>
+      <button pButton type="button" icon="pi pi-filter" class="ui-button-secondary" [ngStyle]="{ 'filter': filtersVisible ? 'invert(10%)' : undefined}" (click)="filtersVisible = !filtersVisible"></button>
     </div>
-  </div> -->
+  </div>
 </p-toolbar>
 
 <p-table #tablePart [columns]="columns" [value]="dataSource$ | async" selectionMode="multiple" [metaKeySelection]="true"
-  (onRowSelect)="onRowSelect($event)" (onFilter)="onFilter($event)" [(selection)]="selection"
- dataKey="index" [scrollable]="true"
-  (onEditComplete)="onEditComplete($event)" (onEditCancel)="onEditCancel($event)" (onEditInit)="onEditInit($event)"
-  scrollHeight="37vh" [reorderableColumns]="true" [resizableColumns]="true" columnResizeMode="expand">
+  (onRowSelect)="onRowSelect($event)" (onFilter)="onFilter($event)" [(selection)]="selection" dataKey="index"
+  [scrollable]="true" (onEditComplete)="onEditComplete($event)" (onEditCancel)="onEditCancel($event)"
+  (onEditInit)="onEditInit($event)" scrollHeight="37vh" [reorderableColumns]="true" [resizableColumns]="true"
+  columnResizeMode="expand">
 
   <ng-template pTemplate="colgroup" let-columns>
     <colgroup>
@@ -41,41 +37,45 @@
 
       <th pResizableColumn></th>
     </tr>
-    <tr *ngIf="filters">
+    <tr *ngIf="filters && filtersVisible">
       <th style="width: 50px"> </th>
       <th *ngFor="let col of columns" [ngSwitch]="col.type">
         <div *ngSwitchCase="'number'" class="ui-inputgroup">
-          <input pInputText type="numeric" [(ngModel)]="filters[col.field].value" (input)="onFilterInput($event.target.value, col)">
-          <!-- <p-dropdown [options]="machModeOptions" [(ngModel)]="filters[col.field].machMode" [appendTo]="'body'" 
-          (onChange)="onFilterInput(filters[col.field].value, col)"></p-dropdown> -->
-          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" (click)="nextMachMode(col)"></button>
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" (click)="clearFilter(col.field)"></button>
+          <input pInputText type="numeric" [(ngModel)]="filters[col.field].value"
+            (input)="onFilterInput($event.target.value, col)">
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary"
+            (click)="nextMachMode(col)"></button>
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+            (click)="clearFilter(col.field)"></button>
         </div>
-        <p-triStateCheckbox *ngSwitchCase="'boolean'" (onChange)="onFilterInput($event.value, col)"></p-triStateCheckbox>
+        <p-triStateCheckbox *ngSwitchCase="'boolean'"
+          (onChange)="onFilterInput($event.value, col)"></p-triStateCheckbox>
         <div *ngSwitchCase="'datetime'" class="ui-inputgroup">
           <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value"
             [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
             (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'"
             [showTime]="true" [showSeconds]="true">
           </p-calendar>
-          <!-- <p-dropdown [options]="machModeOptions" [(ngModel)]="filters[col.field].machMode" [appendTo]="'body'" 
-          (onChange)="onFilterInput(filters[col.field].value, col)" optionLabel="label"></p-dropdown> -->
-          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" (click)="nextMachMode(col)"></button>
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" (click)="clearFilter(col.field)"></button>
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary"
+            (click)="nextMachMode(col)"></button>
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+            (click)="clearFilter(col.field)"></button>
         </div>
         <div *ngSwitchCase="'date'" class="ui-inputgroup">
-          <p-calendar  showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value"
+          <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value"
             [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
             (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'">
           </p-calendar>
-          <!-- <p-dropdown [options]="machModeOptions" [(ngModel)]="filters[col.field].machMode" [appendTo]="'body'" 
-          (onChange)="onFilterInput(filters[col.field].value, col)"></p-dropdown> -->
-          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" (click)="nextMachMode(col)"></button>
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" (click)="clearFilter(col.field)"></button>
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary"
+            (click)="nextMachMode(col)"></button>
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+            (click)="clearFilter(col.field)"></button>
         </div>
         <div *ngSwitchDefault class="ui-inputgroup">
-          <input pInputText type="text" [(ngModel)]="filters[col.field].value" (input)="onFilterInput($event.target.value, col)">
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" (click)="clearFilter(col.field)"></button>
+          <input pInputText type="text" [(ngModel)]="filters[col.field].value"
+            (input)="onFilterInput($event.target.value, col)">
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+            (click)="clearFilter(col.field)"></button>
         </div>
       </th>
     </tr>

@@ -57,6 +57,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   searchedValue = '';
   totals: { [x: string]: number } = {};
   filters: { [x: string]: any } = {};
+  filtersVisible = false;
 
   get pEditableColumnDisabled() {
     return !!this.onDoubleClick.observers.length;
