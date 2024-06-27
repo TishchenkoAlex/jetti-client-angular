@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormArray, FormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
-import { merge, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { BehaviorSubject, merge, Subscription } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import { TableDynamicControl } from '../../common/dynamic-form/dynamic-form-base';
 import { cloneFormGroup, patchOptionsNoEvents } from '../../common/dynamic-form/dynamic-form.service';
 import { ApiService } from '../../services/api.service';
-import { EditableColumn } from '../datatable/table';
+import { EditableColumn, Table } from '../datatable/table';
 import { DocService } from '../doc.service';
-import { SortEvent } from 'primeng/api';
+import { FilterUtils, SortEvent } from 'primeng/api';
 import { ColumnDef } from 'jetti-middle/dist';
 
 const TablePartValidator: ValidatorFn = (c: AbstractControl) => {
@@ -19,21 +19,44 @@ const TablePartValidator: ValidatorFn = (c: AbstractControl) => {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'j-table-part-png',
-  templateUrl: './table-parts.png.component.html',
+  templateUrl: './table-parts.png.component.html'
 })
 export class TablePartsComponent implements OnInit, OnDestroy {
   @Input() formGroup: FormArray;
   @Input() control: TableDynamicControl;
   @Output() onDoubleClick: EventEmitter<{ [x: string]: any }> = new EventEmitter();
   @ViewChildren(EditableColumn) editableColumns: QueryList<EditableColumn>;
+  @ViewChild('tablePart', { static: true }) table: Table;
 
-  dataSource: any[];
+  _dataSource$ = new BehaviorSubject<Record<string, any>[]>([]);
+
+  dataSource$ = this._dataSource$.asObservable();
+
+  set dataSource(val: Record<string, any>[]) {
+    this._dataSource$.next(val);
+  }
+
+  get dataSource() {
+    return this._dataSource$.value;
+  }
+
+  private readonly defaultFilterMachMode = {
+    number: { label: 'pi pi-chevron-right', value: 'gt' },
+    date: { label: 'pi pi-chevron-right', value: 'gt' },
+    datetime: { label: 'pi pi-chevron-right', value: 'gt' },
+    boolean: { label: 'pi pi-bars', value: 'equals' },
+    other: { label: 'contains', value: 'contains' }
+  }
+
+  machModeSet = [{ label: 'pi pi-chevron-right', value: 'gt' }, { label: 'pi pi-chevron-left', value: 'lt' }, { label: 'pi pi-bars', value: 'equals' }];
+
   columns: ColumnDef[] = [];
-  selection: any[] = [];
+  selection: Record<string, any>[] = [];
   showTotals = false;
   lastSelectedIndex = 42;
   searchedValue = '';
   totals: { [x: string]: number } = {};
+  filters: { [x: string]: any } = {};
 
   get pEditableColumnDisabled() {
     return !!this.onDoubleClick.observers.length;
@@ -42,7 +65,6 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   public get readOnly(): boolean {
     return this.control.readOnly || this.columns.every(e => e.readOnly);
   }
-
 
   private _subscription$: Subscription = Subscription.EMPTY;
   private _valueChanges$: Subscription = Subscription.EMPTY;
@@ -54,16 +76,20 @@ export class TablePartsComponent implements OnInit, OnDestroy {
       field: el.key, type: el.controlType, label: el.label, hidden: el.hidden, onChange: el.onChange, onChangeServer: el.onChangeServer,
       order: el.order, style: el.style, required: el.required, readOnly: el.readOnly, totals: el.totals, value: el.value, control: el,
       headerStyle: { ...el.style, 'text-align': 'center' }
+
     });
     this.control.controls.forEach(v => v.showLabel = false);
     this.showTotals = this.control.controls.findIndex(v => v.totals > 0) !== -1;
     this.dataSource = this.formGroup.getRawValue();
+
     this.recalcTotals();
     this._subscription$ = merge(...[this.ds.save$, this.ds.delete$]).pipe(
       filter(doc => doc.id === this.formGroup.root.value.id)).subscribe(doc => {
         this.dataSource = doc[this.control.key];
         this.cd.detectChanges();
       });
+
+    this.columns.forEach(col => this.filters[col.field] = { value: null, machMode: this.defaultFilterMachMode[col.type] || this.defaultFilterMachMode.other });
   }
 
   getControl(i: number) {
@@ -83,7 +109,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   private addCopy(newFormGroup: FormGroup) {
     newFormGroup.controls['index'].setValue(this.formGroup.length, patchOptionsNoEvents);
     this.formGroup.push(newFormGroup);
-    this.dataSource.push(newFormGroup.getRawValue());
+    this.dataSource = [...this.dataSource, newFormGroup.getRawValue()];
     this.selection = [newFormGroup.getRawValue()];
     this.formGroup.markAsDirty();
   }
@@ -118,7 +144,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     const index = this.selection[0].index;
     const selectRow = this.dataSource[index] || this.dataSource[index - 1];
     this.selection = selectRow ? [selectRow] : [];
-    this.search(this.searchedValue);
+    // this.search(this.searchedValue);
   }
 
   private renum(fieldName = 'index') {
@@ -127,17 +153,24 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     }
   }
 
-  search(searchedValue: string) {
-    this.searchedValue = searchedValue.toLowerCase();
-    this.dataSource = this.formGroup.getRawValue();
-    if (searchedValue) {
-      const dataSourceFiltered = this.dataSource.filter(this.isVisibleRow.bind(this));
-      this.dataSource = [...dataSourceFiltered];
-    }
-    this.recalcTotals();
-  }
+  // search(keyword = '', t: any = {}) {
+  //   console.log(t)
+  //   this.searchedValue = keyword.toLowerCase();
+
+  //   if (this.searchedValue) {
+  //     this.dataSource = (this.lastSort ? this.customSort(this.lastSort) : this.formGroup.getRawValue()).filter(e => {
+  //       const visible = this.isVisibleRow(e);
+  //       return visible;
+  //     });
+  //   } else {
+  //     this.dataSource = this.formGroup.getRawValue();
+  //   }
+
+  //   this.recalcTotals();
+  // }
 
   private isVisibleRow(row: {}) {
+    if (!this.searchedValue) return true;
     for (const key of Object.keys(row)) {
       let curVal = row[key];
       if (curVal && curVal.type && curVal.type.includes('.')) curVal = curVal.value;
@@ -158,37 +191,60 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   onEditComplete(event) { this.recalcTotals(); }
   onEditInit(event) { console.log('onEditInit', event); }
   onEditCancel(event) { console.log('onEditCancel', event); }
+  onFilter(event) { console.log('onFilter', event); }
 
-  customSort(event: SortEvent) {
-    event.data = this.formGroup.getRawValue();
-    const rows = [...event.data];
-    rows.sort((data1, data2) => {
-      let value1 = data1[event.field];
-      let value2 = data2[event.field];
-      let result = null;
-
-      if (value1 && value1.type && value1.type.indexOf('.') !== -1) {
-        value1 = value1.value;
-        value2 = value2.value;
-      }
-
-      if (value1 == null && value2 != null)
-        result = -1;
-      else if (value1 != null && value2 == null)
-        result = 1;
-      else if (value1 == null && value2 == null)
-        result = 0;
-      else if (typeof value1 === 'string' && typeof value2 === 'string')
-        result = value1.localeCompare(value2);
-      else
-        result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
-
-      return (event.order * result);
-    });
-    this.selection = [];
-    this.formGroup.setValue(rows);
-    this.formGroup.markAsDirty();
+  onFilterInput(value, col) {
+    // console.log('onFilterInput', { value, col, machMode: this.filters[col.field].machMode.value });
+    this.table.filter(value, col.field, this.filters[col.field].machMode.value, this.formGroup.getRawValue());
   }
+
+  nextMachMode(col) {
+    const cur = this.filters[col.field].machMode.value;
+    const index = this.machModeSet.findIndex(e => e.value == cur);
+    const nextIndex = this.machModeSet.length === index + 1 ? 0 : index + 1;
+    this.filters[col.field].machMode = this.machModeSet[nextIndex];
+    this.onFilterInput(this.filters[col.field].value, col);
+  }
+
+  clearFilter(field) {
+    this.filters[field].value = null;
+    this.table.filter(null, field, '');
+  }
+
+  // sortData(data: any[], event: SortEvent) {
+  //   return data.sort((data1, data2) => {
+  //     let value1 = data1[event.field];
+  //     let value2 = data2[event.field];
+  //     let result = null;
+
+  //     if (value1 && value1.type && value1.type.indexOf('.') !== -1) {
+  //       value1 = value1.value;
+  //       value2 = value2.value;
+  //     }
+
+  //     if (value1 == null && value2 != null)
+  //       result = -1;
+  //     else if (value1 != null && value2 == null)
+  //       result = 1;
+  //     else if (value1 == null && value2 == null)
+  //       result = 0;
+  //     else if (typeof value1 === 'string' && typeof value2 === 'string')
+  //       result = value1.localeCompare(value2);
+  //     else
+  //       result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
+
+  //     return (event.order * result);
+  //   });
+  // }
+
+  // customSort(event: SortEvent) {
+  //   event.data = this.formGroup.getRawValue();
+  //   const rows = this.sortData([...event.data], event);
+  //   this.selection = [];
+  //   this.formGroup.setValue(rows);
+  //   this.formGroup.markAsDirty();
+  //   return rows;
+  // }
 
   private calcTotals(field: string): number {
     const res = (this.formGroup.value as any[])
