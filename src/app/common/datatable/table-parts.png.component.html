@@ -17,7 +17,7 @@
   (onRowSelect)="onRowSelect($event)" (onFilter)="onFilter($event)" [(selection)]="selection" dataKey="index"
   [scrollable]="true" (onEditComplete)="onEditComplete($event)" (onEditCancel)="onEditCancel($event)"
   (onEditInit)="onEditInit($event)" scrollHeight="37vh" [reorderableColumns]="true" [resizableColumns]="true"
-  columnResizeMode="expand">
+  columnResizeMode="expand" [customSort]="true" (sortFunction)="customSort($event)">
 
   <ng-template pTemplate="colgroup" let-columns>
     <colgroup>

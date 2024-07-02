@@ -212,40 +212,40 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     this.table.filter(null, field, '');
   }
 
-  // sortData(data: any[], event: SortEvent) {
-  //   return data.sort((data1, data2) => {
-  //     let value1 = data1[event.field];
-  //     let value2 = data2[event.field];
-  //     let result = null;
+  sortData(data: any[], event: SortEvent) {
+    return data.sort((data1, data2) => {
+      let value1 = data1[event.field];
+      let value2 = data2[event.field];
+      let result = null;
 
-  //     if (value1 && value1.type && value1.type.indexOf('.') !== -1) {
-  //       value1 = value1.value;
-  //       value2 = value2.value;
-  //     }
+      if (value1 && value1.type && value1.type.indexOf('.') !== -1) {
+        value1 = value1.value;
+        value2 = value2.value;
+      }
 
-  //     if (value1 == null && value2 != null)
-  //       result = -1;
-  //     else if (value1 != null && value2 == null)
-  //       result = 1;
-  //     else if (value1 == null && value2 == null)
-  //       result = 0;
-  //     else if (typeof value1 === 'string' && typeof value2 === 'string')
-  //       result = value1.localeCompare(value2);
-  //     else
-  //       result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
+      if (value1 == null && value2 != null)
+        result = -1;
+      else if (value1 != null && value2 == null)
+        result = 1;
+      else if (value1 == null && value2 == null)
+        result = 0;
+      else if (typeof value1 === 'string' && typeof value2 === 'string')
+        result = value1.localeCompare(value2);
+      else
+        result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
 
-  //     return (event.order * result);
-  //   });
-  // }
+      return (event.order * result);
+    });
+  }
 
-  // customSort(event: SortEvent) {
-  //   event.data = this.formGroup.getRawValue();
-  //   const rows = this.sortData([...event.data], event);
-  //   this.selection = [];
-  //   this.formGroup.setValue(rows);
-  //   this.formGroup.markAsDirty();
-  //   return rows;
-  // }
+  customSort(event: SortEvent) {
+    event.data = this.formGroup.getRawValue();
+    const rows = this.sortData([...event.data], event);
+    this.selection = [];
+    this.formGroup.setValue(rows);
+    this.formGroup.markAsDirty();
+    return rows;
+  }
 
   private calcTotals(field: string): number {
     const res = (this.formGroup.value as any[])
