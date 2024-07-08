@@ -59,6 +59,11 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   filters: { [x: string]: any } = {};
   filtersVisible = false;
   filteredValue: any[] | undefined;
+  isSorted = false;
+
+  get isFiltered() {
+    return Object.values(this.filters).some(e => e.value !== null);
+  }
 
   get pEditableColumnDisabled() {
     return !!this.onDoubleClick.observers.length;
@@ -78,8 +83,8 @@ export class TablePartsComponent implements OnInit, OnDestroy {
       field: el.key, type: el.controlType, label: el.label, hidden: el.hidden, onChange: el.onChange, onChangeServer: el.onChangeServer,
       order: el.order, style: el.style, required: el.required, readOnly: el.readOnly, totals: el.totals, value: el.value, control: el,
       headerStyle: { ...el.style, 'text-align': 'center' }
-
     });
+
     this.control.controls.forEach(v => v.showLabel = false);
     this.showTotals = this.control.controls.findIndex(v => v.totals > 0) !== -1;
     this.dataSource = this.formGroup.getRawValue();
@@ -204,7 +209,6 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   onFilterInput(value, col) {
-    // console.log('onFilterInput', { value, col, machMode: this.filters[col.field].machMode.value });
     this.table.filter(value, col.field, this.filters[col.field].machMode.value, this.formGroup.getRawValue());
   }
 
@@ -248,12 +252,17 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   customSort(event: SortEvent) {
-    event.data = this.formGroup.getRawValue();
+    this.isSorted = true;
+    event.data = this.filteredValue || this.formGroup.getRawValue();
     const rows = this.sortData([...event.data], event);
     this.selection = [];
     this.formGroup.setValue(rows);
     this.formGroup.markAsDirty();
     return rows;
+  }
+
+  resetFilterAndSort() {
+    this.table.reset();
   }
 
   private calcTotals(field: string, value: any[]): number {

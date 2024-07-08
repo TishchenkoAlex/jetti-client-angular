@@ -8,7 +8,7 @@
   </div>
   <div class="ui-toolbar-group-right">
     <div class="ui-inputgroup">
-      <button pButton type="button" icon="pi pi-filter" class="ui-button-secondary" [ngStyle]="{ 'filter': filtersVisible ? 'invert(10%)' : undefined}" (click)="filtersVisible = !filtersVisible"></button>
+      <button pButton type="button" icon="pi pi-filter" class="ui-button-secondary" [ngStyle]="{ 'filter': filtersVisible ? 'invert(20%)' : undefined}" (click)="filtersVisible = !filtersVisible"></button>
     </div>
   </div>
 </p-toolbar>
@@ -29,11 +29,11 @@
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th style="width: 50px">#</th>
-      <th *ngFor="let col of columns" [ngStyle]="col.headerStyle" [pSortableColumn]="col.field" pResizableColumn
+      <th *ngFor="let col of columns" [ngStyle]="col.headerStyle" [pSortableColumn]="!isFiltered ? col.field : null" pResizableColumn
         pReorderableColumn>
         {{col.label}}
-        <p-sortIcon [field]="col.field"></p-sortIcon>
-      </th>
+        <p-sortIcon *ngIf="!isFiltered" [field]="col.field"></p-sortIcon>
+      </th> 
 
       <th pResizableColumn></th>
     </tr>
@@ -42,39 +42,39 @@
       <th *ngFor="let col of columns" [ngSwitch]="col.type">
         <div *ngSwitchCase="'number'" class="ui-inputgroup">
           <input pInputText type="numeric" [(ngModel)]="filters[col.field].value"
-            (input)="onFilterInput($event.target.value, col)">
-          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary"
+            (input)="onFilterInput($event.target.value, col)"  [disabled]="isSorted">
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" [disabled]="isSorted"
             (click)="nextMachMode(col)"></button>
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
         </div>
-        <p-triStateCheckbox *ngSwitchCase="'boolean'"
+        <p-triStateCheckbox *ngSwitchCase="'boolean'" [disabled]="isSorted" [(ngModel)]="filters[col.field].value"
           (onChange)="onFilterInput($event.value, col)"></p-triStateCheckbox>
         <div *ngSwitchCase="'datetime'" class="ui-inputgroup">
-          <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value"
+          <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
             [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
             (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'"
             [showTime]="true" [showSeconds]="true">
           </p-calendar>
-          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary"
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" [disabled]="isSorted"
             (click)="nextMachMode(col)"></button>
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
         </div>
         <div *ngSwitchCase="'date'" class="ui-inputgroup">
-          <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value"
+          <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
             [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
             (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'">
           </p-calendar>
-          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary"
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" [disabled]="isSorted"
             (click)="nextMachMode(col)"></button>
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
         </div>
         <div *ngSwitchDefault class="ui-inputgroup">
-          <input pInputText type="text" [(ngModel)]="filters[col.field].value"
+          <input pInputText type="text" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
             (input)="onFilterInput($event.target.value, col)">
-          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
         </div>
       </th>
