@@ -58,6 +58,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   totals: { [x: string]: number } = {};
   filters: { [x: string]: any } = {};
   filtersVisible = false;
+  filteredValue: any[] | undefined;
 
   get pEditableColumnDisabled() {
     return !!this.onDoubleClick.observers.length;
@@ -145,6 +146,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     const index = this.selection[0].index;
     const selectRow = this.dataSource[index] || this.dataSource[index - 1];
     this.selection = selectRow ? [selectRow] : [];
+    this.recalcTotals();
     // this.search(this.searchedValue);
   }
 
@@ -187,12 +189,19 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     } else {
       this.lastSelectedIndex = event.data.index;
     }
+    this.recalcTotals()
   }
 
-  onEditComplete(event) { this.recalcTotals(); }
+  onEditComplete(event) { console.log('onEditComplete', event); this.recalcTotals(); }
   onEditInit(event) { console.log('onEditInit', event); }
   onEditCancel(event) { console.log('onEditCancel', event); }
-  onFilter(event) { console.log('onFilter', event); }
+  onFilter({ filteredValue, filters }) {
+    if (Object.keys(filters).length)
+      this.filteredValue = filteredValue;
+    else
+      this.filteredValue = undefined;
+    this.recalcTotals();
+  }
 
   onFilterInput(value, col) {
     // console.log('onFilterInput', { value, col, machMode: this.filters[col.field].machMode.value });
@@ -247,19 +256,20 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     return rows;
   }
 
-  private calcTotals(field: string): number {
-    const res = (this.formGroup.value as any[])
-      .filter(this.isVisibleRow.bind(this))
+  private calcTotals(field: string, value: any[]): number {
+    const res = value
+      // .filter(this.isVisibleRow.bind(this))
       .map(e => e[field])
       .reduce((a, b) => a + b, 0);
     return res;
   }
 
   recalcTotals() {
+    const value = this.filteredValue || this.formGroup.getRawValue();
     this.totals = this.columns
       .filter(e => e.totals && e.type === 'number')
       .reduce((prev, cur) => {
-        prev[cur.field] = this.calcTotals(cur.field);
+        prev[cur.field] = this.calcTotals(cur.field, value);
         return prev;
       }, {});
   }

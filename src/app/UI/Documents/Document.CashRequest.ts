@@ -106,7 +106,6 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
     Оплата по кредитам и займам полученным
     Выдача займа контрагенту`.indexOf(operation) !== -1) this.form.get('Loan').enable({ emitEvent: false }); else this.form.get('Loan').disable({ emitEvent: false });
 
-    debugger
     if (Object.keys(this.vk).length) {
       `TaxPaymentCode
     TaxOfficeCode2
