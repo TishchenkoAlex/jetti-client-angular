@@ -685,8 +685,10 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
           });
         } else {
           this.value.sort((data1, data2) => {
-            const value1 = ObjectUtils.resolveFieldData(data1, this.sortField);
-            const value2 = ObjectUtils.resolveFieldData(data2, this.sortField);
+            let value1 = ObjectUtils.resolveFieldData(data1, this.sortField);
+            value1 = value1 && value1.value ? value1.value : value1;
+            let value2 = ObjectUtils.resolveFieldData(data2, this.sortField);
+            value2 = value2 && value2.value ? value2.value : value2;
             let result: number | null = null;
 
             if (value1 == null && value2 != null)
@@ -1121,7 +1123,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
     return this.compareSelectionBy === 'equals' ? (data1 === data2) : ObjectUtils.equals(data1, data2, this.dataKey);
   }
 
-  filter(value, field, matchMode) {
+  filter(value, field, matchMode, currentValue = undefined) {
     if (this.filterTimeout) {
       clearTimeout(this.filterTimeout);
     }
@@ -1133,7 +1135,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
     }
 
     this.filterTimeout = setTimeout(() => {
-      this._filter();
+      this._filter(currentValue);
       this.filterTimeout = null;
     }, this.filterDelay);
 
@@ -1154,7 +1156,9 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
     return true;
   }
 
-  _filter() {
+  _filter(currentValue = undefined) {
+
+    const value = currentValue || this.value;
     if (!this.restoringFilter) {
       this.first = 0;
       this.firstChange.emit(this.first);
@@ -1163,14 +1167,14 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
     if (this.lazy) {
       this.onLazyLoad.emit(this.createLazyLoadMetadata());
     } else {
-      if (!this.value) {
+      if (!value) {
         return;
       }
 
       if (!this.hasFilter()) {
         this.filteredValue = null;
         if (this.paginator) {
-          this.totalRecords = this.value ? this.value.length : 0;
+          this.totalRecords = value ? value.length : 0;
         }
       } else {
         let globalFilterFieldsArray;
@@ -1183,7 +1187,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
 
         this.filteredValue = [];
 
-        for (let i = 0; i < this.value.length; i++) {
+        for (let i = 0; i < value.length; i++) {
           let localMatch = true;
           let globalMatch = false;
           let localFiltered = false;
@@ -1195,7 +1199,10 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
               const filterField = prop;
               const filterValue = filterMeta.value;
               const filterMatchMode = filterMeta.matchMode || 'startsWith';
-              const dataFieldValue = ObjectUtils.resolveFieldData(this.value[i], filterField);
+              //eddit +
+              let dataFieldValue = ObjectUtils.resolveFieldData(value[i], filterField);
+              dataFieldValue = dataFieldValue && dataFieldValue.value ? dataFieldValue.value : dataFieldValue;
+              //eddit -
               const filterConstraint = FilterUtils[filterMatchMode];
 
               if (!filterConstraint(dataFieldValue, filterValue)) {
@@ -1211,7 +1218,7 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
           if (this.filters['global'] && !globalMatch && globalFilterFieldsArray) {
             for (let j = 0; j < globalFilterFieldsArray.length; j++) {
               const globalFilterField = globalFilterFieldsArray[j].field || globalFilterFieldsArray[j];
-              globalMatch = FilterUtils[this.filters['global'].matchMode!](ObjectUtils.resolveFieldData(this.value[i], globalFilterField), this.filters['global'].value);
+              globalMatch = FilterUtils[this.filters['global'].matchMode!](ObjectUtils.resolveFieldData(value[i], globalFilterField), this.filters['global'].value);
 
               if (globalMatch) {
                 break;
@@ -1227,26 +1234,26 @@ export class Table implements OnInit, AfterViewInit, AfterContentInit, Blockable
           }
 
           if (matches) {
-            this.filteredValue.push(this.value[i]);
+            this.filteredValue.push(value[i]);
           }
         }
 
-        if (this.filteredValue.length === this.value.length) {
+        if (this.filteredValue.length === value.length) {
           this.filteredValue = null;
         }
 
         if (this.paginator) {
-          this.totalRecords = this.filteredValue ? this.filteredValue.length : this.value ? this.value.length : 0;
+          this.totalRecords = this.filteredValue ? this.filteredValue.length : value ? value.length : 0;
         }
       }
     }
 
     this.onFilter.emit({
       filters: this.filters,
-      filteredValue: this.filteredValue || this.value
+      filteredValue: this.filteredValue || value
     });
 
-    this.tableService.onValueChange(this.value);
+    this.tableService.onValueChange(value);
 
     if (this.isStateful() && !this.restoringFilter) {
       this.saveState();
