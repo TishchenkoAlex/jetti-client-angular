@@ -207,11 +207,6 @@ export class ApiService {
     return (this.http.get(query) as Observable<string[]>);
   }
 
-  getDocTransformedMovements(id: string): Observable<RegisterAccumulation[]> {
-    const query = `${environment.api}register/movements/transformed/${id}`;
-    return (this.http.get(query) as Observable<RegisterAccumulation[]>);
-  }
-
   getDocRegisterInfoList(id: string): Observable<string[]> {
     const query = `${environment.api}register/info/list/${id}`;
     return (this.http.get(query) as Observable<string[]>);

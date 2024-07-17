@@ -28,7 +28,6 @@ import { OperationListComponent } from './Operation/operation.list.component';
 import { DisableControlDirective } from '../common/directives/disabled-control';
 import { HistoryComponent } from '../common/history/history.component';
 import { DescendantsComponent } from '../common/descendants/descendants.component';
-import { TransformedRegisterMovementsComponent } from '../x100/transformed.register.movements.component';
 import { DialogService } from 'primeng/api';
 import { InputValueDialogComponent } from './../dialog/input-value.dialog.component';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -66,7 +65,6 @@ import { ImageModalComponent } from '../dialog/image.dialog.component';
     RegisterAccumulationComponent,
     RegisterMovementsListComponent,
     RegisterInfoComponent,
-    TransformedRegisterMovementsComponent,
 
     OperationListComponent,
 
