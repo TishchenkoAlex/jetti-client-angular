@@ -23,6 +23,9 @@ export class DocService {
   private readonly _unpostById$ = new Subject<DocumentBase>();
   unpostById$ = this._unpostById$.asObservable();
 
+  private readonly _deleteById$ = new Subject<DocumentBase>();
+  deleteById$ = this._deleteById$.asObservable();
+
   private readonly _delete$ = new Subject<DocumentBase>();
   delete$ = this._delete$.asObservable();
 
@@ -73,6 +76,12 @@ export class DocService {
   async delete(id: string) {
     const deletedDoc = await this.api.deleteDoc(id).toPromise();
     this._delete$.next(deletedDoc);
+    this.openSnackBar('success', deletedDoc.description, deletedDoc.deleted ? 'deleted' : 'undeleted');
+  }
+
+  async deleteById(id: string) {
+    const deletedDoc = await this.api.deleteDoc(id).toPromise();
+    this._deleteById$.next(deletedDoc);
     this.openSnackBar('success', deletedDoc.description, deletedDoc.deleted ? 'deleted' : 'undeleted');
   }
 
