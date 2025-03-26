@@ -695,10 +695,6 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
     this.router.navigate([this.type, selId]);
   }
 
-  delete() {
-    if (this.treeNodesVisible && this.selectedNode) this.ds.delete(this.selectedNode.key);
-    else this.selection.forEach(el => this.ds.delete(el.id));
-  }
 
   selectAll() {
     if (this.treeNodesVisible) return;
@@ -743,6 +739,29 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
     }
     this.lds.counter = 0;
     this.dataSource.refresh(this.selection[0].id);
+  }
+
+  async delete() {
+    if (this.treeNodesVisible && this.selectedNode)
+      return this.ds.delete(this.selectedNode.key);
+    // this.selection.forEach(el => this.ds.delete(el.id));
+
+    const tasksCount = this.selection.length; let i = tasksCount;
+    for (const s of this.selection) {
+      this.lds.counter = Math.round(100 - ((i--) / tasksCount * 100));
+
+      try {
+        await this.ds.deleteById(s.id);
+        s.deleted = !s.deleted;
+        if (s.deleted) s.posted = false;
+      } catch (err) { this.ds.openSnackBar('error', s.description, err); }
+
+      this.selection = [s];
+      setTimeout(() => scrollIntoViewIfNeeded(this.type, 'ui-state-highlight'));
+    }
+    this.lds.counter = 0;
+    this.dataSource.refresh(this.selection[0].id);
+
   }
 
   addMenuItemsHeight() {
