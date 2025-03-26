@@ -1,0 +1,18 @@
+<!-- <j-tree-list #tl docType="Catalog.Product"></j-tree-list> -->
+<div style="height: calc(100vh - 110px); width: 100%;
+    background-image: url(/assets/layout/images/x100-home.jpg);    
+    background-repeat: no-repeat;
+    background-size: cover;
+    ">
+  <div *ngIf="auth.isLoggedIn$ | async" fxLayout="row" fxLayoutAlign="space-between">
+    <span></span>
+    <img src="/assets/layout/images/powerbi.JPG" style="cursor: pointer; width: 120px;" (click)="powerBi()" />
+    <span style="color: lightgray;">version 1.2.061</span>
+  </div>
+  <div *ngIf="auth.isLoggedOut$ | async" style="cursor: pointer; display: flex;
+  justify-content: center;
+  align-items: flex-end;">
+    <h1 style="color: cornflowerblue; font-weight: 200;">Welcome to the Jetti-apps!</h1>
+    <img src="/assets/layout/images/login/icon-login.svg" (click)="login()" />
+  </div>
+</div>

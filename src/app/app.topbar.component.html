@@ -1,0 +1,83 @@
+<div class="topbar clearfix">
+  <div class="topbar-left" style="display: flex; align-items: center;">
+    <img src="assets/layout/images/logo.png" class="topbar-logo" />
+  </div>
+
+  <div class="topbar-right">
+    <a id="menu-button" href="#" style="opacity: 0.7" (click)="app.onMenuButtonClick($event)" [ngClass]="{'menu-button-rotate': app.rotateMenuButton}">
+      <i class="fa fa-angle-left"></i>
+    </a>
+
+    <a id="topbar-menu-button" href="#" (click)="app.onTopbarMenuButtonClick($event)">
+      <i class="fa fa-bars"></i>
+    </a>
+
+    <ul class="topbar-items fadeInDown" [ngClass]="{'topbar-items-visible': app.topbarMenuActive}">
+      <li #profile class="profile-item" [ngClass]="{'active-top-menu':app.activeTopbarItem === profile}">
+
+        <a href="#" (click)="app.onTopbarItemClick($event,profile)">
+          <app-inline-profile #prof [inline]="false"></app-inline-profile>
+        </a>
+
+        <ul class="layout-menu fadeInDown">
+          <li role="menuitem">
+            <a href="#">
+              <i class="fa fa-fw fa-user"></i>
+              <span>Profile</span>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="#">
+              <i class="fa fa-fw fa-user-secret"></i>
+              <span>Privacy</span>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="#">
+              <i class="fa fa-fw fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="#" (click)="prof.appAuth.logout()">
+              <i class="fa fa-fw fa-sign-out"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li #notifications [ngClass]="{'active-top-menu':app.activeTopbarItem === notifications}">
+        <a href="#" (click)="app.onTopbarItemClick($event,notifications)">
+          <i class="topbar-icon far fa-bell">
+            <p-progressSpinner *ngIf="(ts.latestJobsAll$ | async)" styleClass="topbar-badge animated rubberBand" [strokeWidth]="8" [style]="{width: '17px', height: '18px'}"></p-progressSpinner>
+          </i>
+          <span *ngIf="(ts.latestJobsAll$ | async) as counter" >
+            <span class="topbar-badge animated rubberBand">{{counter}}</span>
+          </span>
+          <span class="topbar-item-name">Notifications</span>
+        </a>
+        <ul class="layout-menu fadeInDown">
+          <li *ngFor="let event of (ts.latestJobs$ | async)" role="menuitem">
+            <a href="#" (click)="$event.preventDefault()">
+              <div style="display: flex; align-items: center; ">
+                <p-progressSpinner *ngIf="event['status'] === 'Active'" [strokeWidth]="6" [style]="{width: '20px', height: '20px', 'margin-right': '7px'}"></p-progressSpinner>
+                <i *ngIf="event['status'] === 'Completed'" class="fas fa-tasks"></i>
+                <i *ngIf="event['status'] === 'Waiting'" class="far fa-clock"></i>
+                <i *ngIf="event['status'] === 'Failed'" class="fas fa-exclamation-circle" style="color: red"></i>
+                <span>
+                  {{event.data && event.data['job'].description}}, {{event.failedReason }} {{ event.progress }} of {{event.data['job']['total']}},
+                  {{ event.finishedOn | date:'short' }}
+                  {{ event.message }}
+                </span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <p-progressBar [style]="(lds.color$ | async) === 'warn' ? {'background': 'red'} :  ''" *ngIf="(lds.loading$ | async) && !(lds.counter$ | async)"
+    mode="indeterminate"></p-progressBar>
+
+  <p-progressBar *ngIf="lds.counter$ | async as counter" [value]="counter"></p-progressBar>
+</div>

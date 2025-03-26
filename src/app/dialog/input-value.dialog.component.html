@@ -1,0 +1,21 @@
+<div *ngIf="form$ | async as form">
+
+    <div fxLayout="column">
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+            *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
+            <div fxFlex *ngFor="let d of [0,1,2]">
+                <j-control *ngIf="headFields[i+d]" [control]="headFields[i+d]" [form]="form">
+                </j-control>
+            </div>
+        </div>
+
+        <br *ngIf="tables.length">
+        <div *ngFor="let c of tables;">
+            <j-control [control]="c" [form]="form"></j-control>
+        </div>
+
+    </div>
+    <ng-content></ng-content>
+</div>
+
+<button type="button" (click)="select()" pButton icon="pi pi-info-circle" label="OK"></button>

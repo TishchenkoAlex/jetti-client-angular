@@ -1,0 +1,156 @@
+<form novalidate [formGroup]="form">
+
+  <div *ngIf="value?.type === 'string'">
+    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
+      <input pInputText [ngModel]="suggest.value.value" [ngModelOptions]="{standalone: true}" [required]="required"
+        [readonly]="readOnly" autocomplete="off" spellcheck="false" (focus)="$event.target.select()"
+        (ngModelChange)="value={id: 'string', code: '', type: 'string', value: $event}">
+      <button pButton type="button" icon="pi pi-close" class="ui-button-secondary" (click)="handleReset($event)"
+        pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
+      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
+    </div>
+  </div>
+
+  <div *ngIf="value?.type === 'number'">
+    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
+      <input pInputText [ngModel]="suggest.value.value" [ngModelOptions]="{standalone: true}" [required]="required"
+        type="number" [readonly]="readOnly" autocomplete="off" (focus)="$event.target.select()"
+        (ngModelChange)="value={id: 'number', code: '', type: 'number', value: $event}">
+      <button pButton type="button" icon="pi pi-close" class="ui-button-secondary" (click)="handleReset($event)"
+        pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
+      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
+    </div>
+  </div>
+
+  <div *ngIf="value?.type === 'datetime'">
+    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
+      <input pInputText class="calendar"
+        [value]="isDate(suggest.value.value) ? (suggest.value.value | date:'yyy-MM-ddTHH:mm:ss') : null" step=1
+        [required]="required" [readonly]="readOnly" autocomplete="off" spellcheck="false"
+        (focus)="$event.target.select()" type="datetime-local" (input)="parseDate($event.target.value)">
+      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
+      <button pButton type="button" icon="pi pi-close" class="ui-button-secondary" (click)="handleReset($event)"
+        pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
+    </div>
+  </div>
+
+  <div *ngIf="value?.type === 'date'">
+    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
+      <input pInputText class="calendar"
+        [value]="isDate(suggest.value.value) ? (suggest.value.value | date:'yyy-MM-dd') : null" [required]="required"
+        [readonly]="readOnly" autocomplete="off" spellcheck="false" (focus)="$event.target.select()" type="date"
+        (input)="parseDate($event.target.value)">
+      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
+      <button pButton type="button" icon="pi pi-close" class="ui-button-secondary" (click)="handleReset($event)"
+        pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
+    </div>
+  </div>
+
+  <div *ngIf="value?.type === 'boolean'">
+    <p-checkbox binary="true" [label]="showLabel ? placeholder : ''" [ngModel]="suggest.value.value"
+      [ngModelOptions]="{standalone: true}"
+      (ngModelChange)="value={id: 'boolean', code: '', type: 'boolean', value: $event}">
+    </p-checkbox>
+    <button pButton type="button" icon="pi pi-close" class="ui-button-secondary" (click)="handleReset($event)"
+      pTooltip="Clear" tooltipPosition="top" showDelay="2000"></button>
+  </div>
+
+  <span *ngIf="isComplexValue">
+    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
+      <p-autoComplete #ac [formControl]="suggest" [suggestions]="Suggests$ | async" [required]="required"
+        autocomplete="off" (completeMethod)="getSuggests($event.query)" field="value"
+        (onSelect)="searchComplete(suggest.value)" [inputStyle]="inputStyle" dataKey="id"
+        (onFocus)="this.focus.emit($event)" (onClear)="onClear($event)" [autoHighlight]="true" spellcheck="false"
+        appendTo="body" [disableControl]="suggest.disabled">
+
+
+        <ng-template let-data pTemplate="item">
+          <div fxLayout="row" fxLayoutGap="5px" style="align-content: center; align-items: center;">
+            <i *ngIf="!data.isfolder && !data.deleted" class="pi pi-minus" style="color: #2434c7"></i>
+            <i *ngIf="!data.isfolder && data.deleted" class="pi pi-minus" style="color: #d9534f"></i>
+            <i *ngIf="data.isfolder && data.deleted" class="fa fa-folder" style="color: #d9534f"></i>
+            <i *ngIf="data.isfolder && !data.deleted" class="fa fa-folder" style="color: #d1cf38"></i>
+
+            <div *ngIf="data.deleted"><s style="color: #d9534f">{{data.description}}</s></div>
+            <div *ngIf="!data.deleted">{{data.description}}</div>
+          </div>
+        </ng-template>
+
+      </p-autoComplete>
+      <button pButton type="button" icon="pi pi-search" class="ui-button-secondary"
+        *ngIf="showFind && !readOnly && !this.form.disabled" pTooltip="Select" tooltipPosition="top" showDelay="2000"
+        (click)="handleSearch($event)" [tabIndex]=-1 [disabled]="suggest.disabled"></button>
+      <button pButton type="button" icon="pi pi-external-link" class="ui-button-secondary"
+        *ngIf="showOpen || this.form.disabled" pTooltip="Open" tooltipPosition="top" showDelay="2000"
+        [disabled]="this.isEMPTY" (click)="handleOpen($event)" [tabIndex]=-1></button>
+      <button pButton type="button" icon="pi pi-times" class="ui-button-secondary"
+        *ngIf="showClear && !readOnly && !this.form.disabled" pTooltip="Clear" tooltipPosition="top" showDelay="2000"
+        (click)="handleReset($event)" [tabIndex]=-1 [disabled]="this.suggest.disabled"></button>
+      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
+    </div>
+  </span>
+</form>
+
+<div *ngIf="showDialog">
+  <p-dialog *ngIf="useHierarchyList" [(visible)]="showDialog" [modal]="true" [responsive]="true" [closable]="true"
+    [closeOnEscape]="true" [blockScroll]="true" [style]="{height: '81vh', width: '80%'}" [appendTo]="appendTo">
+
+    <p-header>
+      {{this.placeholder}}
+    </p-header>
+    <j-suggest-hierarchy-list #slh [type]="value.type || type" [id]="value.id" [uuid]="uuid" [storageType]="storageType"
+      [settings]="filters" (Select)="searchComplete($event)" (Close)="searchComplete(null)">
+    </j-suggest-hierarchy-list>
+    <p-footer>
+      <p-toolbar>
+        <div class="ui-toolbar-group-left">
+          <button pButton type="button" icon="fa fa-check-square-o" label="Select&Close" class="ui-button-warning"
+            [disabled]="!slh.isSelectEnabled" (click)="slh.select(slh.selectedNode || slh.selectedRow)"></button>
+        </div>
+        <div class="ui-toolbar-group-right">
+          <button pButton type="button" icon="pi pi-fast-backward"
+            (click)="slh.selectedRow = null; slh.dataSource?.first()"
+            [disabled]="!slh.dataSource?.continuation?.first"></button>
+          <button pButton type="button" icon="pi pi-step-backward"
+            (click)="slh.selectedRow = null; slh.dataSource?.prev()"
+            [disabled]="!slh.dataSource?.continuation?.first"></button>
+          <button pButton type="button" icon="pi pi-step-forward"
+            (click)="slh.selectedRow = null; slh.dataSource?.next()"
+            [disabled]="!slh.dataSource?.continuation?.last"></button>
+          <button pButton type="button" icon="pi pi-fast-forward"
+            (click)="slh.selectedRow = null; slh.dataSource?.last()"
+            [disabled]="!slh.dataSource?.continuation?.last"></button>
+        </div>
+      </p-toolbar>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog *ngIf="!useHierarchyList" [(visible)]="showDialog" [modal]="true" [responsive]="true" [closable]="true"
+    [closeOnEscape]="true" [blockScroll]="false" [style]="{height: '600px', width: '80%'}" [appendTo]="appendTo">
+
+    <p-header>
+      {{this.placeholder}}
+    </p-header>
+    <j-suggest-list #sl [type]="value.type || type" [id]="value.id" [uuid]="uuid" [storageType]="storageType"
+      [settings]="filters" (Select)="searchComplete($event)" (Close)="searchComplete(null)" [pageSize]="15">
+    </j-suggest-list>
+    <p-footer>
+      <p-toolbar>
+        <div class="ui-toolbar-group-left">
+          <button pButton type="button" icon="fa fa-check-square-o" label="Select&Close" class="ui-button-warning"
+            [disabled]="!sl.selection[0]" (click)="sl.select(sl.selection[0])"></button>
+        </div>
+        <div class="ui-toolbar-group-right">
+          <button pButton type="button" icon="pi pi-fast-backward" (click)="sl.selection = []; sl.dataSource?.first()"
+            [disabled]="!sl.dataSource?.continuation?.first"></button>
+          <button pButton type="button" icon="pi pi-step-backward" (click)="sl.selection = []; sl.dataSource?.prev()"
+            [disabled]="!sl.dataSource?.continuation?.first"></button>
+          <button pButton type="button" icon="pi pi-step-forward" (click)="sl.selection = []; sl.dataSource?.next()"
+            [disabled]="!sl.dataSource?.continuation?.last"></button>
+          <button pButton type="button" icon="pi pi-fast-forward" (click)="sl.selection = []; sl.dataSource?.last()"
+            [disabled]="!sl.dataSource?.continuation?.last"></button>
+        </div>
+      </p-toolbar>
+    </p-footer>
+  </p-dialog>
+</div>

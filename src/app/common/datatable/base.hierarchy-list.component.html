@@ -1,0 +1,526 @@
+<div>
+  <p-sidebar *ngIf="!isRelationList" [(visible)]="sidebarDisplay" [style]="{width:'45em'}" position="right">
+    <p-tabView>
+      <p-tabPanel *ngIf="isFilterAvailable" [header]="'Filters'" leftIcon="fas fa-filter">
+        <div>
+          <p-toolbar>
+            <div class="ui-toolbar-group-left">
+              <button id="CopySettingsFilters" icon="fa fa-plus" class="ui-button-success" pButton type="button"
+                (click)="copySettings('filter')"></button>
+              <button type="button" icon="far fa-trash-alt" pButton class="ui-button-danger"
+                [disabled]="filterSettingsState.isReadonly" (click)="deleteSelectedSettings('filter')"></button>
+              <button type="button" icon="far fa-save" pButton class="ui-button-secondary"
+                [disabled]="!filterSettingsState.isModify || filterSettingsState.isReadonly"
+                (click)="usSaveCurrentSettings('filter')"></button>
+              <!-- <i class="pi pi-bars"></i>
+              <button id="showActiveFiltersOn" class="ui-button-success" pButton type="button" label="Active"
+                (click)="showActiveFilters=true" [disabled]="!activeFilters.length"></button>
+              <button id="showActiveFiltersOff" class="ui-button-warning" label="All" pButton type="button"
+                (click)="showActiveFilters=false" [disabled]="!allFilters.length"></button> -->
+            </div>
+            <div class="ui-toolbar-group-right">
+              <p-dropdown #ddSettingsFilter [ngModel]="filterSettingsState.selected" dataKey="id"
+                class="ui-dropdown-label-container-in-panel" (onChange)="_usOnUserSettingsChange($event, 'filter')"
+                optionLabel="description" [options]="filterSettingsState.settings" filter="true" editable="true">
+              </p-dropdown>
+            </div>
+          </p-toolbar>
+        </div>
+        <p-table #columnsTbl [value]="visibleColumns" [rows]="visibleColumns" [responsive]="true" [scrollable]="true"
+          [scrollHeight]="'calc(100vh - 80px)'">
+          <ng-template pTemplate="body" let-rowData let-index="rowIndex">
+            <tr [id]="rowData.field">
+              <td style="width: 20px; cursor: pointer;"
+                (click)="setColumnFilterIsActive(rowData, rowData.filter ? !rowData.filter.isActive : true)">
+                <i *ngIf="rowData.filter.isActive" style="padding-right: 7px;" class="fa fa-check-square"></i>
+                <i *ngIf="!rowData.filter.isActive" style="padding-right: 7px;" class="far fa-square"></i>
+              </td>
+              <td style="width: 10em; cursor: pointer; user-select: none"
+                (click)="setColumnFilterIsActive(rowData, rowData.filter ? !rowData.filter.isActive : true)">
+                {{rowData.field}}
+              </td>
+              <td style="width: 138px; text-align: center; cursor: pointer;">
+                <p-dropdown optionLabel="label" optionValue="center" [(ngModel)]="rowData.filter.anyTemp"
+                  [options]="rowData.matchOperators" (onChange)="_onColumnMatchOperatorChanged(rowData)"
+                  appendTo="body">
+                </p-dropdown>
+              </td>
+              <td [ngSwitch]="rowData.type">
+                <div *ngSwitchCase="'boolean'">
+                  <p-triStateCheckbox [ngModel]="rowData.filter.right"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)">
+                  </p-triStateCheckbox>
+                </div>
+                <div *ngSwitchCase="'number'">
+                  <div *ngIf="rowData.filter.center === 'beetwen'"
+                    style="display: flex; flex-direction: row; overflow-x: hidden;">
+                    <input [ngModel]="rowData.filter.interval.start" style="width: 50%;" pInputText type="numeric"
+                      (ngModelChange)="update(rowData, $event,  rowData.filter.center, 'start')">
+                    <span style="width: 10px;"></span>
+                    <input [ngModel]="rowData.filter.interval.end" style="width: 50%;" pInputText type="numeric"
+                      (ngModelChange)="update(rowData, $event,  rowData.filter.center, 'end')">
+                  </div>
+                  <input *ngIf="rowData.filter.center !== 'beetwen'" [ngModel]="rowData.filter.right"
+                    style="width: 100%;" pInputText type="numeric"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)">
+                </div>
+                <div *ngSwitchCase="'date'">
+                  <p-calendar *ngIf="rowData.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
+                    [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                  </p-calendar>
+                  <p-calendar *ngIf="rowData.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
+                    [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                  </p-calendar>
+                </div>
+                <div *ngSwitchCase="'datetime'">
+                  <p-calendar *ngIf="rowData.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
+                    [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                  </p-calendar>
+                  <p-calendar *ngIf="rowData.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
+                    [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
+                    [showTime]="rowData.filter.center === '='" [showSeconds]="rowData.filter.center === '='">
+                  </p-calendar>
+                </div>
+                <div *ngSwitchCase="'string'">
+                  <input [ngModel]="rowData.filter.right" style="width: 100%;" pInputText
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)">
+                </div>
+                <div *ngSwitchCase="'enum'">
+                  <!-- <p-dropdown [options]="rowData.filter.value" [ngModel]="rowData.filter.right"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [showClear]="true"
+                    >
+                  </p-dropdown> -->
+                  <j-ng-select ngDefaultControl class="ng-select-container-flexible" [options]="rowData.value"
+                    [type]="rowData.type" [id]="rowData.field" [selectedItemsSimple]="rowData.filter.right"
+                    (select)="update(rowData, $event,  rowData.filter.center)">
+                  </j-ng-select>
+                </div>
+                <div *ngSwitchDefault>
+                  <j-ng-select ngDefaultControl class="ng-select-container-flexible"
+                    *ngIf="['in','not in'].includes(rowData.filter.center)" [type]="rowData.type || 'string'"
+                    [storageType]="isDoc ? 'elements' : 'all'" [id]="rowData.field"
+                    [selectedItems]="rowData.filter.right" (select)="update(rowData, $event,  rowData.filter.center)"
+                    maxVisibleItems="20">
+                  </j-ng-select>
+                  <j-autocomplete-png *ngIf="!['in','not in'].includes(rowData.filter.center)" [checkValue]="false"
+                    [type]="rowData.type || 'string'" [ngModel]="rowData.filter.right" [showOpen]="false"
+                    [showFind]="true" [showClear]="true" [id]="rowData.field" [storageType]="isDoc ? 'elements' : 'all'"
+                    (clear)="update(rowData, $event,  rowData.filter.center)"
+                    (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [appendTo]="'body'">
+                  </j-autocomplete-png>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+      <p-tabPanel header="Columns" leftIcon="fas fa-columns">
+        <div>
+          <p-toolbar>
+            <div class="ui-toolbar-group-left">
+              <button id="CopySettings" icon="fa fa-plus" class="ui-button-success" pButton type="button"
+                (click)="copySettings('columns')"></button>
+              <button type="button" icon="far fa-trash-alt" pButton class="ui-button-danger"
+                [disabled]="columnsSettingsState.isReadonly" (click)="deleteSelectedSettings('columns')"></button>
+              <button type="button" icon="far fa-save" pButton class="ui-button-secondary"
+                [disabled]="!columnsSettingsState.isModify || columnsSettingsState.isReadonly"
+                (click)="usSaveCurrentSettings('columns')"></button>
+            </div>
+            <div class="ui-toolbar-group-right">
+              <p-dropdown #ddSettings [ngModel]="columnsSettingsState.selected" [panelStyle]="{'width': 'auto'}"
+                class="ui-dropdown-label-container-in-panel" (onChange)="_usOnUserSettingsChange($event, 'columns')"
+                optionLabel="description" [options]="columnsSettingsState.settings" filter="true"
+                [editable]="!columnsSettingsState.isReadonly">
+              </p-dropdown>
+            </div>
+          </p-toolbar>
+        </div>
+
+        <p-table #columnsTbl [value]="columns" [rows]="columns" [responsive]="true" [scrollable]="true"
+          [scrollHeight]="'calc(100vh - 80px)'" (onRowReorder)="onColReorder(columns)">
+          <ng-template pTemplate="body" let-rowData let-index="rowIndex">
+            <tr *ngIf="true || !columnsSettingsState.isReadonly" [id]="rowData.field" [pReorderableRow]="index"
+              (click)="usColumnsInvertHidden(rowData)">
+              <td pReorderableRowHandle style="cursor: pointer;">
+                <i *ngIf="!rowData.hidden" style="padding-right: 7px;" class="fa fa-check-square"></i>
+                <i *ngIf="rowData.hidden" class="far fa-square" style="padding-right: 7px;"></i>
+                {{rowData.label}}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+
+    </p-tabView>
+  </p-sidebar>
+
+  <div style="display: flex; flex-direction: column; overflow-x: hidden;">
+    <ng-content></ng-content>
+    <p-toolbar>
+      <div class="ui-toolbar-group-left" *ngIf="!readonly">
+        <button id="add" icon="fa fa-plus" class="ui-button-success" pButton type="button" (click)="add()"
+          pTooltip="Add" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"></button>
+        <button id="addFolder" icon="fas fa-folder-plus" class="ui-button-warning" pButton type="button"
+          (click)="add(true)" pTooltip="Add folder" tooltipPosition="top" showDelay="2000"
+          [disabled]="(lds.busy$ | async)"></button>
+        <button id="open" icon="far fa-edit" class="ui-button-secondary" pButton type="button" pTooltip="Open"
+          tooltipPosition="top" showDelay="2000" (click)="open()" [disabled]="(lds.busy$ | async)"
+          *ngIf="selectedData"></button>
+        <button id="copy" icon="far fa-copy" class="ui-button-secondary" pButton type="button" (click)="copy()"
+          pTooltip="Copy" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"
+          *ngIf="selectedData"></button>
+        <button id="post" icon="fa fa-check" class="ui-button-warning" pButton type="button" (click)="post()"
+          pTooltip="Post" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"
+          *ngIf="selectedData && isDoc"></button>
+        <button id="unpost" icon="far fa-square" class="ui-button-warning" pButton type="button" pTooltip="Unpost"
+          tooltipPosition="top" showDelay="2000" (click)="post('unpost')" [disabled]="(lds.busy$ | async)"
+          *ngIf="selectedData && isDoc"></button>
+        <button id="delete" icon="far fa-trash-alt" class="ui-button-danger" pButton type="button" (click)="delete()"
+          pTooltip="Delete" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"
+          *ngIf="selectedData"></button>
+      </div>
+      <div *ngIf="!this.isRelationList" class="ui-toolbar-group-right">
+        <span *ngIf="useSelectedTotal">
+          <button id="total" class="ui-button-secondary" pButton type="button" [label]="selectedTotal"
+            (click)="copyToClipboardSelectedTotal()"></button>
+          <i class="pi pi-bars"></i>
+        </span>
+        <button *ngIf="isFilterAvailable" id="showDeleted" [icon]="this.isDeletedHidden ? 'fas fa-eye-slash' : 'fas fa-eye'" type="text" pButton
+          type="button" (click)="this.isDeletedHidden = !this.isDeletedHidden"
+          [ngClass]="this.isDeletedHidden ? 'ui-button-success' : 'ui-button-danger'"
+          [pTooltip]="this.isDeletedHidden ? 'Show deleted' : 'Hide deleted'" tooltipPosition="top"
+          showDelay="2000"></button>
+        <span *ngIf="!isDoc && !usedInId">
+          <p-slideMenu #addMenu [model]="addMenuItems" [popup]="true" effectDuration="300" easing="ease-in"
+            [viewportHeight]="125"></p-slideMenu>
+          <button #addMenuBtn type="button" pButton icon="pi pi-list" (click)="addMenu.toggle($event)"
+            pTooltip="More..." tooltipPosition="top" showDelay="2000"></button>
+        </span>
+        <p-button type="text" (click)="toggleSettings()" icon="fa fa-cog" pTooltip="Settings" tooltipPosition="top"
+          showDelay="2000">
+        </p-button>
+        <p-button type="text" (click)="showHotkeys()" icon="fa fa-info" pTooltip="Info" tooltipPosition="top"
+          showDelay="2000">
+        </p-button>
+      </div>
+    </p-toolbar>
+
+    <div *ngIf="treeNodesVisible">
+      <p-treeTable #treeTable [value]="(treeNodes$ | async)" selectionMode="single" dataKey="id"
+        [(selection)]="selectedNode" (onNodeExpand)="onNodeExpand($event)" (onNodeCollapse)="onNodeExpand($event)"
+        [filterDelay]="500" [columns]="visibleColumns" [reorderableColumns]="true" [resizableColumns]="true"
+        columnResizeMode="expand" [scrollable]="true" sortMode="multiple" [scrollHeight]="(pageSize$ | async)*29 + 'px'"
+        class="noselect" [contextMenu]="cm" [multiSortMeta]="multiSortMeta" (onLazyLoad)="onLazyLoad($event)"
+        [lazy]="true" [(contextMenuSelection)]="selectedNode" (onContextMenuSelect)="onContextMenuSelect($event)"
+        (onColResize)="onColResize($event)" (onColReorder)="onColReorder($event.columns)">
+
+        <ng-template pTemplate="colgroup" let-column>
+          <colgroup>
+            <col>
+            <col *ngFor="let column of treeTable.columns">
+          </colgroup>
+        </ng-template>
+
+        <ng-template #ttt pTemplate="header" let-columns>
+          <tr>
+
+            <th [ttSortableColumn]="column.field" ttResizableColumn ttReorderableColumn
+              *ngFor="let column of treeTable.columns" [ngStyle]="column.style">
+              {{column.label}}
+              <p-treeTableSortIcon [field]="column.field"></p-treeTableSortIcon>
+            </th>
+          </tr>
+          <tr *ngIf="isFilterAvailable">
+
+            <th *ngFor="let column of treeTable.columns" [ngStyle]="column.style" [ngSwitch]="column.type"
+              class="ui-fluid ui-column-filter">
+              <div *ngSwitchCase="'boolean'">
+                <p-triStateCheckbox [ngModel]="column.filter.right || false"
+                  (ngModelChange)="update(column, $event, '=')"></p-triStateCheckbox>
+              </div>
+              <div *ngSwitchCase="'number'">
+                <div *ngIf="column.filter.center === 'beetwen'"
+                  style="display: flex; flex-direction: row; overflow-x: hidden;">
+                  <input [ngModel]="column.filter.interval.start" style="width: 50%;" pInputText type="numeric"
+                    (ngModelChange)="update(column, $event,  column.filter.center, 'start')">
+                  <span style="width: 4px;"></span>
+                  <input [ngModel]="column.filter.interval.end" style="width: 50%;" pInputText type="numeric"
+                    (ngModelChange)="update(column, $event,  column.filter.center, 'end')">
+                </div>
+                <input *ngIf="column.filter.center !== 'beetwen'" [ngModel]="column.filter.right" style="width: 100%;"
+                  pInputText type="numeric" (ngModelChange)="update(column, $event,  column.filter.center)">
+              </div>
+              <div *ngSwitchCase="'date'">
+                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                </p-calendar>
+                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                </p-calendar>
+              </div>
+              <div *ngSwitchCase="'datetime'">
+                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                </p-calendar>
+                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
+                  [showTime]="column.filter.center === '='" [showSeconds]="column.filter.center === '='">
+                </p-calendar>
+              </div>
+              <div *ngSwitchCase="'string'">
+                <input [ngModel]="column.filter.right" pInputText (ngModelChange)="update(column, $event, 'like')">
+              </div>
+              <div *ngSwitchCase="'enum'">
+                <j-ng-select ngDefaultControl class="ng-select-container-mini" [type]="column.type" [id]="column.field"
+                  [selectedItemsSimple]="column.filter.right" maxVisibleItems="0" [options]="column.value"
+                  (select)="update(column, $event,  column.filter.center)">
+                </j-ng-select>
+              </div>
+              <div *ngSwitchDefault>
+                <j-ng-select ngDefaultControl class="ng-select-container-mini"
+                  *ngIf="column.filter.center === 'in' || column.filter.center === 'not in'"
+                  [storageType]="isDoc ? 'elements' : 'all'" [type]="column.type || 'string'" [id]="column.field"
+                  [selectedItems]="column.filter.right" maxVisibleItems="0"
+                  (select)="update(column, $event,  column.filter.center)">
+                </j-ng-select>
+                <j-autocomplete-png *ngIf="column.filter.center !== 'in' && column.filter.center !== 'not in'"
+                  [checkValue]="false" [type]="column.filter.right?.type || column.type || 'string'"
+                  [ngModel]="column.filter.right" [showOpen]="false" [showFind]="true" [showClear]="true"
+                  [storageType]="isDoc ? 'elements' : 'all'" (clear)="update(column, $event,  column.filter.center)"
+                  (ngModelChange)="update(column, $event,  column.filter.center || '=')" [id]="column.field"
+                  [appendTo]="'body'">
+                </j-autocomplete-png>
+              </div>
+            </th>
+          </tr>
+
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+          <tr [ttRow]="rowNode" [ttSelectableRow]="rowNode" [ttContextMenuRow]="rowNode"
+            (dblclick)="onNodeClick(rowNode)">
+            <!-- <td class="ui-resizable-column" [ngStyle]="{'width': '1px', 'text-align': 'center'}"></td> -->
+            <td class="ui-resizable-column" *ngFor="let column of columns" [ngStyle]="column.style">
+              <span [ngSwitch]="column.type" [id]="column.field">
+                <span *ngSwitchCase="'date'" [id]="column.field">{{rowData[column.field] | date:'dd.MM.yyyy'}}</span>
+                <span *ngSwitchCase="'datetime'" [id]="column.field">
+                  {{rowData[column.field] | date:'dd.MM.yyyy HH:mm:ss'}}</span>
+                <span *ngSwitchCase="'number'" [id]="column.field">{{rowData[column.field] | number:'1.2-4'}}</span>
+                <span *ngSwitchCase="'boolean'" [id]="column.field">
+                  <i *ngIf="rowData[column.field]" class="fa fa-check-square" [id]="column.field"></i>
+                  <i *ngIf="!rowData[column.field]" class="far fa-square" [id]="column.field"></i>
+                </span>
+                <span *ngSwitchCase="'string'" [id]="column.field">
+                  <span *ngIf="column.field === 'description'">
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    <i *ngIf="rowData.isfolder && !rowNode.expanded && rowData['deleted']" class="pi pi-folder"
+                      style="color: #d9534f"> </i>
+                    <i *ngIf="rowData.isfolder && !rowNode.expanded && !rowData['deleted']" class="pi pi-folder"
+                      style="color: #d1cf38"> </i>
+                    <i *ngIf="rowData.isfolder && rowNode.expanded && rowData['deleted']" class="pi pi-folder-open"
+                      style="color: #d9534f"> </i>
+                    <i *ngIf="rowData.isfolder && rowNode.expanded && !rowData['deleted']" class="pi pi-folder-open"
+                      style="color: #d1cf38"> </i>
+                    <i *ngIf="!rowData.isfolder && rowData['deleted']" class="pi pi-minus" style="color: #d9534f">
+                    </i>
+                    <i *ngIf="!rowData.isfolder && !rowData['deleted']" class="pi pi-minus" style="color: #2434c7">
+                    </i>
+                  </span>
+                  {{rowData[column.field]}}
+                </span>
+                <span *ngSwitchCase="'enum'" [id]="column.field">{{rowData[column.field]}}</span>
+                <span *ngSwitchDefault [id]="column.field">{{rowData[column.field]?.value}}</span>
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </div>
+
+    <div *ngIf="!treeNodesVisible">
+      <p-table #tbl [value]="dataSource.result$ | async" selectionMode="multiple" dataKey="id" [lazy]="true"
+        [rows]="pageSize$ | async" sortMode="multiple" [scrollable]="true" [reorderableColumns]="true"
+        [filterDelay]="1000" (onContextMenuSelect)="onContextMenuSelect($event)" [contextMenu]="cm"
+        [(contextMenuSelection)]="contextMenuSelection" [metaKeySelection]="true" [columns]="visibleColumns"
+        class="noselect" [(selection)]="selection" (onLazyLoad)="onLazyLoad($event)" [(multiSortMeta)]="multiSortMeta"
+        [lazyLoadOnInit]="true" [resizableColumns]="true" columnResizeMode="expand" (onColResize)="onColResize($event)"
+        (onColReorder)="onColReorder($event.columns)">
+        <ng-template pTemplate="colgroup" let-columns>
+          <colgroup>
+            <col>
+            <col *ngFor="let column of tbl.columns">
+          </colgroup>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th [ngStyle]="{'width': '30px', 'text-align': 'center'}"></th>
+            <th pReorderableColumn pResizableColumn [pSortableColumn]="column.field" *ngFor="let column of tbl.columns"
+              [ngStyle]="column.style">
+              {{column.label}}
+              <p-sortIcon [field]="column.field"></p-sortIcon>
+            </th>
+            <th></th>
+          </tr>
+          <tr *ngIf="isFilterAvailable">
+            <th [ngStyle]="{'width': '30px', 'text-align': 'center', padding: 0, margin: 0}">
+              <p-triStateCheckbox [ngModel]="columns[postedCol.field]?.value"
+                (ngModelChange)="update(postedCol, $event, '=')"></p-triStateCheckbox>
+            </th>
+            <th *ngFor="let column of tbl.columns" [ngStyle]="column.style" [ngSwitch]="column.type"
+              class="ui-fluid ui-column-filter">
+
+              <div *ngSwitchCase="'boolean'">
+                <p-triStateCheckbox [ngModel]="column.filter.right"
+                  (ngModelChange)="update(column, $event, column.filter.center || '=')">
+                </p-triStateCheckbox>
+              </div>
+              <div *ngSwitchCase="'number'">
+                <div *ngIf="column.filter.center === 'beetwen'"
+                  style="display: flex; flex-direction: row; overflow-x: hidden;">
+                  <input [ngModel]="column.filter.interval.start" style="width: 50%;" pInputText type="numeric"
+                    (ngModelChange)="update(column, $event,  column.filter.center, 'start')">
+                  <span style="width: 4px;"></span>
+                  <input [ngModel]="column.filter.interval.end" style="width: 50%;" pInputText type="numeric"
+                    (ngModelChange)="update(column, $event,  column.filter.center, 'end')">
+                </div>
+                <input *ngIf="column.filter.center !== 'beetwen'" [ngModel]="column.filter.right" style="width: 100%;"
+                  pInputText type="numeric" (ngModelChange)="update(column, $event,  column.filter.center)">
+              </div>
+              <div *ngSwitchCase="'date'">
+                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                </p-calendar>
+                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                </p-calendar>
+              </div>
+              <div *ngSwitchCase="'datetime'">
+                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
+                </p-calendar>
+                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
+                  [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
+                  [showTime]="column.filter.center === '='" [showSeconds]="column.filter.center === '='">
+                </p-calendar>
+              </div>
+              <div *ngSwitchCase="'string'">
+                <input [ngModel]="column.filter.right" pInputText
+                  (ngModelChange)="update(column, $event, column.filter.center || 'like')">
+              </div>
+              <div *ngSwitchCase="'enum'">
+                <!-- <p-dropdown [options]="column.value" [ngModel]="column.filter.right"
+                  (ngModelChange)="update(column, $event, column.filter.center || '=')" [showClear]="true"
+                  appendTo="body"></p-dropdown> -->
+                <j-ng-select ngDefaultControl class="ng-select-container-mini" [type]="column.type" [id]="column.field"
+                  [options]="column.value" [selectedItemsSimple]="column.filter.right" maxVisibleItems="0"
+                  (select)="update(column, $event,  column.filter.center)">
+                </j-ng-select>
+              </div>
+              <div *ngSwitchDefault>
+                <j-ng-select ngDefaultControl class="ng-select-container-mini"
+                  *ngIf="column.filter.center === 'in' || column.filter.center === 'not in'"
+                  [type]="column.type || 'string'" [id]="column.field" [selectedItems]="column.filter.right"
+                  [storageType]="isDoc ? 'elements' : 'all'" (select)="update(column, $event,  column.filter.center)"
+                  maxVisibleItems="0">
+                </j-ng-select>
+                <j-autocomplete-png *ngIf="column.filter.center !== 'in' && column.filter.center !== 'not in'"
+                  [checkValue]="false" [type]="column.filter.right?.type || column.type || 'string'"
+                  [ngModel]="column.filter.right" [showOpen]="false" [showFind]="true" [showClear]="true"
+                  [storageType]="isDoc ? 'elements' : 'all'" (clear)="update(column, $event,  column.filter.center)"
+                  (ngModelChange)="update(column, $event,  column.filter.center || '=')" [id]="column.field"
+                  [appendTo]="'body'">
+                </j-autocomplete-png>
+              </div>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData>
+          <tr [pSelectableRow]="rowData" [pContextMenuRow]="rowData" (dblclick)="open()" [class]="'scrollTo-' + type">
+            <td class="ui-resizable-column" [ngStyle]="{'width': '30px', 'text-align': 'center'}">
+              <i *ngIf="!rowData.isfolder && rowData['posted'] && !rowData['deleted']" class="fa fa-check-square"
+                style="color: #5cb85c"></i>
+              <i *ngIf="!rowData.isfolder && rowData['deleted']" class="fa fa-minus-square" style="color: #d9534f"></i>
+              <i *ngIf="!rowData.isfolder && !rowData['posted'] && !rowData['deleted']" class="far fa-square"
+                style="color: #f0ad4e"></i>
+              <i *ngIf="rowData.isfolder && rowData['deleted']" class="fa fa-folder" style="color: #d9534f"></i>
+              <i *ngIf="rowData.isfolder && !rowData['deleted']" class="fa fa-folder" style="color: #d1cf38"></i>
+            </td>
+            <td *ngFor="let column of tbl.columns" [ngStyle]="column.style" class="ui-resizable-column">
+              <span [ngSwitch]="column.type" [id]="column.field">
+                <span *ngSwitchCase="'date'" [id]="column.field">{{rowData[column.field] | date:'dd.MM.yyyy'}}</span>
+                <span *ngSwitchCase="'datetime'" [id]="column.field">
+                  {{rowData[column.field] | date:'dd.MM.yyyy HH:mm:ss'}}</span>
+                <span *ngSwitchCase="'number'" [id]="column.field">{{rowData[column.field] | number:'1.2-4'}}</span>
+                <span *ngSwitchCase="'boolean'" [id]="column.field">
+                  <i *ngIf="rowData[column.field]" class="fa fa-check-square" [id]="column.field"></i>
+                  <i *ngIf="!rowData[column.field]" class="far fa-square" [id]="column.field"></i>
+                </span>
+                <span *ngSwitchCase="'string'" [id]="column.field">{{rowData[column.field]}}</span>
+                <span *ngSwitchCase="'enum'" [id]="column.field">{{rowData[column.field]}}</span>
+                <span *ngSwitchDefault [id]="column.field">{{rowData[column.field]?.value}}</span>
+              </span>
+            </td>
+            <td></td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+    </div>
+
+    <p-toolbar>
+      <div class="ui-toolbar-group-right">
+        <button pButton type="button" icon="pi pi-refresh" class="ui-button-secondary" pTooltip="Refresh"
+          tooltipPosition="top" showDelay="2000" (click)="refresh(id)" [disabled]="(lds.busy$ | async)"></button>
+        <button pButton type="button" icon="pi pi-fast-backward" (click)="first()" pTooltip="First page"
+          tooltipPosition="top" showDelay="2000"
+          [disabled]="!dataSource?.continuation?.first || (lds.busy$ | async)"></button>
+        <button pButton type="button" icon="pi pi-step-backward" (click)="prev()" pTooltip="Previous page"
+          tooltipPosition="top" showDelay="2000"
+          [disabled]="!dataSource?.continuation?.first || (lds.busy$ | async)"></button>
+        <button pButton type="button" icon="pi pi-step-forward" (click)="next()" pTooltip="Next page"
+          tooltipPosition="top" showDelay="2000"
+          [disabled]="!dataSource?.continuation?.last || (lds.busy$ | async)"></button>
+        <button pButton type="button" icon="pi pi-fast-forward" (click)="last()" pTooltip="Last page"
+          tooltipPosition="top" showDelay="2000"
+          [disabled]="!dataSource?.continuation?.last || (lds.busy$ | async)"></button>
+      </div>
+    </p-toolbar>
+
+  </div>
+
+</div>
+<p-contextMenu #cm [model]="treeNodesVisible ? contextCommands.tree : contextCommands.list"></p-contextMenu>
+
+<p-confirmDialog [key]="'list: ' + this.id" [closeOnEscape]="true" [closable]="true" #cdlg appendTo="body">
+  <p-footer>
+    <div cdkTrapFocus>
+      <button type="button" pButton icon="fa fa-check" label="Yes" (click)="cdlg.accept()"></button>
+      <button type="button" pButton icon="fas fa-times" label="No" (click)="cdlg.reject()"></button>
+    </div>
+  </p-footer>
+</p-confirmDialog>

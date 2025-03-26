@@ -1,0 +1,88 @@
+<div *ngIf="form$ | async as form">
+  <div *ngIf="vk$ | async as vk">
+    <div *ngIf="viewModel$ | async as viewModel">
+      <form novalidate [formGroup]="form" cdkTrapFocus>
+        <p-panel #mp [header]='header' [toggleable]="true">
+          <p-toolbar *ngIf="!onlyViewMode">
+            <div *ngIf="isModeLoad" class="ui-toolbar-group-left">
+              <button pButton type="button" id="ReadReciever" label="2. Загрузить структуру приемника"
+                class="ui-button-info" (click)="ReadRecieverStructure()"></button>
+              <button pButton type="button" id="matchColumnsByName" label="3. Сопоставить колонки по именам"
+                class="ui-button-info" (click)="matchColumnsByName()"></button>
+              <button pButton type="button" id="loadToTempTable" label="4. Загрузить в таблицу (строками)"
+                class="ui-button-info" (click)="loadToTempTable()"></button>
+              <button pButton type="button" id="fillLoadingTable" label="5. Найти соответствия в БД"
+                class="ui-button-info" (click)="fillLoadingTable()"></button>
+              <button pButton type="button" id="prepareToLoading" label="1-5. Подготовить загрузку"
+                class="ui-button-info" (click)="prepareToLoading()"></button>
+              <button pButton type="button" id="saveDataIntoDB" label="6. Загрузить в БД!" class="ui-button-danger"
+                (click)="saveDataIntoDB()"></button>
+              <button pButton type="button" id="prepareToLoading" label=". Подготовить загрузку" class="ui-button-info"
+                (click)="prepareToLoading()"></button>
+            </div>
+            <div *ngIf="isModeModify">
+              <div class="ui-toolbar-group-left">
+                <button pButton type="button" id="fillPropSettings" label="Настроить поля" class="ui-button-info"
+                  (click)="fillPropSettings()"></button>
+                <button pButton type="button" id="createFilterAndModifyElements" label="Создать элементы"
+                  class="ui-button-info" (click)="createFilterAndModifyElements()"></button>
+                <button pButton type="button" id="selectFilter" label="Отобрать" class="ui-button-info"
+                  (click)="selectFilter()"></button>
+              </div>
+
+              <div class="ui-toolbar-group-right">
+                <button pButton type="button" id="saveToJSON" label="Сохранить в JSON" class="ui-button-info"
+                  (click)="saveToJSON()"></button>
+                <p-fileUpload customUpload="true" accept=".json" mode="basic" chooseLabel="Загрузить из JSON"
+                  (onSelect)="loadFromJSON($event)">
+                </p-fileUpload>
+                <button pButton type="button" id="selectFilter" label="Сохранить в CSV" class="ui-button-success"
+                  (click)="saveToFile()"></button>
+                <button pButton type="button" id="selectFilter" label="ЗАПИСАТЬ" class="ui-button-danger"
+                  (click)="modify()"></button>
+              </div>
+            </div>
+          </p-toolbar>
+        </p-panel>
+
+        <p-panel *ngFor="let panel of currentControls$ | async" [toggleable]="true" [header]="panel.panel"
+          [collapsed]="!panel.isActive" toggler="header">
+
+          <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+            *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
+            <div fxFlex *ngFor="let d of [0,1,2]">
+              <j-control *ngIf="panel.standalone[i+d]" [control]="panel.standalone[i+d]" [form]="form">
+              </j-control>
+            </div>
+          </div>
+
+          <br *ngIf="panel.fieldsets.length > 0">
+          <p-fieldset *ngFor="let fieldset of panel.fieldsets" [legend]="fieldset.fieldset" [toggleable]="true"
+            collapsed=true>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+              *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
+              <div fxFlex *ngFor="let d of [0,1,2]">
+                <j-control *ngIf="fieldset.controls[i+d]" [control]="fieldset.controls[i+d]" [form]="form">
+                </j-control>
+              </div>
+            </div>
+          </p-fieldset>
+
+          <br *ngIf="panel.tables.length > 0">
+          <p-tabView *ngIf="panel.tables.length" class="tabViewClassInForm">
+            <div *ngFor="let table of panel.tables">
+              <p-tabPanel [header]="table.label">
+                <j-control [control]="table" [form]="form"></j-control>
+              </p-tabPanel>
+            </div>
+          </p-tabView>
+
+          <div *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
+            <j-control *ngIf="panel.fullwidth[i]" [control]="panel.fullwidth[i]" [form]="form"></j-control>
+          </div>
+
+        </p-panel>
+      </form>
+    </div>
+  </div>
+</div>

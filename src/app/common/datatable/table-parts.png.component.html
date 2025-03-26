@@ -1,0 +1,132 @@
+<p-toolbar>
+  <div *ngIf="!readOnly" class="ui-toolbar-group-left">
+    <button pButton type="button" icon="pi pi-plus" class="ui-button-success" (click)="add()"></button>
+    <button pButton type="button" icon="pi pi-clone" class="ui-button-secondary" (click)="copy()"
+      *ngIf="selection?.length === 1"></button>
+    <button pButton type="button" icon="pi pi-trash" class="ui-button-danger" (click)="delete()"
+      *ngIf="selection?.length > 0"></button>
+  </div>
+  <div class="ui-toolbar-group-right">
+    <div class="ui-inputgroup">
+      <button pButton type="button" icon="pi pi-filter" class="ui-button-secondary" [ngStyle]="{ 'filter': filtersVisible ? 'invert(20%)' : undefined}" (click)="filtersVisible = !filtersVisible"></button>
+    </div>
+  </div>
+</p-toolbar>
+
+<p-table #tablePart [columns]="columns" [value]="dataSource$ | async" selectionMode="multiple" [metaKeySelection]="true"
+  (onRowSelect)="onRowSelect($event)" (onFilter)="onFilter($event)" [(selection)]="selection" dataKey="index"
+  [scrollable]="true" (onEditComplete)="onEditComplete($event)" (onEditCancel)="onEditCancel($event)"
+  (onEditInit)="onEditInit($event)" scrollHeight="37vh" [reorderableColumns]="true" [resizableColumns]="true"
+  columnResizeMode="expand" [customSort]="true" (sortFunction)="customSort($event)">
+
+  <ng-template pTemplate="colgroup" let-columns>
+    <colgroup>
+      <col style="width: 50px">
+      <col *ngFor="let col of columns" [style.width]="col.width">
+    </colgroup>
+  </ng-template>
+
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th style="width: 50px">#</th>
+      <th *ngFor="let col of columns" [ngStyle]="col.headerStyle" [pSortableColumn]="!isFiltered ? col.field : null" pResizableColumn
+        pReorderableColumn>
+        {{col.label}}
+        <p-sortIcon *ngIf="!isFiltered" [field]="col.field"></p-sortIcon>
+      </th> 
+
+      <th pResizableColumn></th>
+    </tr>
+    <tr *ngIf="filters && filtersVisible">
+      <th style="width: 50px"> </th>
+      <th *ngFor="let col of columns" [ngSwitch]="col.type">
+        <div *ngSwitchCase="'number'" class="ui-inputgroup">
+          <input pInputText type="numeric" [(ngModel)]="filters[col.field].value"
+            (input)="onFilterInput($event.target.value, col)"  [disabled]="isSorted">
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" [disabled]="isSorted"
+            (click)="nextMachMode(col)"></button>
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
+            (click)="clearFilter(col.field)"></button>
+        </div>
+        <p-triStateCheckbox *ngSwitchCase="'boolean'" [disabled]="isSorted" [(ngModel)]="filters[col.field].value"
+          (onChange)="onFilterInput($event.value, col)"></p-triStateCheckbox>
+        <div *ngSwitchCase="'datetime'" class="ui-inputgroup">
+          <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
+            [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
+            (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'"
+            [showTime]="true" [showSeconds]="true">
+          </p-calendar>
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" [disabled]="isSorted"
+            (click)="nextMachMode(col)"></button>
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
+            (click)="clearFilter(col.field)"></button>
+        </div>
+        <div *ngSwitchCase="'date'" class="ui-inputgroup">
+          <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
+            [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
+            (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'">
+          </p-calendar>
+          <button pButton type="button" [icon]="filters[col.field].machMode.label" class="ui-button-secondary" [disabled]="isSorted"
+            (click)="nextMachMode(col)"></button>
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
+            (click)="clearFilter(col.field)"></button>
+        </div>
+        <div *ngSwitchDefault class="ui-inputgroup">
+          <input pInputText type="text" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
+            (input)="onFilterInput($event.target.value, col)">
+          <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
+            (click)="clearFilter(col.field)"></button>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+    <tr [pSelectableRow]="rowData" [pSelectableRowIndex]="rowIndex">
+      <td style="width: 50px; text-align: right;">
+        {{rowIndex + 1}}
+      </td>
+      <td *ngFor="let col of columns" [ngStyle]="col.style" pEditableColumn [pEditableColumnField]="col.field"
+        [pEditableColumnDisabled]="pEditableColumnDisabled" class="ui-resizable-column">
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <j-control [control]="col.control" [form]="getControl(rowData.index)"></j-control>
+          </ng-template>
+          <ng-template pTemplate="output">
+            <span [ngSwitch]="col.type">
+              <span *ngSwitchCase="'date'">{{ getControlValue(rowData.index, col.field, col.type) | date:'dd.MM.yyyy'
+                }}</span>
+              <span *ngSwitchCase="'datetime'">{{ getControlValue(rowData.index, col.field, col.type) | date:'dd.MM.yyyy
+                HH:mm:ss' }}</span>
+              <span *ngSwitchCase="'number'">{{getControl(rowData.index).get(col.field)?.value | number:'1.2-2'}}</span>
+              <span *ngSwitchCase="'script'">{{getControl(rowData.index).get(col.field)?.value}}</span>
+              <span *ngSwitchCase="'boolean'">
+                <i
+                  [class]="getControl(rowData.index).get(col.field)?.value ? 'far fa-check-square' : 'far fa-square'"></i>
+              </span>
+              <span *ngSwitchDefault>{{ getControlValue(rowData.index, col.field, col.type) }}
+              </span>
+            </span>
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td class="ui-resizable-column"></td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="footer" let-columns>
+    <tr *ngIf="showTotals" style="height: 24px">
+      <th style="width: 50px"></th>
+      <th *ngFor="let col of columns" [ngStyle]="col.style">
+        <span [ngSwitch]="col.type" *ngIf="col.totals">
+          <span *ngSwitchCase="'number'" style="padding-right: 5px">
+            {{totals[col.field] | number:'1.2-2'}}
+          </span>
+          <span *ngSwitchDefault></span>
+        </span>
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+</p-table>

@@ -1,0 +1,50 @@
+<div class="container-fluid">
+  <p-tabView (onChange)="handleTabChange($event)">
+    <p-tabPanel header="Реквизиты" *ngIf="showProp">
+      <!-- <span class="ui-float-label">
+                <input id="float-input" type="text" size="30" pInputText>
+                <label for="float-input">Username</label>
+            </span> -->
+    </p-tabPanel>
+    <p-tabPanel header="Согласующие">
+      <!-- <ng-template pTemplate="content"> -->
+      <p-table  [value]="_ProcessParticipants$ | async" [resizableColumns]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let column of ProcessParticipantsFields" class="ui-resizable-column" style="text-align: center;" [ngStyle] = "column.style">
+              {{column.label}}
+              <!-- <span *ngIf="column.visible" title=""></span> -->
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+          <tr>
+            <!-- <td *ngFor="let column of rowDatasFields" [ngStyle]="{'background-columnor': rowData.Current.Trim() === '' ? 'rgb(138, 170, 121)': 'rgb(183, 182, 194)'}"> -->
+            <td *ngFor="let column of ProcessParticipantsFields" class="ui-resizable-column" style="text-align: center;"
+              [ngSwitch]="column.type" [ngStyle] = "column.style">
+              <span *ngSwitchCase="'date'">
+                <span >
+                  {{rowData[column.name]  || ''  | date:'dd.MM.yyyy HH:mm:ss'}}</span></span>
+              <span *ngSwitchCase="'number'">{{rowData[column.name] | number:'1.0'}}</span>
+              <span *ngSwitchCase="'boolean'">
+                <i *ngIf="rowData[column.name]" class="far fa-check-square"></i>
+                <i *ngIf="!rowData[column.name]" class="far fa-square"></i>
+              </span>
+              <span *ngSwitchCase="'string'">{{rowData[column.name]  || '' }}</span>
+              <span *ngSwitchDefault>{{rowData[column.name]}}</span>
+              <!-- <h1 *ngIf="column.visible" {{rowData[column.name]}}></h1>                          -->
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <!-- </ng-template>    -->
+    </p-tabPanel>
+    <p-tabPanel header="Карта маршрута">
+      <ng-template pTemplate="content">
+        <img [src]="mapImgSrc">
+        <!-- <img src="http://localhost/JettiProcesses/hs/Processes/pwd/GetMapByProcessID/CashApplication?ProcessID=000000053"> -->
+      </ng-template>
+
+    </p-tabPanel>
+  </p-tabView>
+</div>
