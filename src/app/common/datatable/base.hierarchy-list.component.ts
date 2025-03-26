@@ -440,7 +440,7 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
     //   this.id = null;
     //   right = null;
     // }
-debugger
+
     if (!column) return;
 
     if (center === '=' &&
