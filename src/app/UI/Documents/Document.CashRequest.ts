@@ -20,6 +20,7 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
   get isAvaliblePost() { return (!this.readonlyMode || this.isCommentEditorRule) && !this.isDeleted; }
   get Operation(): string { return this.form.get('Operation').value || ''; }
   get CashKind(): string { return this.form.get('CashKind').value || 'ANY'; }
+  get isPayRollUsed(): boolean { return ['Выплата дивидендов', 'Выплата заработной платы'].includes(this.Operation) }
   get isSalaryOperation(): boolean {
     return ['Выплата заработной платы',
       'Выплата заработной платы без ведомости',
@@ -70,7 +71,7 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
     // 'Возврат оплаты клиенту'
     // 'Выплата заработной платы'
     // tslint:disable
-    if (operation === 'Выплата заработной платы') this.form.get('PayRollKind').enable({ emitEvent: false }); else this.form.get('PayRollKind').disable({ emitEvent: false });
+    if (this.isPayRollUsed) this.form.get('PayRollKind').enable({ emitEvent: false }); else this.form.get('PayRollKind').disable({ emitEvent: false });
 
     const CashOrBankIn = this.form.get('CashOrBankIn');
 
@@ -235,14 +236,14 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
   }
 
   useCashRecipientBankAccount() {
-    return this.operationIssuanceOfALoan()
+    return (this.operationIssuanceOfALoan()
       || this.Operation === 'Оплата по кредитам и займам полученным'
       || (this.CashKind === 'BANK'
         && this.Operation !== 'Оплата ДС в другую организацию'
         && this.Operation !== 'Выплата заработной платы'
         && this.Operation !== 'Перемещение ДС'
         && this.Operation !== 'Внутренний займ'
-      )
+      )) && this.Operation !== 'Выплата дивидендов'
   };
 
   operationIssuanceOfALoan() { return 'Выдача займа (МУЛЬТИВАЛЮТНАЯ)' }

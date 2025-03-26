@@ -65,7 +65,7 @@
         </div>
 
         <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px">
-          <j-control *ngIf="Operation !== 'Выплата заработной платы'" [control]="vk.CashRecipient" [form]="form">
+          <j-control *ngIf="!['Выплата дивидендов', 'Выплата заработной платы'].includes(Operation)" [control]="vk.CashRecipient" [form]="form">
           </j-control>
           <j-control *ngIf="useCashRecipientBankAccount()" [control]="vk['CashRecipientBankAccount']" [form]="form">
           </j-control>
@@ -92,7 +92,7 @@
         </div>
 
         <div
-          *ngIf="(Operation === 'Прочий расход ДС' || CashKind === 'CASH') && Operation !== operationIssuanceOfALoan()"
+          *ngIf="(Operation === 'Прочий расход ДС' || CashKind === 'CASH') && Operation !== operationIssuanceOfALoan() && Operation !== 'Выплата дивидендов'"
           fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px">
           <j-control [control]="vk.ExpenseOrBalance" [form]="form"></j-control>
           <j-control [control]="vk.ExpenseAnalytics" [form]="form"></j-control>
@@ -141,7 +141,7 @@
           <j-control [control]="vk.Amount" [form]="form"></j-control>
           <j-control [control]="vk['сurrency']" [form]="form"></j-control>
           <j-control
-            *ngIf="Operation !== 'Выплата заработной платы' && Operation !== 'Выплата заработной платы без ведомости'"
+            *ngIf="!['Выплата заработной платы','Выплата заработной платы без ведомости', 'Выплата дивидендов'].includes(Operation)"
             [control]="vk.TaxRate" [form]="form"></j-control>
           <j-control [control]="vk.PayDay" [form]="form"></j-control>
         </div>
@@ -181,10 +181,10 @@
       </div>
       <ng-content></ng-content>
 
-      <div *ngIf="Operation === 'Выплата заработной платы'" style="margin-top: 24px;">
+      <div *ngIf="isPayRollUsed" style="margin-top: 24px;">
         <p-tabView class="tabViewClassInForm">
           <p-tabPanel header="Сотрудники">
-            <j-control [control]="vk.PayRolls" [form]="form"></j-control>
+            <j-control [control]="Operation == 'Выплата дивидендов' ? vk.PayRollsDividend : vk.PayRolls" [form]="form"></j-control>
           </p-tabPanel>
         </p-tabView>
       </div>
