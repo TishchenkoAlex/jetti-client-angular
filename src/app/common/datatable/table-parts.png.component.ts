@@ -104,7 +104,9 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   getControlValue(index: number, field: string, type: string) {
-    const control = this.getControl(index).get(field);
+    const formGroup = this.getControl(index);
+    if (!formGroup) return null;
+    const control = formGroup.get(field);
     if (!control) return null;
     const value = control.value;
     if (type === 'datetime' && this.isDate(value)) return value;
