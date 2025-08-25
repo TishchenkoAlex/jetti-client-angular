@@ -1,17 +1,35 @@
-import { AuthService } from 'src/app/auth/auth.service';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FilterMetadata, SortMeta } from 'primeng/api';
-import { Subject, Subscription, merge } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
-import { ApiDataSource } from '../common/datatable/api.datasource.v2';
-import { calendarLocale, dateFormat } from '../primeNG.module';
-import { ApiService } from '../services/api.service';
-import { DocService } from '../common/doc.service';
-import { LoadingService } from '../common/loading.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { v1 } from 'uuid';
-import { TreeNode } from 'primeng/api';
-import { StorageType, FormListOrder, FormListFilter, FormListSettings, ISuggest, ColumnDef, DocumentOptions, DocumentBase, Type } from 'jetti-middle/dist';
+import { AuthService } from "src/app/auth/auth.service";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from "@angular/core";
+import { FilterMetadata, SortMeta } from "primeng/api";
+import { Subject, Subscription, merge } from "rxjs";
+import { debounceTime, filter } from "rxjs/operators";
+import { ApiDataSource } from "../common/datatable/api.datasource.v2";
+import { calendarLocale, dateFormat } from "../primeNG.module";
+import { ApiService } from "../services/api.service";
+import { DocService } from "../common/doc.service";
+import { LoadingService } from "../common/loading.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { v1 } from "uuid";
+import { TreeNode } from "primeng/api";
+import {
+  StorageType,
+  FormListOrder,
+  FormListFilter,
+  FormListSettings,
+  ISuggest,
+  ColumnDef,
+  DocumentOptions,
+  DocumentBase,
+  Type,
+} from "jetti-middle/dist";
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: "j-suggest-hierarchy-list",
@@ -421,6 +439,12 @@ export class SuggestDialogHierarchyComponent implements OnInit, OnDestroy {
   select(row) {
     if (!this.isSelectEnabled) return;
     const sel = this.selectionData;
+    if (sel && sel.archived)
+      return this.ds.openSnackBar(
+        "error",
+        "Element is archived",
+        `Selected element "${sel.description}" is archived and can't be used`
+      );
     const selection: ISuggest = {
       id: sel.id,
       type: sel.type,

@@ -248,6 +248,14 @@ export class SuggestDialogComponent implements OnInit, OnDestroy {
   }
 
   select(row: DocumentBase) {
+
+        if (row['archived'])
+          return this.ds.openSnackBar(
+            "error",
+            "Element is archived",
+            `Selected element "${row.description}" is archived and can't be used`
+          );
+
     const selection: ISuggest = {
       id: row.id,
       type: row.type,

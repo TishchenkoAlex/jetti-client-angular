@@ -272,12 +272,12 @@ export class AutocompleteComponent
 
   searchComplete(row: ISuggest) {
     console.debug("searchComplete", row);
-    if (row.archived) {
+    if (row && row.archived) {
       this.handleReset(undefined);
       this.ds.openSnackBar(
         "error",
         "Element is archived",
-        `Selected element "${row.value}" and cant be used`
+        `Selected element "${row.value}" is archived and can't be used`
       );
       return;
     }
