@@ -3,7 +3,7 @@
     <div *ngIf="viewModel$ | async as viewModel">
       <form novalidate [formGroup]="form" cdkTrapFocus>
         <p-panel #mp
-          [header]="(description$ | async)?.value + ' (' + (metadata$ | async).description + ')' + ((isPosted$ | async) ? ' [posted]' : ' [unposted]') + (readonly ? ' [readonly]' : '')"
+          [header]="(description$ | async)?.value + ' (' + (metadata$ | async).description + ')' + ((isPosted$ | async) ? ' [posted]' : ' [unposted]') + (readonly ? ' [readonly]' : '' )+ ((isArchived$ | async) ? ' [archived]' : '' )"
           [toggleable]="true" toggler="header">
           <p-toolbar *ngIf="!readonly && !isHistory">
             <div class="ui-toolbar-group-left">

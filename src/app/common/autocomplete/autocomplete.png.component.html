@@ -64,14 +64,31 @@
         appendTo="body" [disableControl]="suggest.disabled">
 
 
-        <ng-template let-data pTemplate="item">
+      <ng-template let-data pTemplate="item">
           <div fxLayout="row" fxLayoutGap="5px" style="align-content: center; align-items: center;">
             <i *ngIf="!data.isfolder && !data.deleted" class="pi pi-minus" style="color: #2434c7"></i>
-            <i *ngIf="!data.isfolder && data.deleted" class="pi pi-minus" style="color: #d9534f"></i>
-            <i *ngIf="data.isfolder && data.deleted" class="fa fa-folder" style="color: #d9534f"></i>
+            <i *ngIf="!data.isfolder && data.deleted && !data.archived" class="pi pi-minus" style="color: #d9534f"></i>
+            <i *ngIf="data.isfolder && data.deleted && !data.archived" class="fa fa-folder" style="color: #d9534f"></i>
             <i *ngIf="data.isfolder && !data.deleted" class="fa fa-folder" style="color: #d1cf38"></i>
 
-            <div *ngIf="data.deleted"><s style="color: #d9534f">{{data.description}}</s></div>
+            <i
+              *ngIf="!data.isfolder && data.archived"
+              class="pi pi-minus"
+              style="color:#929292; cursor:pointer"
+              (mousedown)="onArchivedClick(data, $event); $event.preventDefault(); $event.stopPropagation()"
+              (touchstart)="onArchivedClick(data, $event); $event.preventDefault(); $event.stopPropagation()"
+            ></i>
+
+            <i
+              *ngIf="data.isfolder && data.archived"
+              class="fa fa-folder"
+              style="color:#929292; cursor:pointer"
+              (mousedown)="onArchivedClick(data, $event); $event.preventDefault(); $event.stopPropagation()"
+              (touchstart)="onArchivedClick(data, $event); $event.preventDefault(); $event.stopPropagation()"
+            ></i>
+
+            <div *ngIf="data.deleted && !data.archived"><s style="color: #d9534f">{{data.description}}</s></div>
+            <div *ngIf="data.archived"><i style="color: #929292">{{data.description}}</i></div>
             <div *ngIf="!data.deleted">{{data.description}}</div>
           </div>
         </ng-template>
