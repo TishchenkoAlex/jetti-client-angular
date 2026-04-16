@@ -116,6 +116,10 @@ export class AuthService {
     return this.isRoleAvailable('Cash request comment editor');
   }
 
+  public isRoleAvailableCommonDataEditor(): boolean {
+    return this.isRoleAvailable('Common data editor');
+  }
+
   public isRoleAvailableTester(): boolean {
     return true; // this.isRoleAvailable('New features tester');
   }

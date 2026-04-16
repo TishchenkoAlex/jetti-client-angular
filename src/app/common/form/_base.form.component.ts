@@ -25,6 +25,11 @@ export declare interface IFormEventsModel {
   beforeUnPost(): void;
 }
 
+type CommandResult =
+  | { status: "inserted"; id: string }
+  | { status: "updated"; id: string }
+  | { status: "skipped"; id: string; reason: "target_is_newer_or_equal" | "source_not_found" };
+
 // tslint:disable-next-line: class-name
 export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsModel {
   @Input() id: string;
@@ -245,12 +250,16 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     public tabStore: TabsStore,
     public dss: DynamicFormService,
     public cd: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.isCopy = !!this.route.snapshot.queryParams.copy;
     this.isHistory = !!this.route.snapshot.queryParams.history;
     this.readonly = !this.isHistory && this.auth.isRoleAvailableReadonly();
+
+    if (!this.readonly && this.data && this.data.value && this.data.value.company && this.data.value.company.id === '00000000-0000-0000-0000-000000000000') {
+      this.readonly = !this.auth.isRoleAvailableCommonDataEditor();
+    }
 
     this._subscription$ = merge(
       ...[this.ds.save$, this.ds.delete$, this.ds.post$, this.ds.unpost$]
@@ -511,6 +520,21 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     else this.commandOnSever(command);
   }
 
+  showCommandResult(result: CommandResult) {
+    if (!result || !result.status) return;
+    let severity = result.status === "skipped" ? "warn" : "success";
+    let message = ''
+    if (result.status === "skipped") {
+      if (result.reason === "source_not_found") {
+        message = "Source document not found.";
+        severity = "error";
+      }
+      if (result.reason === "target_is_newer_or_equal")
+        message = "Target document is newer or has the same timestamp.";
+    }
+    this.ds.openSnackBar(severity, result.status.toUpperCase(), message);
+  }
+
   commandOnSever(command: Command) {
     this.ds.api
       .onCommand(this.viewModel, command.method, {})
@@ -519,6 +543,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
         form["metadata"] = value.metadata;
         this.Next(form);
         this.form.markAsDirty();
+        this.showCommandResult((value as any)['commandResult']);
 
         if (command.clientModule) {
           const func = new Function("", command.clientModule).bind(this)();
