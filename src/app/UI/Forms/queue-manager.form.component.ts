@@ -88,6 +88,8 @@ export class QueueManagerComponent extends _baseDocFormComponent implements OnIn
       remove: [{
         label: 'Выделенные', command: () => this.executeServerMethod('removeJobsSelected')
       }, {
+        label: 'Завершенные', command: () => this.executeServerMethod('removeJobsCompleted')
+      }, {
         label: 'ВСЕ', command: () => this.executeServerMethod('removeJobsAll')
       }],
       cancel: [{
@@ -99,7 +101,6 @@ export class QueueManagerComponent extends _baseDocFormComponent implements OnIn
   }
 
   async executeServerMethod(methodName: string) {
-
     this.ds.api.execute(this.type as any, methodName, this.form.getRawValue() as any).pipe(take(1))
       .subscribe(value => {
         const form = getFormGroup(value.schema, value.model, true);

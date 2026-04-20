@@ -256,8 +256,9 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     this.isCopy = !!this.route.snapshot.queryParams.copy;
     this.isHistory = !!this.route.snapshot.queryParams.history;
     this.readonly = !this.isHistory && this.auth.isRoleAvailableReadonly();
+    const isNew = this.route.snapshot.queryParams.new;
 
-    if (!this.readonly && this.data && this.data.value && this.data.value.company && this.data.value.company.id === '00000000-0000-0000-0000-000000000000') {
+    if (!this.readonly && !isNew && this.data && this.data.value && this.data.value.company && this.data.value.company.id === '00000000-0000-0000-0000-000000000000') {
       this.readonly = !this.auth.isRoleAvailableCommonDataEditor();
     }
 
