@@ -16,7 +16,7 @@
         <div>
           <img [src]="item.URL" style="max-width: 100%; height: auto;" (click)="showDialog($event, false, item)">
           <div class="ui-g-12"><b>{{item.AttachmentTypeDescription}}: "{{item.description}}"</b></div>
-          <div *ngIf="item.TagsString" class="ui-g-12"><b>{{item.TagsString}}</b></div>
+          <!-- <div *ngIf="item.TagsString" class="ui-g-12"><b>{{item.TagsString}}</b></div> -->
         </div>
         <button pButton type="button" icon="pi pi-search" (click)="showDialog($event, false, item)"></button>
         <button *ngIf="settings.length" pButton type="button" icon="pi pi-cog"
@@ -35,7 +35,7 @@
           (click)="showDialog($event, false, item)">
         <div class="item-detail">{{item.AttachmentTypeDescription}}</div>
         <div class="item-detail"><b>{{item.description}}</b></div>
-        <div *ngIf="item.TagsString" class="item-detail">{{item.TagsString}}</div>
+        <!-- <div *ngIf="item.TagsString" class="item-detail">{{item.TagsString}}</div> -->
         <hr class="ui-widget-content" style="border-top:0">
         <button pButton type="button" icon="pi pi-search" (click)="showDialog($event, false, item)"></button>
         <button *ngIf="settings.length" pButton type="button" icon="pi pi-cog" class="ui-button-warning"
@@ -56,14 +56,15 @@
   <div style="text-align:center" *ngIf="selectedAttachment && !editMode" (click)="displayDialog = false">
     <img class="imgAttach" [src]="selectedAttachment.URL">
     <ul style="text-align:left">
-      <li>Description: {{selectedAttachment.description}}</li>
+      <li *ngIf="selectedAttachment.description">Description: {{selectedAttachment.description}}</li>
       <li>Type: {{selectedAttachment.AttachmentTypeDescription}}</li>
-      <li *ngIf="selectedAttachment.TagsString">Tags: {{selectedAttachment.TagsString}}</li>
+      <!-- <li *ngIf="selectedAttachment.TagsString">Tags: {{selectedAttachment.TagsString}}</li> -->
       <li>User: {{selectedAttachment.userDescription}}</li>
       <li>Created: {{selectedAttachment.date | date:'medium' }} </li>
       <li>Modify: {{selectedAttachment.timestamp | date:'medium'}}</li>
       <li *ngIf="selectedAttachment.FileSize && selectedAttachment.FileSize">Size:
         {{selectedAttachment.FileSize/1024 | number:'1.1-2'}} KB</li>
+      <li *ngIf="selectedAttachment.VersionNumber">Version: {{selectedAttachment.VersionNumber}}</li>
     </ul>
   </div>
 
@@ -87,15 +88,16 @@
         [(ngModel)]="selectedAttachment.Storage">
     </div>
 
-    <h1 class="headerText">Description</h1>
+    <h1 *ngIf="!selectedSettings.IsDescriptionOptional" class="headerText">Description</h1>
+    <h1 *ngIf="selectedSettings.IsDescriptionOptional" class="headerText">Description (optional)</h1>
     <textarea styleClass="editInput" style="width: 100%;" [rows]="5" pInputTextarea autoResize="false"
       spellcheck="false" [(ngModel)]="selectedAttachment.description"></textarea>
 
-    <div *ngIf="selectedSettings.Tags.length">
+    <!-- <div *ngIf="selectedSettings.Tags.length">
       <h1 class="headerText">Tags</h1>
       <p-listbox [options]="selectedSettings.Tags" [(ngModel)]="selectedTags" [multiple]="true" [checkbox]="true"
         [filter]="true" [listStyle]="{'max-height':'130px','width':'auto'}" optionLabel="name"></p-listbox>
-    </div>
+    </div> -->
 
     <div style="margin-top: 10px">
       <p-toolbar styleClass="NoBorder">

@@ -35,7 +35,7 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
   displayDialog = false;
   editMode = false;
   selectedAttachment;
-  selectedTags: { value: string; name: string }[];
+  // selectedTags: { value: string; name: string }[];
   attachmets$ = new Subject<any[]>();
   attachments = [];
   dataview = true;
@@ -76,7 +76,7 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
   async fillSettings() {
     this.settings = await this.apiService.getAttachmentsSettingsByOwner(this.owner);
     this.settings.forEach((element) => {
-      element.Tags = element.Tags.map((tag) => ({ value: tag, name: tag }));
+      // element.Tags = element.Tags.map((tag) => ({ value: tag, name: tag }));
       element.isFile = element.StorageType === 'FILE';
       element.isURL = element.StorageType === 'URL';
     });
@@ -88,7 +88,7 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
     attach.isFile = attach.StorageType === 'FILE';
     attach.isURL = attach.StorageType === 'URL';
     attach.hasData = !!(attach.isFile && attach.Storage);
-    attach.TagsString = attach.Tags.split(';').filter(e => e).join(', ');
+    // attach.TagsString = attach.Tags.split(';').filter(e => e).join(', ');
     if (attach.isURL) attach.URL = attach.Storage;
     else if (attach.IconURL) attach.URL = attach.IconURL;
     else if (attach.hasData)
@@ -148,7 +148,7 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
       this.showError('No file selected!');
     if (this.selectedSettings.isURL && !attach.Storage)
       this.showError('URL is empty!');
-    if (!attach.description)
+    if (!attach.description && !this.selectedSettings.IsDescriptionOptional)
       this.showError('Description is empty!');
     if (this.error) return;
 
@@ -161,8 +161,8 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
       AttachmentTypeDescription: this.selectedSettings.AttachmentTypeDescription,
       StorageType: this.selectedSettings.StorageType,
       IconURL: this.selectedSettings.IconURL,
-      Tags: this.selectedTags
-        ? this.selectedTags.map((e) => e.value).join(';') : '',
+      // Tags: this.selectedTags
+      //   ? this.selectedTags.map((e) => e.value).join(';') : '',
     };
     const tmpStorage = attach.Storage;
     if (attach.StorageType === 'FILE' && !attach.newFile) delete attach.Storage;
@@ -171,7 +171,7 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
       attach.Storage = tmpStorage;
       this.fillAdditionalAttachmentFileds(attach);
       this.selectedAttachment = null;
-      this.selectedTags = [];
+      // this.selectedTags = [];
       this.attachments = this.attachments.filter(e => e.id !== attach.id);
       this.attachments.unshift(attach);
       this.attachmets$.next(this.attachments);
@@ -181,7 +181,7 @@ export class AttachmentsComponent implements OnInit, OnDestroy {
   showDialog(event: Event, edit = false, attachment?) {
     if (attachment) {
       this.selectedSettings = this.settings.find(e => e.AttachmentType === attachment.AttachmentType);
-      if (edit) this.selectedTags = attachment.Tags.split(';').map(tag => ({ value: tag, name: tag }));
+      // if (edit) this.selectedTags = attachment.Tags.split(';').map(tag => ({ value: tag, name: tag }));
     }
     if (!this.selectedSettings) this.selectedSettings = this.settings[0];
     this.selectedFile = null;
