@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   public LOGIC_USECASHREQUESTAPPROVING(): boolean {
-    return this.getUserEnviromentSettingsValueByKey('LOGIC_USECASHREQUESTAPPROVING') === '1';
+    return false; // this.getUserEnviromentSettingsValueByKey('LOGIC_USECASHREQUESTAPPROVING') === '1';
   }
 
   public isRoleAvailableReadonly(): boolean {
@@ -114,6 +114,10 @@ export class AuthService {
 
   public isRoleAvailableCashRequestCommentEditor(): boolean {
     return this.isRoleAvailable('Cash request comment editor');
+  }
+
+  public isRoleAvailableCashRequestApprover(): boolean {
+    return this.isRoleAvailable('Cash request approver');
   }
 
   public isRoleAvailableCommonDataEditor(): boolean {

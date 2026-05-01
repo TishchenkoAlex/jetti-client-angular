@@ -16,10 +16,11 @@ import { DocumentBase } from 'jetti-middle/dist';
   templateUrl: 'Document.CashRequest.html'
 })
 export class DocumentCashRequestComponent extends _baseDocFormComponent implements OnInit, OnDestroy, IFormEventsModel {
-  get readonlyMode() { return !this.isSuperUser && !this.isNew && ['PREPARED', 'MODIFY'].indexOf(this.form.get('Status').value) === -1; }
-  get isAvaliblePost() { return (!this.readonlyMode || this.isCommentEditorRule) && !this.isDeleted; }
-  get Operation(): string { return this.form.get('Operation').value || ''; }
-  get CashKind(): string { return this.form.get('CashKind').value || 'ANY'; }
+  get isEditableStatus() {return !!this.form.get('Status') && ['PREPARED', 'MODIFY', 'AWAITING'].includes(this.form.get('Status')!.value)  }
+  get readonlyMode() { return this.isSuperUser ? false : (!this.isEditableStatus && !this.isCashRequestApprover) || this.isApproved; }
+  get isAvailablePost() { return (!this.readonlyMode || this.isCommentEditorRule) && !this.isDeleted; }
+  get Operation(): string { return this.form.get('Operation') ? this.form.get('Operation')!.value || '' : ''; }
+  get CashKind(): string { return this.form.get('CashKind') ? this.form.get('CashKind')!.value || 'ANY' : 'ANY'; }
   get isPayRollUsed(): boolean { return ['Выплата дивидендов', 'Выплата заработной платы'].includes(this.Operation) }
   get isSalaryOperation(): boolean {
     return ['Выплата заработной платы',
@@ -40,8 +41,10 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
 
   isSuperUser = false;
   isCommentEditorRule = false;
+  isCashRequestApprover = false;
   canModifyProcess = false;
   logic_USECASHREQUESTAPPROVING = false;
+  isApproved = false;
 
   ngOnInit() {
     super.ngOnInit();
@@ -196,8 +199,16 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
 
     this.isSuperUser = this.auth.isRoleAvailableCashRequestAdmin();
     this.isCommentEditorRule = this.auth.isRoleAvailableCashRequestCommentEditor();
+    this.isCashRequestApprover = this.auth.isRoleAvailableCashRequestApprover();
     this.logic_USECASHREQUESTAPPROVING = this.auth.LOGIC_USECASHREQUESTAPPROVING();
     this.canModifyProcess = this.isSuperUser && this.logic_USECASHREQUESTAPPROVING;
+    this.isApproved = this.getValue('Status') === 'APPROVED';
+
+    console.log('Status',  this.getValue('Status'));
+    console.log('isCommentEditorRule', this.isCommentEditorRule);
+    console.log('isApproved', this.isApproved);
+    console.log('isCashRequestApprover', this.isCashRequestApprover);
+
     if (this.logic_USECASHREQUESTAPPROVING && !this.canModifyProcess && this.getValue('Status') === 'MODIFY') {
       const res = await this.bpApi.isUserCurrentExecutant(this.getValue('workflowID'));
       if (typeof res === 'string') this.ds.openSnackBar('error', 'Бизнес-процессы', res);

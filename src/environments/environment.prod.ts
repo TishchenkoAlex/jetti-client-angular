@@ -12,7 +12,7 @@ export const environment = {
   socket: domain,
   host: domain,
   PowerBIURL: 'https://bi.x100-group.com/Reports/',
-  title: 'Jetti',
+  title: 'Jetti (C1)',
   path: '',
   BPAPI
 };

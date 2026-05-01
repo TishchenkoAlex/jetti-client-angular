@@ -7,10 +7,10 @@
         <div class="ui-toolbar-group-left">
           <button pButton type="button" id="PostClose " icon="fa fa-check-square" label="Post&Close"
             pTooltip="Post and close" tooltipPosition="top" showDelay="2000" class="ui-button-warning"
-            [disabled]="!form.valid || (lds.busy$ | async)" (click)="postClose()" *ngIf="isAvaliblePost"></button>
+            [disabled]="!form.valid || (lds.busy$ | async)" (click)="postClose()" *ngIf="isAvailablePost"></button>
           <button pButton type="button" id="Post" icon="fa fa-check" pTooltip="Post" tooltipPosition="top"
             showDelay="2000" class="ui-button-secondary" [disabled]="!form.valid || (lds.busy$ | async)"
-            (click)="post()" *ngIf="isAvaliblePost"></button>
+            (click)="post()" *ngIf="isAvailablePost"></button>
           <button pButton type="button" id="unPost" icon="far fa-square" pTooltip="Unpost" tooltipPosition="top"
             showDelay="2000" class="ui-button-secondary" [disabled]="!form.valid || (lds.busy$ | async)"
             (click)="unPost()" *ngIf="!readonlyMode && !isDeleted && isPosted"></button>
