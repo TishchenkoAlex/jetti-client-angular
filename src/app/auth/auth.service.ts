@@ -76,6 +76,14 @@ export class AuthService {
     return this.tokenPayload['env']['settings'][envKey];
   }
 
+  public getCurrentContour() {
+    return this.getUserEnviromentSettingsValueByKey('contour');
+  }
+
+  public getCurrentLink() {
+    return this.getUserEnviromentSettingsValueByKey('link');
+  }
+
   public LOGIC_USECASHREQUESTAPPROVING(): boolean {
     return false; // this.getUserEnviromentSettingsValueByKey('LOGIC_USECASHREQUESTAPPROVING') === '1';
   }
@@ -122,6 +130,10 @@ export class AuthService {
 
   public isRoleAvailableCommonDataEditor(): boolean {
     return this.isRoleAvailable('Common data editor');
+  }
+
+  public isRoleAvailableReadonlyCompanyContourEditor(): boolean {
+    return this.isRoleAvailable('Readonly company contour editor');
   }
 
   public isRoleAvailableTester(): boolean {

@@ -25,10 +25,11 @@ export declare interface IFormEventsModel {
   beforeUnPost(): void;
 }
 
-type CommandResult =
-  | { status: "inserted"; id: string }
-  | { status: "updated"; id: string }
-  | { status: "skipped"; id: string; reason: "target_is_newer_or_equal" | "source_not_found" };
+export interface CommonCommandResult {
+  status: "warn" | "success" | "error";
+  message: string;
+  data?: any;
+}
 
 // tslint:disable-next-line: class-name
 export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsModel {
@@ -257,6 +258,10 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     this.isHistory = !!this.route.snapshot.queryParams.history;
     this.readonly = !this.isHistory && this.auth.isRoleAvailableReadonly();
     const isNew = this.route.snapshot.queryParams.new;
+
+    if ((this.data && (this.data as any).metadata && (this.data as any).metadata.readonly)) {
+      this.readonly = true;
+    }
 
     if (!this.readonly && !isNew && this.data && this.data.value && this.data.value.company && this.data.value.company.id === '00000000-0000-0000-0000-000000000000') {
       this.readonly = !this.auth.isRoleAvailableCommonDataEditor();
@@ -521,19 +526,9 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     else this.commandOnSever(command);
   }
 
-  showCommandResult(result: CommandResult) {
+  showCommandResult(result: CommonCommandResult) {
     if (!result || !result.status) return;
-    let severity = result.status === "skipped" ? "warn" : "success";
-    let message = ''
-    if (result.status === "skipped") {
-      if (result.reason === "source_not_found") {
-        message = "Source document not found.";
-        severity = "error";
-      }
-      if (result.reason === "target_is_newer_or_equal")
-        message = "Target document is newer or has the same timestamp.";
-    }
-    this.ds.openSnackBar(severity, result.status.toUpperCase(), message);
+    this.ds.openSnackBar(result.status, result.status.toUpperCase(), result.message);
   }
 
   commandOnSever(command: Command) {
