@@ -64,13 +64,13 @@ export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]:
   const processRecursive = (v: { [x: string]: any }, f: FormControlInfo[]) => {
     Object.keys(v).map(key => {
       const prop = v[key];
-      const hidden = !!prop['hidden'];
+      const hidden = !!prop['hidden'] && key !== 'timestamp';
       const order = hidden ? -1 : prop['order'] * 1 || 999;
       const label: string = prop['label'] || key.toString();
       const type = prop['type'] || 'string' as string;
       const controlType = prop['controlType'] || prop['type'] || 'string' as ControlTypes;
       const required = !!prop['required'];
-      const readOnly = !!prop['readOnly'];
+      const readOnly = !!prop['readOnly'] || key === 'timestamp';
       const disabled = !!prop['disabled'];
       const isAdditional = !!prop['isAdditional'];
       const style = prop['style'];
@@ -196,7 +196,7 @@ export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]:
   const panels = [...new Set(controls.filter(el => el.panel).map(el => el.panel))];
   const controlsPlacement: IFormControlPlacement[] = [
     controlsSeparator('Main', controls.filter(el => !el.panel && !el.isAdditional && !el.hidden)),
-    controlsSeparator('Additional info', controls.filter(el => ['parent', 'user'].includes(el.key) && !el.hidden)),
+    controlsSeparator('Additional info', controls.filter(el => ['parent', 'user', 'timestamp'].includes(el.key) && !el.hidden)),
     controlsSeparator('Additional fields', controls.filter(el => !el.panel && el.isAdditional && !el.hidden)),
     ...panels.map(panel => controlsSeparator(panel, controls.filter(el => el.panel === panel && !el.hidden)))
   ];
