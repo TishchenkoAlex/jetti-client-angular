@@ -5,8 +5,8 @@
         <p-panel #mp
           [header]="(description$ | async)?.value + ' (' + (metadata$ | async).description + ')' + ((isPosted$ | async) ? ' [posted]' : ' [unposted]') + (readonly ? ' [readonly]' : '' )+ ((isArchived$ | async) ? ' [archived]' : '' )"
           [toggleable]="true" toggler="header">
-          <p-toolbar *ngIf="!readonly && !isHistory">
-            <div class="ui-toolbar-group-left">
+          <p-toolbar>
+            <div *ngIf="!isHistory && !readonly" class="ui-toolbar-group-left">
               <button pButton type="button" id="PostClose" icon="fa fa-check-square" label="Post&Close"
                 pTooltip="Post and close" tooltipPosition="top" showDelay="2000" class="ui-button-warning"
                 [disabled]="!form.valid || (lds.busy$ | async)" (click)="postClose()"
@@ -27,7 +27,7 @@
                 pTooltip="Delete" tooltipPosition="top" showDelay="2000" *ngIf="!(isNew$ | async)" (click)="delete()"
                 [disabled]="(lds.busy$ | async)"></button>
             </div>
-            <div class="ui-toolbar-group-right">
+            <div *ngIf="!isHistory" class="ui-toolbar-group-right">
               <p-splitButton *ngIf="(copyTo$ | async)?.length" [model]="copyTo$ | async"
                 styleClass="ui-button-secondary" label="base on">
               </p-splitButton>

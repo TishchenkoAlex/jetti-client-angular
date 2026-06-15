@@ -137,4 +137,56 @@ export class DocService {
     }
   }
 
+  async copyToClipboard(data: BlobPart | BlobPart[], type = 'text/plain'): Promise<void> {
+    const parts = Array.isArray(data) ? data : [data];
+    const blob = new Blob(parts, { type });
+    const text = await this.blobToText(blob);
+
+    const nav: any = window.navigator;
+
+    if (nav.clipboard && nav.clipboard.writeText && window.isSecureContext) {
+      await nav.clipboard.writeText(text);
+      return;
+    }
+
+    this.fallbackCopyTextToClipboard(text);
+  }
+
+  private blobToText(blob: Blob): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = () => reject(reader.error);
+
+      reader.readAsText(blob);
+    });
+  }
+
+
+  private fallbackCopyTextToClipboard(text: string): void {
+    const textarea = document.createElement('textarea');
+
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    textarea.style.opacity = '0';
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+    textarea.select();
+
+    const copied = document.execCommand('copy');
+
+    document.body.removeChild(textarea);
+
+    if (!copied) {
+      throw new Error('Failed to copy data to clipboard');
+    }
+  }
+
 }

@@ -96,14 +96,16 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
   isDirty$ = this.form$.pipe(map((f) => <boolean>!!f.dirty));
   commands$ = this.metadata$.pipe(
     map((m) => {
-      return ((m && (m["commands"] as Command[])) || []).map(
-        (c) =>
-          <MenuItem>{
-            label: c.label,
-            icon: c.icon,
-            command: () => this.executeCommand(c),
-          }
-      );
+      return ((m && (m["commands"] as any[])) || [])
+        .filter(e => e.isCommon || !this.readonly)
+        .map(
+          (c) =>
+            <MenuItem>{
+              label: c.label,
+              icon: c.icon,
+              command: () => this.executeCommand(c),
+            }
+        );
     })
   );
   copyTo$ = this.metadata$.pipe(
@@ -544,7 +546,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
         if (command.clientModule) {
           const func = new Function("", command.clientModule).bind(this)();
           const afterExecution = func["afterExecution"];
-          if (afterExecution) afterExecution();
+          if (afterExecution) afterExecution((value as any)['commandResult']);
         }
       });
   }
