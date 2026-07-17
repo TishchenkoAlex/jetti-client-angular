@@ -134,19 +134,19 @@
 
         <div *ngIf="!isHistory && type !== 'BusinessProcess.Template'">
           <p-panel *ngIf="type === 'Catalog.Operation' && (isFolder$ | async) === false" [toggleable]="true"
-            header="Post script (management)" [collapsed]="true" (collapsedChange)="mp.collapse($event);"
+            header="Post script (management)" [collapsed]="true" (collapsedChange)="mp.collapse();"
             toggler="header">
             <j-control *ngIf="vk.script" [control]="vk.script" [form]="form"></j-control>
           </p-panel>
 
           <p-panel *ngIf="type === 'Catalog.Operation' && (isFolder$ | async) === false" [toggleable]="true"
-            header="Post script (accounting)" [collapsed]="true" (collapsedChange)="mp.collapse($event);"
+            header="Post script (accounting)" [collapsed]="true" (collapsedChange)="mp.collapse();"
             toggler="header">
             <j-control *ngIf="vk.scriptAccounting" [control]="vk.scriptAccounting" [form]="form"></j-control>
           </p-panel>
 
           <p-panel *ngIf="(type === 'Catalog.Operation')" [toggleable]="true" header="Document module"
-            [collapsed]="true" (collapsedChange)="mp.collapse($event);" toggler="header">
+            [collapsed]="true" (collapsedChange)="mp.collapse();" toggler="header">
             <j-control *ngIf="vk.module" [control]="vk.module" [form]="form"></j-control>
           </p-panel>
 

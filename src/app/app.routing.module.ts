@@ -1,7 +1,7 @@
 import { Injectable, NgModule } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 // eslint-disable-next-line max-len
-import { ActivatedRouteSnapshot, DetachedRouteHandle, Resolve, RouteReuseStrategy, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import { AuthGuardService } from './auth/auth.guard.service';
 import { DynamicFormService } from './common/dynamic-form/dynamic-form.service';
 import { TabControllerComponent } from './common/tabcontroller/tabcontroller.component';
@@ -21,7 +21,7 @@ export class AppRouteReuseStrategy extends RouteReuseStrategy {
 }
 
 @Injectable()
-export class TabResolver implements Resolve<UntypedFormGroup | IViewModel | null> {
+export class TabResolver {
   constructor(private dfs: DynamicFormService, private api: ApiService, private tabStore: TabsStore) { }
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
