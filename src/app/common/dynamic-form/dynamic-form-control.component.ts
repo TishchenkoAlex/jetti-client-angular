@@ -21,6 +21,8 @@ import { getFormGroup } from "./dynamic-form.service";
   templateUrl: "dynamic-form-control.component.html",
 })
 export class DynamicFormControlComponent implements OnInit, OnDestroy {
+  readonly scriptEditorOptions = { language: 'javascript', theme: 'vs' };
+
   @Input() control: FormControlInfo;
   @Input() form: FormGroup;
   @Input() appendTo;

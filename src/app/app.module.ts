@@ -15,6 +15,7 @@ import {
   MsalService,
 } from '@azure/msal-angular';
 import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 import 'reflect-metadata';
 import { take } from 'rxjs/operators';
 import { environment, MsalConfiguration } from '../environments/environment';
@@ -55,6 +56,7 @@ export function msalInstanceFactory(): IPublicClientApplication {
     HttpClientModule,
     MaterialModule,
     PrimeNGModule,
+    MonacoEditorModule.forRoot(),
     DynamicFormsModule,
     UserFormsModule,
     RoutingModule,

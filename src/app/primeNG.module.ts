@@ -1,6 +1,6 @@
 import locale from '@angular/common/locales/ru';
 import { NgModule } from '@angular/core';
-import { CovalentCodeEditorModule } from '@covalent/code-editor';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { ConfirmationService } from 'primeng/api';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
@@ -91,7 +91,7 @@ import { SidebarModule } from 'primeng/sidebar';
     DataViewModule,
     FileUploadModule,
     ListboxModule,
-    CovalentCodeEditorModule
+    MonacoEditorModule
   ],
   providers: [ConfirmationService, MessageService]
 })
