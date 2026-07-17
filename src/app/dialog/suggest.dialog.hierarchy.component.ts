@@ -35,7 +35,7 @@ import {
   selector: "j-suggest-hierarchy-list",
   templateUrl: "./suggest.dialog.hierarchy.component.html",
 })
-// tslint:disable: deprecation
+/* eslint-disable import/no-deprecated */
 export class SuggestDialogHierarchyComponent implements OnInit, OnDestroy {
   @Input() type: string;
   @Input() id: string;
@@ -184,14 +184,12 @@ export class SuggestDialogHierarchyComponent implements OnInit, OnDestroy {
     });
 
     this._docSubscription$ = merge(
-      ...[
-        this.ds.save$,
-        this.ds.delete$,
-        this.ds.saveClose$,
-        this.ds.goto$,
-        this.ds.post$,
-        this.ds.unpost$,
-      ]
+      this.ds.save$,
+      this.ds.delete$,
+      this.ds.saveClose$,
+      this.ds.goto$,
+      this.ds.post$,
+      this.ds.unpost$
     )
       .pipe(filter((doc) => doc && doc.type === this.type))
       .subscribe((doc) => {

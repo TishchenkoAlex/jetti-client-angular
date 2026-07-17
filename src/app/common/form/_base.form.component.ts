@@ -12,7 +12,7 @@ import { FormControlInfo } from '../dynamic-form/dynamic-form-base';
 import { patchOptionsNoEvents, DynamicFormService, getFormGroup } from '../dynamic-form/dynamic-form.service';
 import { TabsStore } from '../tabcontroller/tabs.store';
 import { AuthService } from 'src/app/auth/auth.service';
-// tslint:disable-next-line: max-line-length
+// eslint-disable-next-line max-len
 import { DocumentBase, Type, DocumentOptions, Relation, CopyTo, FormBase, Command, calculateDescription, dateReviverLocal, Ref, IViewModel } from 'jetti-middle/dist';
 
 export declare interface IFormEventsModel {
@@ -31,7 +31,7 @@ export interface CommonCommandResult {
   data?: any;
 }
 
-// tslint:disable-next-line: class-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 @Directive()
 export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsModel {
   @Input() id: string;
@@ -271,7 +271,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     }
 
     this._subscription$ = merge(
-      ...[this.ds.save$, this.ds.delete$, this.ds.post$, this.ds.unpost$]
+      this.ds.save$, this.ds.delete$, this.ds.post$, this.ds.unpost$
     )
       .pipe(filter((doc) => doc.id === this.id))
       .subscribe((doc) => {
@@ -295,13 +295,11 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
 
     setTimeout(() => {
       this._descriptionSubscription$ = merge(
-        ...[
-          this.form.get("date")!.valueChanges,
-          this.form.get("code")!.valueChanges,
-          this.form.get("Group")
-            ? this.form.get("Group")!.valueChanges
-            : observableOf(""),
-        ]
+        this.form.get("date")!.valueChanges,
+        this.form.get("code")!.valueChanges,
+        this.form.get("Group")
+          ? this.form.get("Group")!.valueChanges
+          : observableOf("")
       )
         .pipe(filter((_) => this.isDoc))
         .subscribe((_) => this.showDescription());

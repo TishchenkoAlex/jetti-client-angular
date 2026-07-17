@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { ITask, ProcessParticipants, ITaskCompleteResult } from 'src/app/UI/BusinessProcesses/task.object';
 import { environment } from '../../environments/environment';
 
@@ -90,7 +90,7 @@ export class BPApi {
 
   isUserCurrentExecutant(ProcessID: string): Promise<boolean | string> {
     const query = `${environment.api}BP/isUserCurrentExecutant?ProcessID=${ProcessID}`;
-    return this.http.get<boolean | string>(query).toPromise();
+    return firstValueFrom(this.http.get<boolean | string>(query));
   }
 
   CashRequestDesktop(): Observable<any[]> {

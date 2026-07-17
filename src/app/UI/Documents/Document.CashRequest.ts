@@ -73,7 +73,7 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
     // 'Выдача займа контрагенту',
     // 'Возврат оплаты клиенту'
     // 'Выплата заработной платы'
-    // tslint:disable
+    /* eslint-disable */
     if (this.isPayRollUsed) this.form.get('PayRollKind').enable({ emitEvent: false }); else this.form.get('PayRollKind').disable({ emitEvent: false });
 
     const CashOrBankIn = this.form.get('CashOrBankIn');

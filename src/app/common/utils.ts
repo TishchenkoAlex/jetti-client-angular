@@ -50,7 +50,7 @@ export const copyToClipboard = (str: string) => {
   el.style.left = '-9999px';
   document.body.appendChild(el);
   el.select();
-  // tslint:disable-next-line: deprecation
+  // eslint-disable-next-line import/no-deprecated
   document.execCommand('copy');
   document.body.removeChild(el);
 };

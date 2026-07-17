@@ -23,18 +23,7 @@ import { BusinessProcessModule } from '../business-process/business-process.modu
     DynamicFormsModule,
     BusinessProcessModule
   ],
-  exports: [
-  ],
-  providers: [
-  ],
-  entryComponents: [
-    SearchAndReplaceComponent,
-    ObjectsGroupModifyComponent,
-    SyncFormComponent,
-    TaskListComponent,
-    TaskComponent,
-    DocumentCashRequestComponent,
-    QueueManagerComponent
-  ]
+  exports: [],
+  providers: []
 })
 export class UserFormsModule { }

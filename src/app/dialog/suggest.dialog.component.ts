@@ -18,7 +18,7 @@ import { StorageType, FormListSettings, ISuggest, Type, ColumnDef, DocumentBase,
   templateUrl: "./suggest.dialog.component.html",
 })
 
-// tslint:disable: deprecation
+/* eslint-disable import/no-deprecated */
 export class SuggestDialogComponent implements OnInit, OnDestroy {
   locale = calendarLocale;
   dateFormat = dateFormat;
@@ -157,7 +157,7 @@ export class SuggestDialogComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(500))
       .subscribe((event) => this._update(event.col, event.event, event.center));
 
-    this._docSubscription$ = merge(...[this.ds.delete$])
+    this._docSubscription$ = this.ds.delete$
       .pipe(filter((doc) => doc && doc.type === this.type))
       .subscribe((doc) => {
         const exist = (this.dataSource.renderedData as DocumentBase[]).find(

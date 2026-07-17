@@ -23,17 +23,17 @@ export class BaseTreeListComponent implements OnInit, OnDestroy {
   treeNodes: TreeNode[] = [];
   selection: TreeNode;
 
-  private paginator = new Subject<DocumentBase>();
+  private paginator = new Subject<void>();
   private _docSubscription$: Subscription = Subscription.EMPTY;
 
-  // tslint:disable-next-line: max-line-length
+  // eslint-disable-next-line max-len
   constructor(private api: ApiService, public router: Router, public ds: DocService, public lds: LoadingService, private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
 
-    this._docSubscription$ = merge(...[this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$]).pipe(
+    this._docSubscription$ = merge(this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$).pipe(
       filter(doc => doc && doc.type === this.type)).
-      subscribe(doc => this.paginator.next(doc));
+      subscribe(() => this.paginator.next());
 
     this.treeNodes$ = this.paginator.pipe(
       switchMap(doc => {

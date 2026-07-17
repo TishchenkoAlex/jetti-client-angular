@@ -1,5 +1,4 @@
-import { MsalGuardConfiguration, MsalInterceptorConfiguration } from '@azure/msal-angular';
-import { Configuration, InteractionType } from '@azure/msal-browser';
+import { Configuration } from '@azure/msal-browser';
 
 export const MSAL_LOGIN_SCOPES = ['user.read'];
 
@@ -19,17 +18,3 @@ export function createMsalConfiguration(authority: string): Configuration {
     },
   };
 }
-
-export const MsalGuardConfig: MsalGuardConfiguration = {
-  interactionType: InteractionType.Popup,
-  authRequest: {
-    scopes: MSAL_LOGIN_SCOPES,
-  },
-};
-
-export const MsalInterceptorConfig: MsalInterceptorConfiguration = {
-  interactionType: InteractionType.Popup,
-  protectedResourceMap: new Map([
-    ['https://graph.microsoft.com/v1.0/me', MSAL_LOGIN_SCOPES],
-  ]),
-};

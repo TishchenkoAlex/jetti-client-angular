@@ -121,7 +121,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     this.dataSource = this.formGroup.getRawValue();
 
     this.recalcTotals();
-    this._subscription$ = merge(...[this.ds.save$, this.ds.delete$]).pipe(
+    this._subscription$ = merge(this.ds.save$, this.ds.delete$).pipe(
       filter(doc => doc.id === this.formGroup.root.value.id)).subscribe(doc => {
         this.dataSource = doc[this.control.key];
         this.cd.detectChanges();

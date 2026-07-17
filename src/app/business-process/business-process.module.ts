@@ -28,10 +28,6 @@ import { BpmnModule } from './bpmn/bpmn.module';
     MyTasksPageComponent,
     ProcessPanelComponent,
     ProcessTimelineComponent
-  ],
-  entryComponents: [
-    MyTasksPageComponent,
-    TaskActionDialogComponent
   ]
 })
 export class BusinessProcessModule {}

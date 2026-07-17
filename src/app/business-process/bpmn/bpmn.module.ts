@@ -18,9 +18,6 @@ import { BusinessProcessTemplateBpmnComponent } from './business-process-templat
     BpmnModelerComponent,
     BpmnDemoPageComponent,
     BusinessProcessTemplateBpmnComponent
-  ],
-  entryComponents: [
-    BpmnDemoPageComponent
   ]
 })
 export class BpmnModule {}

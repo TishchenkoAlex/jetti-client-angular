@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Subject } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { FormGroup } from '@angular/forms';
 import { DocumentBase } from 'jetti-middle/dist';
@@ -53,52 +53,52 @@ export class DocService {
   constructor(public api: ApiService, private messageService: MessageService, public confirmationService: ConfirmationService) { }
 
   async save(doc: DocumentBase) {
-    const savedDoc = await this.api.saveDoc(doc).toPromise();
+    const savedDoc = await firstValueFrom(this.api.saveDoc(doc));
     this.openSnackBar('success', savedDoc.description, 'saved');
     const subject$ = this._save$;
     subject$.next(savedDoc);
   }
 
   async post(doc: DocumentBase, close = false) {
-    const postedDoc = await this.api.savePostDoc(doc).toPromise();
+    const postedDoc = await firstValueFrom(this.api.savePostDoc(doc));
     this.showOnPostDocMessage(postedDoc);
     const subject$ = close ? this._saveClose$ : this._post$;
     subject$.next(postedDoc);
   }
 
   async unpost(doc: DocumentBase, close = false) {
-    const postedDoc = await this.api.unpostDocById(doc.id).toPromise();
+    const postedDoc = await firstValueFrom(this.api.unpostDocById(doc.id));
     this.openSnackBar('success', doc.description, postedDoc.posted ? 'posted' : 'unposted');
     const subject$ = close ? this._saveClose$ : this._unpost$;
     subject$.next(postedDoc);
   }
 
   async delete(id: string) {
-    const deletedDoc = await this.api.deleteDoc(id).toPromise();
+    const deletedDoc = await firstValueFrom(this.api.deleteDoc(id));
     this._delete$.next(deletedDoc);
     this.openSnackBar('success', deletedDoc.description, deletedDoc.deleted ? 'deleted' : 'undeleted');
   }
 
   async deleteById(id: string) {
-    const deletedDoc = await this.api.deleteDoc(id).toPromise();
+    const deletedDoc = await firstValueFrom(this.api.deleteDoc(id));
     this._deleteById$.next(deletedDoc);
     this.openSnackBar('success', deletedDoc.description, deletedDoc.deleted ? 'deleted' : 'undeleted');
   }
 
   async posById(id: string) {
-    const postedDoc = await this.api.postDocById(id).toPromise();
+    const postedDoc = await firstValueFrom(this.api.postDocById(id));
     this._postById$.next(postedDoc);
     return postedDoc;
   }
 
   async unpostById(id: string) {
-    const postedDoc = await this.api.unpostDocById(id).toPromise();
+    const postedDoc = await firstValueFrom(this.api.unpostDocById(id));
     this._unpostById$.next(postedDoc);
     return postedDoc;
   }
 
   async startWorkFlow(id: string) {
-    const workflow = await this.api.startWorkFlow(id).toPromise();
+    const workflow = await firstValueFrom(this.api.startWorkFlow(id));
     return workflow;
   }
 

@@ -20,11 +20,11 @@ export class RegisterMovementsListComponent implements OnInit {
 
   ngOnInit() {
 
-    this.movementsList$ = merge(...[
+    this.movementsList$ = merge(
       this.ds.save$,
       this.ds.delete$,
       this.ds.post$,
-      this.ds.do$]
+      this.ds.do$
     ).pipe(
       startWith(this.doc),
       filter(doc => doc.id === this.doc.id),

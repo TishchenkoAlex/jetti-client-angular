@@ -50,7 +50,7 @@ export class TabControllerComponent {
         setTimeout(() => scrollIntoViewIfNeeded(params.type, 'ui-state-highlight'));
       });
 
-    merge(...[this.ds.save$, this.ds.delete$]).pipe(filter(doc => doc.id === this.route.snapshot.params.id))
+    merge(this.ds.save$, this.ds.delete$).pipe(filter(doc => doc.id === this.route.snapshot.params.id))
       .subscribe(doc => {
         const tabKey = { type: doc.type, id: doc.id, group: doc['Group'] || '', used: '' };
         const tab = tabStore.findTab(tabKey);

@@ -22,7 +22,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   constructor(private apiService: ApiService, public router: Router, private ds: DocService, public lds: LoadingService) { }
 
   ngOnInit() {
-    this._subscription$ = merge(...[this.ds.save$, this.ds.delete$, this.ds.post$, this.ds.unpost$]).pipe(
+    this._subscription$ = merge(this.ds.save$, this.ds.delete$, this.ds.post$, this.ds.unpost$).pipe(
       filter(document => document.id === this.doc.id))
       .subscribe(document => {
         this.apiService.getHistoryById(this.doc.id).pipe(take(1)).subscribe(data => { this.historyListSub$.next(data); });

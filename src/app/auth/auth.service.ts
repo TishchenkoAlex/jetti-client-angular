@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { MsalService } from '@azure/msal-angular';
-import { BehaviorSubject } from 'rxjs';
+import { IPublicClientApplication } from '@azure/msal-browser';
+import { BehaviorSubject, from } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MSAL_LOGIN_SCOPES } from 'src/environments/msal-config';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { IAccount, ILoginResponse } from 'jetti-middle/dist';
+import { MSAL_INSTANCE } from './msal-instance';
 export const ANONYMOUS_USER: ILoginResponse = { account: undefined, token: '', photo: undefined };
 
 @Injectable()
@@ -26,20 +27,24 @@ export class AuthService {
   set token(value) { localStorage.setItem('jetti_token', value); }
   get tokenPayload() { return jwt_decode<JwtPayload>(this.token); }
 
-  constructor(private router: Router, private http: HttpClient, private msalService: MsalService) { }
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    @Inject(MSAL_INSTANCE) private msalInstance: IPublicClientApplication
+  ) { }
 
   public login() {
-    return this.msalService.loginPopup({ scopes: MSAL_LOGIN_SCOPES }).pipe(
+    return from(this.msalInstance.loginPopup({ scopes: MSAL_LOGIN_SCOPES })).pipe(
       switchMap(loginResult => {
         if (!loginResult.account) {
           throw new Error('Microsoft authentication did not return an account.');
         }
 
-        this.msalService.instance.setActiveAccount(loginResult.account);
-        return this.msalService.acquireTokenSilent({
+        this.msalInstance.setActiveAccount(loginResult.account);
+        return from(this.msalInstance.acquireTokenSilent({
           account: loginResult.account,
           scopes: MSAL_LOGIN_SCOPES,
-        });
+        }));
       }),
       switchMap(tokenResult => {
         const account = tokenResult.account || this.getMsalAccount();
@@ -63,7 +68,7 @@ export class AuthService {
     localStorage.removeItem('jetti_token');
     const account = this.getMsalAccount();
     if (account) {
-      this.msalService.logoutPopup({ account }).pipe(take(1)).subscribe();
+      from(this.msalInstance.logoutPopup({ account })).pipe(take(1)).subscribe();
     }
     this._userProfile$.next({ ...ANONYMOUS_USER });
     return this.router.navigate([''], { queryParams: {} });
@@ -166,6 +171,6 @@ export class AuthService {
   }
 
   private getMsalAccount() {
-    return this.msalService.instance.getActiveAccount() || this.msalService.instance.getAllAccounts()[0];
+    return this.msalInstance.getActiveAccount() || this.msalInstance.getAllAccounts()[0];
   }
 }

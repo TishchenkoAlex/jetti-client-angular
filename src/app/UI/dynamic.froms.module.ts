@@ -38,41 +38,32 @@ import { BpmnModule } from '../business-process/bpmn/bpmn.module';
 
 @NgModule({
   declarations: [
-
     HomeComponent,
     TabControllerComponent,
-
     DynamicComponentDirective,
     DynamicComponent,
     DynamicFormControlComponent,
     AutocompleteComponent,
-
     DisableControlDirective,
-
     // BaseDocListComponent,
     BaseDocFormComponent,
     BaseFormComponent,
     BaseTreeListComponent,
     BaseHierarchyListComponent,
-
     TablePartsComponent,
     SuggestDialogComponent,
     SuggestDialogHierarchyComponent,
     InputValueDialogComponent,
     JNgSelectComponent,
     ImageModalComponent,
-
     RegisterAccountMovementsComponent,
     RegisterAccumulationComponent,
     RegisterMovementsListComponent,
     RegisterInfoComponent,
-
     OperationListComponent,
-
     HistoryComponent,
     AttachmentsComponent,
     DescendantsComponent
-
   ],
   imports: [
     NgSelectModule,
@@ -94,34 +85,27 @@ import { BpmnModule } from '../business-process/bpmn/bpmn.module';
     PrimeNGModule,
     HomeComponent,
     TabControllerComponent,
-
     DynamicComponentDirective,
     DynamicComponent,
     DynamicFormControlComponent,
     AutocompleteComponent,
     JNgSelectComponent,
-
     DisableControlDirective,
-
     // BaseDocListComponent,
     BaseDocFormComponent,
     BaseFormComponent,
     BaseTreeListComponent,
     BaseHierarchyListComponent,
-
     TablePartsComponent,
     SuggestDialogComponent,
     SuggestDialogHierarchyComponent,
     InputValueDialogComponent,
     ImageModalComponent,
-
     RegisterAccountMovementsComponent,
     RegisterAccumulationComponent,
     RegisterMovementsListComponent,
     RegisterInfoComponent,
-
     OperationListComponent,
-
     HistoryComponent,
     AttachmentsComponent,
     DescendantsComponent
@@ -131,17 +115,6 @@ import { BpmnModule } from '../business-process/bpmn/bpmn.module';
     DynamicFormService,
     DocService,
     TabsStore,
-  ],
-  entryComponents: [
-    ImageModalComponent,
-    SuggestDialogComponent,
-    InputValueDialogComponent,
-    HomeComponent,
-    BaseDocFormComponent,
-    BaseFormComponent,
-    BaseTreeListComponent,
-    BaseHierarchyListComponent,
-    OperationListComponent,
   ]
 })
 export class DynamicFormsModule { }

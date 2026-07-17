@@ -207,15 +207,6 @@
           "options": {
             "browserTarget": "jetti-app:build"
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json"
-            ],
-            "exclude": []
-          }
         }
       }
     },
@@ -244,13 +235,15 @@
     "@schematics/angular:guard": {
       "skipTests": true
     },
-    "@schematics/angular:module": {
-    },
+    "@schematics/angular:module": {},
     "@schematics/angular:pipe": {
       "skipTests": true
     },
     "@schematics/angular:service": {
       "skipTests": true
     }
+  },
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }

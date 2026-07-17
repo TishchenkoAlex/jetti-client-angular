@@ -105,7 +105,7 @@ export class ObjectsGroupModifyComponent extends _baseDocFormComponent implement
           { step: 'start', panels: ['Тип объектов'], activePanel: 'Тип объектов' },
           { step: 'setProps', panels: ['Параметры'], activePanel: 'Параметры' },
           { step: 'setValues', panels: ['Параметры', 'Фильтр', 'Новые значения реквизитов', 'Тип объектов', 'Дополнительно', 'Произвольный запрос'], activePanel: 'Фильтр' },
-          // tslint:disable-next-line: max-line-length
+          // eslint-disable-next-line max-len
           { step: 'final', panels: ['Параметры', 'Фильтр', 'Новые значения реквизитов', 'Список объектов', 'Дополнительно'], activePanel: 'Список объектов' },
         ];
         break;

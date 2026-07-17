@@ -24,7 +24,7 @@ import {
 import { settingsKind } from 'jetti-middle/dist/common/classes/user-settings';
 import { HotkeysService } from 'src/app/services/hotkeys.service';
 import { ImageModalComponent } from 'src/app/dialog/image.dialog.component';
-// tslint:disable: deprecation
+/* eslint-disable import/no-deprecated */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'j-hierarchy-list',
@@ -235,8 +235,8 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
         .pipe(filter(e => e.apply && !this.isRelationList)).subscribe(e => this.onFilterSettingsStateChanged(e)),
       this._columnsSettingsState$
         .pipe(filter(e => e.apply && !this.isRelationList)).subscribe(e => this.onColumnsSettingsStateChanged(e)),
-      merge(...[
-        this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$, this.ds.post$, this.ds.unpost$]).pipe(
+      merge(
+        this.ds.save$, this.ds.delete$, this.ds.saveClose$, this.ds.goto$, this.ds.post$, this.ds.unpost$).pipe(
           filter(doc => doc
             && doc.type === this.type
             && !!(!this.group || !doc['Group'] || this.group === doc['Group']['id'])))
@@ -821,7 +821,7 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
 
     this.dataSource.listOptions.withHierarchy = this.treeNodesVisible;
     if (this.treeNodesVisible && this.selection.length > 0) { this.id = this.selection[0].id; this.initNodes = true; }
-    // tslint:disable-next-line: one-line
+    // eslint-disable-next-line brace-style
     else if (!this.treeNodesVisible && this.selectedNode) this.id = this.selectedNode.key;
     else this.id = null;
   }

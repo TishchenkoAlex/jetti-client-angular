@@ -9,7 +9,7 @@ import { RegisterAccumulation } from 'jetti-middle/dist';
 import { RegisterInfo } from 'jetti-middle/dist';
 import { FormBase, PropOption } from 'jetti-middle/dist';
 import { MenuItem } from 'primeng/api';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { IAttachmentsSettings, RefValue, DocListOptions, DocListResponse, DocListRequestBody, ISuggest, IJob, IJobs, ITree } from 'jetti-middle/dist';
 import { Ref, IViewModel } from 'jetti-middle/dist';
@@ -37,47 +37,47 @@ export class ApiService {
 
   getAttachmentStorageById(attachmentId: string): Promise<string> {
     const query = `${environment.api}attachments/getAttachmentStorageById/${attachmentId}`;
-    return this.http.get<string>(query).toPromise();
+    return firstValueFrom(this.http.get<string>(query));
   }
 
   getAttachmentsByOwner(ownerId: string, withDeleted: boolean): Promise<any[]> {
     const query = `${environment.api}attachments/getByOwner/${ownerId}/${withDeleted}`;
-    return this.http.get<any[]>(query).toPromise();
+    return firstValueFrom(this.http.get<any[]>(query));
   }
 
   getAttachmentsSettingsByOwner(ownerId: string): Promise<IAttachmentsSettings[]> {
     const query = `${environment.api}attachments/getAttachmentsSettingsByOwner/${ownerId}`;
-    return this.http.get<IAttachmentsSettings[]>(query).toPromise();
+    return firstValueFrom(this.http.get<IAttachmentsSettings[]>(query));
   }
 
   addAttachments(attach: any[]): Promise<any[]> {
     const query = `${environment.api}attachments/add`;
-    return this.http.post<any[]>(query, attach).toPromise();
+    return firstValueFrom(this.http.post<any[]>(query, attach));
   }
 
   delAttachments(attachmentsId: string[]): Promise<void> {
     const query = `${environment.api}attachments/del`;
-    return this.http.post<void>(query, attachmentsId).toPromise();
+    return firstValueFrom(this.http.post<void>(query, attachmentsId));
   }
 
   byId<T extends DocumentBase>(id: Ref): Promise<T> {
     const query = `${environment.api}byId/${id}`;
-    return (this.http.get<T>(query)).toPromise();
+    return firstValueFrom(this.http.get<T>(query));
   }
 
   ancestors(id: string, level: number): Promise<Ref | null> {
     const query = `${environment.api}ancestors/${id}/${level}`;
-    return (this.http.get<Ref | null>(query)).toPromise();
+    return firstValueFrom(this.http.get<Ref | null>(query));
   }
 
   descendants(id: string, level: number): Promise<{ id: Ref, parent: Ref }[]> {
     const query = `${environment.api}descendants/${id}/${level}`;
-    return (this.http.get<{ id: Ref, parent: Ref }[]>(query)).toPromise();
+    return firstValueFrom(this.http.get<{ id: Ref, parent: Ref }[]>(query));
   }
 
   haveDescendants(id: string): Promise<boolean> {
     const query = `${environment.api}haveDescendants/${id}`;
-    return (this.http.get<boolean>(query)).toPromise();
+    return firstValueFrom(this.http.get<boolean>(query));
   }
 
   isCountryByCompany(companyId: string, countryCode: string): Promise<boolean> {
@@ -88,17 +88,17 @@ export class ApiService {
 
   getObjectPropertyById(id: string, valuePath: string): Promise<any> {
     const query = `${environment.api}getObjectPropertyById/${id}/${valuePath}`;
-    return (this.http.get(query)).toPromise();
+    return firstValueFrom(this.http.get(query));
   }
 
   getDocPropValuesByType(type: string, propNames: string[]): Promise<{ propName: string, propValue: any }[]> {
     const query = `${environment.api}getDocPropValuesByType`;
-    return (this.http.post<{ propName: string, propValue: any }[]>(query, { type: type, propNames: propNames })).toPromise();
+    return firstValueFrom(this.http.post<{ propName: string, propValue: any }[]>(query, { type: type, propNames: propNames }));
   }
 
   getDocMetaByType(type: string): Promise<{ Prop, Props }> {
     const query = `${environment.api}getDocMetaByType/${type}`;
-    return (this.http.get<{ Prop, Props }>(query)).toPromise();
+    return firstValueFrom(this.http.get<{ Prop, Props }>(query));
   }
 
   async getIndexedOperationType(operationId: string): Promise<string> {
@@ -111,13 +111,13 @@ export class ApiService {
 
   async getIndexedOperationsTypes(): Promise<Map<string, string>> {
     const query = `${environment.api}getIndexedOperationsTypes`;
-    const entries = await (this.http.get<[[string, string]]>(query)).toPromise();
+    const entries = await firstValueFrom(this.http.get<[[string, string]]>(query));
     return new Map(entries);
   }
 
   formControlRef(id: string): Promise<RefValue> {
     const query = `${environment.api}formControlRef/${id}`;
-    return (this.http.get<RefValue>(query)).toPromise();
+    return firstValueFrom(this.http.get<RefValue>(query));
   }
 
   getDocList(type: string,
@@ -256,24 +256,24 @@ export class ApiService {
 
   getUserSettings(type: string, user: string, id = ''): Promise<IUserSettings[]> {
     const query = `${environment.api}user/settings`;
-    return (this.http.post<IUserSettings[]>(query, { command: 'get', type, user, id }).toPromise());
+    return firstValueFrom(this.http.post<IUserSettings[]>(query, { command: 'get', type, user, id }));
   }
 
   saveUserSettings(settings: IUserSettings[]): Promise<IUserSettings[]> {
     if (!settings || !settings.length) return Promise.resolve([]);
     const query = `${environment.api}user/settings`;
-    return (this.http.post<IUserSettings[]>(query, { command: 'save', settings }).toPromise());
+    return firstValueFrom(this.http.post<IUserSettings[]>(query, { command: 'save', settings }));
   }
 
   async getBankStatementTextByDocsId(id: Ref[]): Promise<string> {
     const query = `${environment.api}getBankStatementTextByDocsId`;
-    return await this.http.post<string>(query, { id }, { headers: { charset: 'windows-1251' } }).toPromise();
+    return firstValueFrom(this.http.post<string>(query, { id }, { headers: { charset: 'windows-1251' } }));
   }
 
   deleteUserSettings(id: string): Promise<void> {
     if (!id) return;
     const query = `${environment.api}user/settings`;
-    return this.http.post<void>(query, { command: 'delete', id }).toPromise<void>();
+    return firstValueFrom(this.http.post<void>(query, { command: 'delete', id }));
   }
 
   getDocDimensions(type: string) {
@@ -285,19 +285,19 @@ export class ApiService {
     const apiDoc = viewModelToFlatDocument(doc);
     const query = `${environment.api}valueChanges/${doc.type}/${property}`;
     const callConfig = { doc: apiDoc, value: value };
-    return this.http.post<IViewModel>(query, callConfig).toPromise();
+    return firstValueFrom(this.http.post<IViewModel>(query, callConfig));
   }
 
   onCommand(doc: DocumentBase | FormBase, command: string, args: { [x: string]: any }) {
     const apiDoc = viewModelToFlatDocument(doc);
     const query = `${environment.api}command/${doc.type}/${command}`;
     const callConfig = { doc: apiDoc, args: args };
-    return this.http.post<{ [x: string]: any }>(query, callConfig).toPromise();
+    return firstValueFrom(this.http.post<{ [x: string]: any }>(query, callConfig));
   }
 
   documentsDataAsJSON(documents: string[]): Promise<string> {
     const query = `${environment.api}documentsDataAsJSON`;
-    return this.http.post<string>(query, documents).toPromise();
+    return firstValueFrom(this.http.post<string>(query, documents));
   }
 
   jobAdd(data: any, opts?: any) {

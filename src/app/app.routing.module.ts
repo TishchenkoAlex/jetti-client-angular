@@ -1,6 +1,6 @@
 import { Injectable, NgModule } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-// tslint:disable-next-line:max-line-length
+// eslint-disable-next-line max-len
 import { ActivatedRouteSnapshot, DetachedRouteHandle, Resolve, RouteReuseStrategy, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import { AuthGuardService } from './auth/auth.guard.service';
 import { DynamicFormService } from './common/dynamic-form/dynamic-form.service';
@@ -38,7 +38,7 @@ export class TabResolver implements Resolve<FormGroup | IViewModel | null> {
   }
 }
 
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 export const routes: Routes = [
   { path: ':type/:id', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },
   { path: ':type', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },

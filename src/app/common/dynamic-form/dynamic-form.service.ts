@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '
 import { map } from 'rxjs/operators';
 import { StorageType } from 'jetti-middle/dist';
 import { ApiService } from '../../services/api.service';
-// tslint:disable-next-line:max-line-length
+// eslint-disable-next-line max-len
 import { AutocompleteFormControl, BooleanFormControl, DateFormControl, DateTimeFormControl, EnumFormControl, FormControlInfo, IFormControlInfo, NumberFormControl, ScriptFormControl, TableDynamicControl, TextareaFormControl, TextboxFormControl, ControlTypes, LinkFormControl, URLFormControl, HTMLFormControl, IFormControlPlacing as IFormControlPlacement } from './dynamic-form-base';
 
 export function cloneFormGroup(formGroup: FormGroup): FormGroup {
