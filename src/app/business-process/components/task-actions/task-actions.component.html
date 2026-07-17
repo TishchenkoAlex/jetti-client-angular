@@ -1,0 +1,20 @@
+<div class="ui-g ui-g-nopad" *ngIf="task">
+  <div class="ui-g-12" style="display: flex; gap: 4px; flex-wrap: wrap;">
+    <button pButton type="button" label="Approve" icon="pi pi-check" class="ui-button-success"
+      *ngIf="can('approve')" [disabled]="loading" (click)="approve()"></button>
+    <button pButton type="button" label="Reject" icon="pi pi-times" class="ui-button-danger"
+      *ngIf="can('reject')" [disabled]="loading" (click)="openDialog('reject')"></button>
+    <button pButton type="button" label="Redirect" icon="pi pi-share-alt" class="ui-button-warning"
+      *ngIf="can('redirect')" [disabled]="loading" (click)="openDialog('redirect')"></button>
+    <button pButton type="button" label="Delegate" icon="pi pi-user-plus" class="ui-button-info"
+      *ngIf="can('delegate')" [disabled]="loading" (click)="openDialog('delegate')"></button>
+  </div>
+
+  <div class="ui-g-12" *ngIf="error">
+    <span class="ui-message ui-messages-error">{{error}}</span>
+  </div>
+</div>
+
+<bp-task-action-dialog [visible]="dialogVisible" [action]="dialogAction"
+  (confirm)="handleDialogConfirm($event)" (cancel)="closeDialog()">
+</bp-task-action-dialog>

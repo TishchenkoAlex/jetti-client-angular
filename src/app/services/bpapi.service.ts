@@ -5,6 +5,10 @@ import { ITask, ProcessParticipants, ITaskCompleteResult } from 'src/app/UI/Busi
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
+/**
+ * Legacy compatibility client for old /api/BP/* integration.
+ * Do not use this service for the new business-process module.
+ */
 export class BPApi {
 
   constructor(private http: HttpClient) { }

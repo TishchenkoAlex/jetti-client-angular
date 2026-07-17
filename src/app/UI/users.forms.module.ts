@@ -7,6 +7,7 @@ import { TaskComponent } from './BusinessProcesses/task.component';
 import { DocumentCashRequestComponent } from './Documents/Document.CashRequest';
 import { SearchAndReplaceComponent } from './Forms/search-and-replace.component';
 import { ObjectsGroupModifyComponent } from './Forms/ObjectsGroupModify.form.component';
+import { BusinessProcessModule } from '../business-process/business-process.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { ObjectsGroupModifyComponent } from './Forms/ObjectsGroupModify.form.com
     QueueManagerComponent
   ],
   imports: [
-    DynamicFormsModule
+    DynamicFormsModule,
+    BusinessProcessModule
   ],
   exports: [
   ],

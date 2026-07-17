@@ -34,6 +34,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { JNgSelectComponent } from '../common/multiselect/ng.select.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ImageModalComponent } from '../dialog/image.dialog.component';
+import { BpmnModule } from '../business-process/bpmn/bpmn.module';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { ImageModalComponent } from '../dialog/image.dialog.component';
     MaterialModule,
     PipesModule,
     PrimeNGModule,
-    AngularEditorModule
+    AngularEditorModule,
+    BpmnModule
   ],
   exports: [
     CommonModule,

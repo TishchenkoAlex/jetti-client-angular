@@ -35,6 +35,8 @@
               "src/assets/theme/omega/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
+              "node_modules/bpmn-js/dist/assets/diagram-js.css",
+              "node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn.css",
               "src/styles.scss",
               "src/theme.scss"
             ],
@@ -214,8 +216,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "tsconfig.app.json"
             ],
             "exclude": []
           }

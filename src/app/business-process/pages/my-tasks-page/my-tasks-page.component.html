@@ -1,0 +1,55 @@
+<div style="display: flex; flex-direction: column; overflow-x: auto;">
+  <p-toolbar>
+    <div class="ui-toolbar-group-left">
+      <button pButton type="button" label="Refresh" icon="pi pi-refresh" class="ui-button-info"
+        [disabled]="loading" (click)="loadTasks()"></button>
+      <label style="margin-left: 12px;">
+        <input type="checkbox" [(ngModel)]="includeCompleted" (change)="loadTasks()">
+        Include completed
+      </label>
+    </div>
+
+    <div class="ui-toolbar-group-right">
+      <input pInputText type="text" placeholder="Search"
+        (input)="Tasklist.filterGlobal($event.target.value, 'contains')" style="width:auto">
+    </div>
+  </p-toolbar>
+
+  <div *ngIf="error" class="ui-message ui-messages-error" style="margin: 8px 0;">{{error}}</div>
+  <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '4px'}"></p-progressBar>
+
+  <p-table #Tasklist [columns]="columns" [value]="tasks" dataKey="id" sortMode="multiple"
+    [resizableColumns]="true"
+    [globalFilterFields]="['title','objectType','objectId','stepKey','status']">
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let column of columns">
+        <col>
+      </colgroup>
+    </ng-template>
+
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let column of columns" [pSortableColumn]="column.field" pResizableColumn
+          [ngStyle]="column.style">
+          {{column.header}}
+          <p-sortIcon [field]="column.field"></p-sortIcon>
+        </th>
+        <th style="width: 26em;">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr (dblclick)="open(rowData)">
+        <td *ngFor="let column of columns" class="ui-resizable-column" [ngSwitch]="column.type" [ngStyle]="column.style">
+          <span *ngSwitchCase="'date'">{{rowData[column.field] | date:'dd.MM.yyyy HH:mm:ss'}}</span>
+          <span *ngSwitchCase="'number'">{{rowData[column.field] | number:'1.2-2'}}</span>
+          <span *ngSwitchDefault>{{rowData[column.field] || ''}}</span>
+        </td>
+        <td>
+          <bp-task-actions [task]="rowData" (completed)="loadTasks()"></bp-task-actions>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

@@ -1,0 +1,21 @@
+<p-panel header="Business process" [toggleable]="true">
+  <div *ngIf="loading">Loading...</div>
+  <div class="ui-message ui-messages-error" *ngIf="error">{{error}}</div>
+
+  <div *ngIf="!loading && !error && !instance">
+    No business-process instance.
+  </div>
+
+  <div *ngIf="instance">
+    <div class="ui-g">
+      <div class="ui-g-12 ui-md-4"><strong>Status</strong><br>{{instance.status}}</div>
+      <div class="ui-g-12 ui-md-4"><strong>Template</strong><br>{{instance.templateCode || ''}}</div>
+      <div class="ui-g-12 ui-md-4"><strong>Version</strong><br>{{instance.templateVersion || ''}}</div>
+      <div class="ui-g-12 ui-md-4"><strong>Current step</strong><br>{{instance.currentStepKey || ''}}</div>
+      <div class="ui-g-12 ui-md-4"><strong>Started</strong><br>{{instance.startedAt | date:'dd.MM.yyyy HH:mm:ss'}}</div>
+      <div class="ui-g-12 ui-md-4"><strong>Completed</strong><br>{{instance.completedAt | date:'dd.MM.yyyy HH:mm:ss'}}</div>
+    </div>
+
+    <bp-process-timeline [events]="events"></bp-process-timeline>
+  </div>
+</p-panel>

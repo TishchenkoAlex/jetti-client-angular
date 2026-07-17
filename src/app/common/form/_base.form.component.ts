@@ -53,7 +53,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
   readonly: boolean;
   navigateCommands: MenuItem[] = [];
 
-  private readonly _form$ = new BehaviorSubject<FormGroup>(undefined);
+  protected readonly _form$ = new BehaviorSubject<FormGroup>(undefined);
   form$ = this._form$.asObservable();
 
   viewModel$ = this.form$.pipe(
@@ -91,7 +91,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
   );
   isPosted$ = this.form$.pipe(map((f) => <boolean>!!f.get("posted").value));
   isDeleted$ = this.form$.pipe(map((f) => <boolean>!!f.get("deleted").value));
-  isNew$ = this.form$.pipe(map((f) => !f.get("timestamp").value));
+  isNew$ = this.form$.pipe(map((f) => !!f.get("timestamp") && !f.get("timestamp").value));
   isFolder$ = this.form$.pipe(map((f) => !!f.get("isfolder").value));
   isDirty$ = this.form$.pipe(map((f) => <boolean>!!f.dirty));
   commands$ = this.metadata$.pipe(

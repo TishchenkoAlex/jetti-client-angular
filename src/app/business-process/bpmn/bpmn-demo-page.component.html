@@ -1,0 +1,30 @@
+<div class="bp-bpmn-demo-page">
+  <h3>BPMN modeler demo</h3>
+
+  <p>
+    This page is a technical spike for bpmn-js integration.
+    It is not connected to BusinessProcessTemplate yet.
+  </p>
+
+  <div *ngIf="message" class="alert alert-success">
+    {{message}}
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{error}}
+  </div>
+
+  <bp-bpmn-modeler
+    [xml]="xml"
+    (xmlChange)="onXmlChange($event)"
+    (importError)="onImportError($event)"
+    (saveError)="onSaveError($event)">
+  </bp-bpmn-modeler>
+
+  <div *ngIf="savedXml">
+    <h4>Saved XML preview</h4>
+    <textarea
+      style="width: 100%; min-height: 240px;"
+      readonly>{{savedXml}}</textarea>
+  </div>
+</div>

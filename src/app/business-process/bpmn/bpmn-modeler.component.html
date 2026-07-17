@@ -1,0 +1,17 @@
+<div class="bp-bpmn-modeler" [class.bp-bpmn-readonly]="readonly">
+  <div class="bp-bpmn-toolbar">
+    <button type="button" class="btn btn-default" (click)="saveXml()" [disabled]="loading || readonly">
+      Apply diagram
+    </button>
+
+    <span *ngIf="loading" class="bp-bpmn-status">
+      Loading...
+    </span>
+
+    <span *ngIf="error" class="bp-bpmn-error">
+      {{error}}
+    </span>
+  </div>
+
+  <div #canvas class="bp-bpmn-canvas"></div>
+</div>

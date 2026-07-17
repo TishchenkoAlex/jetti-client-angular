@@ -1,0 +1,12 @@
+<div *ngIf="!events || events.length === 0">
+  No process events.
+</div>
+
+<div *ngFor="let event of events" class="ui-g" style="border-bottom: 1px solid #e5e5e5; padding: 8px 0;">
+  <div class="ui-g-12 ui-md-3">{{event.date | date:'dd.MM.yyyy HH:mm:ss'}}</div>
+  <div class="ui-g-12 ui-md-3">{{event.eventType}}</div>
+  <div class="ui-g-12 ui-md-3">{{getUserDisplay(event)}}</div>
+  <div class="ui-g-12" *ngIf="event.payload">
+    <pre style="white-space: pre-wrap; margin: 4px 0 0;">{{event.payload | json}}</pre>
+  </div>
+</div>

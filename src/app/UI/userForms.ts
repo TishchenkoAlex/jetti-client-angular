@@ -9,12 +9,14 @@ import { SearchAndReplaceComponent } from './Forms/search-and-replace.component'
 import { BaseHierarchyListComponent } from '../common/datatable/base.hierarchy-list.component';
 import { ObjectsGroupModifyComponent } from './Forms/ObjectsGroupModify.form.component';
 import { QueueManagerComponent } from './Forms/queue-manager.form.component';
+import { MyTasksPageComponent } from '../business-process/pages/my-tasks-page/my-tasks-page.component';
 
 const userForms: { [x: string]: { formComponent: Type<any>, listComponent: Type<any> } } = {
   'home': { formComponent: HomeComponent, listComponent: HomeComponent },
   'Document.Operation': { formComponent: BaseDocFormComponent, listComponent: OperationListComponent },
   'Form.PostAfterEchange': { formComponent: SyncFormComponent, listComponent: SyncFormComponent },
   'Form.BusinessProcessTasks': { formComponent: TaskListComponent, listComponent: TaskListComponent },
+  'Form.BusinessProcessMyTasks': { formComponent: MyTasksPageComponent, listComponent: MyTasksPageComponent },
   'Document.CashRequest': { formComponent: DocumentCashRequestComponent, listComponent: BaseHierarchyListComponent  },
   'Form.SearchAndReplace': { formComponent: SearchAndReplaceComponent, listComponent: SearchAndReplaceComponent },
   'Form.ObjectsGroupModify': { formComponent: ObjectsGroupModifyComponent, listComponent: ObjectsGroupModifyComponent },

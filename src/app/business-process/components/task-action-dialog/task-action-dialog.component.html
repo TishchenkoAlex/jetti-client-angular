@@ -1,0 +1,20 @@
+<p-dialog [header]="title" [visible]="visible" [modal]="true" [responsive]="true" [style]="{width: '420px'}"
+  (onHide)="onCancel()">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12" *ngIf="requiresUser">
+      <label>User ID</label>
+      <input pInputText type="text" [(ngModel)]="userId">
+    </div>
+
+    <div class="ui-g-12">
+      <label>Comment</label>
+      <textarea pInputTextarea rows="4" [(ngModel)]="comment"></textarea>
+    </div>
+  </div>
+
+  <p-footer>
+    <button pButton type="button" label="Cancel" class="ui-button-secondary" (click)="onCancel()"></button>
+    <button pButton type="button" label="Confirm" class="ui-button-success" [disabled]="!canConfirm"
+      (click)="onConfirm()"></button>
+  </p-footer>
+</p-dialog>

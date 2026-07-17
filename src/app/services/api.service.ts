@@ -166,6 +166,8 @@ export class ApiService {
   }
 
   startWorkFlow(id: Ref) {
+    // TODO business-process:
+    // Legacy document workflow endpoint. Do not use it for the new business-process module.
     const query = `${environment.api}startWorkFlow/${id}`;
     return this.http.get<DocumentBase>(query);
   }

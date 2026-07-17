@@ -278,6 +278,9 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
   }
 
   StartProcess() {
+    // TODO business-process:
+    // This legacy BP/K2 flow must be replaced by /api/business-process/*.
+    // Do not add new workflow behavior here.
     this.bpApi.StartProcess(
       this.viewModel as DocumentBase,
       this.metadata.type,
@@ -285,6 +288,9 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
   }
 
   ContinueAgreement() {
+    // TODO business-process:
+    // This legacy BP/K2 flow must be replaced by /api/business-process/*.
+    // Do not add new workflow behavior here.
     this.bpApi.ModifyProcess(
       this.viewModel as DocumentBase,
       this.metadata.type,
@@ -293,6 +299,9 @@ export class DocumentCashRequestComponent extends _baseDocFormComponent implemen
   }
 
   handleBpApiResponse(response: any, isModifyEvent = false) {
+    // TODO business-process:
+    // Document status updates are part of the legacy BP/K2 flow.
+    // New workflow actions must come from /api/business-process/*.
     if (response.error) {
       this.ds.openSnackBar('error', 'Ошибка', response.message);
       return;

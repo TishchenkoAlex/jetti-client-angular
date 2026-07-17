@@ -10,7 +10,11 @@
               <button pButton type="button" id="PostClose" icon="fa fa-check-square" label="Post&Close"
                 pTooltip="Post and close" tooltipPosition="top" showDelay="2000" class="ui-button-warning"
                 [disabled]="!form.valid || (lds.busy$ | async)" (click)="postClose()"
-                *ngIf="!(isDeleted$ | async)"></button>
+                *ngIf="!(isDeleted$ | async) && type !== 'BusinessProcess.Template'"></button>
+              <button pButton type="button" id="SaveTemplateClose" icon="fa fa-check-square" label="Save & Close"
+                pTooltip="Save and close" tooltipPosition="top" showDelay="2000" class="ui-button-warning"
+                [disabled]="!form.valid || (lds.busy$ | async)" (click)="saveTemplateAndClose()"
+                *ngIf="type === 'BusinessProcess.Template' && !(isDeleted$ | async)"></button>
               <button pButton type="button" id="Post" icon="fa fa-check" class="ui-button-secondary" pTooltip="Post"
                 tooltipPosition="top" showDelay="2000" [disabled]="!form.valid || (lds.busy$ | async)" (click)="post()"
                 *ngIf="!(isDeleted$ | async) && isDoc"></button>
@@ -24,7 +28,8 @@
                 tooltipPosition="top" showDelay="2000" [disabled]="!form.valid || (lds.busy$ | async)" (click)="copy()"
                 *ngIf="!(isDeleted$ | async)  && !(isNew$ | async)"></button>
               <button pButton type="button" id="Delete" icon="far fa-trash-alt" class="ui-button-danger"
-                pTooltip="Delete" tooltipPosition="top" showDelay="2000" *ngIf="!(isNew$ | async)" (click)="delete()"
+                pTooltip="Delete" tooltipPosition="top" showDelay="2000"
+                *ngIf="!(isNew$ | async) && type !== 'BusinessProcess.Template'" (click)="delete()"
                 [disabled]="(lds.busy$ | async)"></button>
             </div>
             <div *ngIf="!isHistory" class="ui-toolbar-group-right">
@@ -85,7 +90,12 @@
         </p-panel>
 
         <p-panel *ngFor="let panel of controlsPlacement" [toggleable]="true" [header]="panel.panel" [collapsed]="true"
-          toggler="header">
+          toggler="header" #dynamicPanel>
+
+          <bp-business-process-template-bpmn
+            *ngIf="type === 'BusinessProcess.Template' && panel.panel === 'Process map' && !dynamicPanel.collapsed"
+            [form]="form" [readonly]="readonly">
+          </bp-business-process-template-bpmn>
 
           <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
             *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
@@ -122,7 +132,7 @@
 
         </p-panel>
 
-        <div *ngIf="!isHistory">
+        <div *ngIf="!isHistory && type !== 'BusinessProcess.Template'">
           <p-panel *ngIf="type === 'Catalog.Operation' && (isFolder$ | async) === false" [toggleable]="true"
             header="Post script (management)" [collapsed]="true" (collapsedChange)="mp.collapse($event);"
             toggler="header">
