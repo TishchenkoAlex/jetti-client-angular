@@ -11,7 +11,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "showCircularDependencies": false,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -216,7 +215,6 @@
       "projectType": "application"
     }
   },
-  "defaultProject": "jetti-app",
   "schematics": {
     "@schematics/angular:class": {
       "skipTests": true
@@ -244,6 +242,8 @@
     }
   },
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { IViewModel } from 'jetti-middle/dist';
 
 export interface TabDef extends TabDefKey {
@@ -8,7 +8,7 @@ export interface TabDef extends TabDefKey {
   icon: string;
   routerLink: string;
   query: { [x: string]: any };
-  data: FormGroup | IViewModel | any;
+  data: UntypedFormGroup | IViewModel | any;
 }
 
 export interface TabDefKey {

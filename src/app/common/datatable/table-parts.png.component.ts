@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
-import { FormArray, FormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
 import { BehaviorSubject, merge, Subscription } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 import { TableDynamicControl } from '../../common/dynamic-form/dynamic-form-base';
@@ -46,7 +46,7 @@ const TablePartValidator: ValidatorFn = (c: AbstractControl) => {
   templateUrl: './table-parts.png.component.html'
 })
 export class TablePartsComponent implements OnInit, OnDestroy {
-  @Input() formGroup: FormArray;
+  @Input() formGroup: UntypedFormArray;
   @Input() control: TableDynamicControl;
   @Output() onDoubleClick: EventEmitter<{ [x: string]: any }> = new EventEmitter();
   @ViewChildren(EditableColumn) editableColumns: QueryList<EditableColumn>;
@@ -131,7 +131,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   getControl(i: number) {
-    return this.formGroup.at(i) as FormGroup;
+    return this.formGroup.at(i) as UntypedFormGroup;
   }
 
   getControlValue(index: number, field: string, type: string) {
@@ -146,7 +146,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  private addCopy(newFormGroup: FormGroup) {
+  private addCopy(newFormGroup: UntypedFormGroup) {
     newFormGroup.controls['index'].setValue(this.formGroup.length, patchOptionsNoEvents);
     this.formGroup.push(newFormGroup);
     this.dataSource = [...this.dataSource, newFormGroup.getRawValue()];
@@ -168,14 +168,14 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   copy() {
-    const newFormGroup = cloneFormGroup(this.formGroup.at(this.selection[0].index) as FormGroup);
+    const newFormGroup = cloneFormGroup(this.formGroup.at(this.selection[0].index) as UntypedFormGroup);
     this.addCopy(newFormGroup);
     this.recalcTotals();
   }
 
   delete() {
     for (const element of this.selection) {
-      const rowIndex = this.formGroup.controls.findIndex((el: FormGroup) => el.controls['index'].value === element.index);
+      const rowIndex = this.formGroup.controls.findIndex((el: UntypedFormGroup) => el.controls['index'].value === element.index);
       this.formGroup.removeAt(rowIndex);
       this.formGroup.markAsDirty();
     }

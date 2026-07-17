@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { StorageType } from 'jetti-middle/dist';
 import { ApiService } from '../../services/api.service';
 // eslint-disable-next-line max-len
 import { AutocompleteFormControl, BooleanFormControl, DateFormControl, DateTimeFormControl, EnumFormControl, FormControlInfo, IFormControlInfo, NumberFormControl, ScriptFormControl, TableDynamicControl, TextareaFormControl, TextboxFormControl, ControlTypes, LinkFormControl, URLFormControl, HTMLFormControl, IFormControlPlacing as IFormControlPlacement } from './dynamic-form-base';
 
-export function cloneFormGroup(formGroup: FormGroup): FormGroup {
-  const newFormGroup = new FormGroup({});
+export function cloneFormGroup(formGroup: UntypedFormGroup): UntypedFormGroup {
+  const newFormGroup = new UntypedFormGroup({});
   Object.keys(formGroup.controls).forEach(key => {
-    const sourceFormControl = formGroup.controls[key] as FormControl;
+    const sourceFormControl = formGroup.controls[key] as UntypedFormControl;
     const cloneValue = typeof sourceFormControl.value === 'object'
       && !(sourceFormControl.value instanceof Date)
       && sourceFormControl.value !== null ?
       { ...sourceFormControl.value } : sourceFormControl.value;
     const cloneFormControl = sourceFormControl.validator ?
-      new FormControl(cloneValue, { validators: sourceFormControl.validator }) :
-      new FormControl(cloneValue);
+      new UntypedFormControl(cloneValue, { validators: sourceFormControl.validator }) :
+      new UntypedFormControl(cloneValue);
     newFormGroup.registerControl(key, cloneFormControl);
   });
   return newFormGroup;
@@ -40,25 +40,25 @@ function toFormGroup(controls: FormControlInfo[]) {
   controls.forEach(control => {
     if (control instanceof TableDynamicControl) {
       const Row: { [key: string]: AbstractControl } = {};
-      const arr: FormGroup[] = [];
+      const arr: UntypedFormGroup[] = [];
       for (const item of control.controls) {
-        Row[item.key] = new FormControl(item.value, getControlValidators(item));
+        Row[item.key] = new UntypedFormControl(item.value, getControlValidators(item));
         Row[item.key]['formControlInfo'] = item;
       }
-      arr.push(new FormGroup(Row));
-      group[control.key] = new FormArray(arr, getControlValidators(control));
+      arr.push(new UntypedFormGroup(Row));
+      group[control.key] = new UntypedFormArray(arr, getControlValidators(control));
     } else {
-      group[control.key] = new FormControl(control.value, getControlValidators(control));
+      group[control.key] = new UntypedFormControl(control.value, getControlValidators(control));
     }
     group[control.key]['formControlInfo'] = control;
   });
-  const result = new FormGroup(group);
+  const result = new UntypedFormGroup(group);
   return result;
 }
 
 export const patchOptionsNoEvents = { onlySelf: false, emitEvent: false, emitModelToViewChange: false, emitViewToModelChange: false };
 
-export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]: any }, isExists: boolean): FormGroup {
+export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]: any }, isExists: boolean): UntypedFormGroup {
   let controls: FormControlInfo[] = [];
 
   const processRecursive = (v: { [x: string]: any }, f: FormControlInfo[]) => {
@@ -152,11 +152,11 @@ export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]:
 
   // Create formArray's for table parts of document
   Object.keys(formGroup.controls)
-    .filter(property => formGroup.controls[property] instanceof FormArray)
+    .filter(property => formGroup.controls[property] instanceof UntypedFormArray)
     .forEach(property => {
-      const sample = (formGroup.controls[property] as FormArray).controls[0] as FormGroup;
-      sample.addControl('index', new FormControl(0));
-      const formArray = formGroup.controls[property] as FormArray;
+      const sample = (formGroup.controls[property] as UntypedFormArray).controls[0] as UntypedFormGroup;
+      sample.addControl('index', new UntypedFormControl(0));
+      const formArray = formGroup.controls[property] as UntypedFormArray;
       if (isExists) {
         if (!model[property]) { model[property] = []; }
         for (let i = 0; i < model[property].length; i++) {
@@ -165,7 +165,7 @@ export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]:
           formArray.push(newFormGroup);
         }
       }
-      formArray['sample'] = cloneFormGroup(formArray.at(0) as FormGroup);
+      formArray['sample'] = cloneFormGroup(formArray.at(0) as UntypedFormGroup);
       formArray.removeAt(0);
     });
 

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { getFormGroup } from 'src/app/common/dynamic-form/dynamic-form.service';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { FormControlInfo } from '../common/dynamic-form/dynamic-form-base';
 import { BehaviorSubject } from 'rxjs';
 
@@ -20,7 +20,7 @@ export class InputValueDialogComponent implements OnInit, OnDestroy {
         model?: { [x: string]: any };
     };
 
-    private readonly _form$ = new BehaviorSubject<FormGroup>(undefined);
+    private readonly _form$ = new BehaviorSubject<UntypedFormGroup>(undefined);
     form$ = this._form$.asObservable();
 
     get metadata() { return { module: '' }; }

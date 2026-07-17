@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { BusinessProcessRouteMapperService } from '../services/business-process-route-mapper.service';
 import { BusinessProcessTemplateApiService } from '../services/business-process-template-api.service';
 import { BusinessProcessBpmnMapperService, BusinessProcessBpmnRepresentation } from './business-process-bpmn-mapper.service';
@@ -12,7 +12,7 @@ import { BpmnModelerComponent } from './bpmn-modeler.component';
 })
 export class BusinessProcessTemplateBpmnComponent implements OnInit {
   @ViewChild(BpmnModelerComponent) modeler: BpmnModelerComponent;
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
   @Input() readonly = false;
 
   xml = '';

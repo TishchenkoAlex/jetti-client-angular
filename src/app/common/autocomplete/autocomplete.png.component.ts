@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, UntypedFormControl, UntypedFormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AutoComplete } from 'primeng/autocomplete';
 import { Observable, Subscription } from 'rxjs';
@@ -64,16 +64,16 @@ export class AutocompleteComponent
   @Output() focus = new EventEmitter();
   @ViewChild("ac") input: AutoComplete;
   @Input() id: string;
-  @Input() formControl: FormControl;
+  @Input() formControl: UntypedFormControl;
   @Input() appendTo;
 
-  form: FormGroup = new FormGroup({
-    suggest: new FormControl(
+  form: UntypedFormGroup = new UntypedFormGroup({
+    suggest: new UntypedFormControl(
       { value: this.value },
       AutocompleteValidator(this)
     ),
   });
-  suggest = this.form.controls["suggest"] as FormControl;
+  suggest = this.form.controls["suggest"] as UntypedFormControl;
   Suggests$: Observable<ISuggest[]>;
 
   private NO_EVENT = false;
@@ -351,7 +351,7 @@ export class AutocompleteComponent
 
   getFilterFromModule(Filter: FormListFilter[]): FormListFilter[] {
     if (!this.formControl) return Filter; // list form
-    const form = this.formControl.root as FormGroup;
+    const form = this.formControl.root as UntypedFormGroup;
     const funcName = `getFilter_${this.id}`;
     if (!form["metadata"] || !form["metadata"]["module"]) return Filter;
     const functions = new Function("", form["metadata"]["module"]).bind(this)();

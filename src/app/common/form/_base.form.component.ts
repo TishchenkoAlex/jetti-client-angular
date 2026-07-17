@@ -1,7 +1,7 @@
 import { IFormControlPlacing } from './../dynamic-form/dynamic-form-base';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { ChangeDetectorRef, Input, OnDestroy, OnInit, QueryList, ViewChildren, Directive } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { merge, of as observableOf, Subscription, BehaviorSubject, Observable } from 'rxjs';
@@ -36,7 +36,7 @@ export interface CommonCommandResult {
 export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsModel {
   @Input() id: string;
   @Input() type: string;
-  @Input() data: FormGroup;
+  @Input() data: UntypedFormGroup;
   @ViewChildren(CdkTrapFocus) cdkTrapFocus: QueryList<CdkTrapFocus>;
 
   get isDoc() {
@@ -54,7 +54,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
   readonly: boolean;
   navigateCommands: MenuItem[] = [];
 
-  protected readonly _form$ = new BehaviorSubject<FormGroup>(undefined);
+  protected readonly _form$ = new BehaviorSubject<UntypedFormGroup>(undefined);
   form$ = this._form$.asObservable();
 
   viewModel$ = this.form$.pipe(
@@ -82,7 +82,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     )
   );
   hasTables$ = this.tables$.pipe(map((t) => t.length > 0));
-  description$ = this.form$.pipe(map((f) => <FormControl>f.get("description")));
+  description$ = this.form$.pipe(map((f) => <UntypedFormControl>f.get("description")));
   isArchived$ = this.form$.pipe(
     map((f) =>
       f.get("user") && f.get("user").value
@@ -182,7 +182,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
     return <FormControlInfo[]>this.v.filter((el) => el.isAdditional);
   }
   get description() {
-    return <FormControl>this.form.get("description");
+    return <UntypedFormControl>this.form.get("description");
   }
   get isPosted() {
     return <boolean>!!this.form.get("posted").value;
@@ -340,7 +340,7 @@ export class _baseDocFormComponent implements OnDestroy, OnInit, IFormEventsMode
       });
   }
 
-  public Next(formGroup: FormGroup) {
+  public Next(formGroup: UntypedFormGroup) {
     const orderedControls = [...formGroup["orderedControls"]];
     const byKeyControls = { ...formGroup["byKeyControls"] };
     formGroup["orderedControls"] = [];

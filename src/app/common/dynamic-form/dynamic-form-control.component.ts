@@ -8,7 +8,7 @@ import {
   Output,
   EventEmitter,
 } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { UntypedFormGroup } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { ApiService } from "../../services/api.service";
 import { FormControlInfo } from "./dynamic-form-base";
@@ -24,7 +24,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   readonly scriptEditorOptions = { language: 'javascript', theme: 'vs' };
 
   @Input() control: FormControlInfo;
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
   @Input() appendTo;
   @Output() change = new EventEmitter();
   get formControl() { return this.form.get(this.control.key); }
@@ -180,7 +180,7 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
           if (this.control.onChangeServer) {
             this.api
               .valueChanges(
-                (this.form.root as FormGroup).getRawValue(),
+                (this.form.root as UntypedFormGroup).getRawValue(),
                 this.control.key,
                 value,
               )

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, QueryList, ViewChildren, ChangeDetectorRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentOptions, RefValue } from 'jetti-middle';
 import { merge } from 'rxjs';
@@ -61,8 +61,8 @@ export class TabControllerComponent {
       });
   }
 
-  private getTabTitle(detail: FormGroup | { metadata: DocumentOptions & { Group: RefValue, Used: RefValue } }): { header: string, icon: string } {
-    if (detail instanceof FormGroup) {
+  private getTabTitle(detail: UntypedFormGroup | { metadata: DocumentOptions & { Group: RefValue, Used: RefValue } }): { header: string, icon: string } {
+    if (detail instanceof UntypedFormGroup) {
       const doc = detail.getRawValue();
       const metadata = detail['metadata'];
       return { header: `${doc.description || metadata.description}`, icon: metadata.icon };

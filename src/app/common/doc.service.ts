@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { firstValueFrom, Subject } from 'rxjs';
 import { ApiService } from '../services/api.service';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { DocumentBase } from 'jetti-middle/dist';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class DocService {
   private readonly _workflow$ = new Subject<DocumentBase>();
   workflow$ = this._workflow$.asObservable();
 
-  private readonly _form$ = new Subject<FormGroup>();
+  private readonly _form$ = new Subject<UntypedFormGroup>();
   form$ = this._form$.asObservable();
 
   constructor(public api: ApiService, private messageService: MessageService, public confirmationService: ConfirmationService) { }
@@ -102,7 +102,7 @@ export class DocService {
     return workflow;
   }
 
-  async form(value: FormGroup) {
+  async form(value: UntypedFormGroup) {
     this._form$.next(value);
   }
 
