@@ -11,7 +11,7 @@ import { BpmnModelerComponent } from './bpmn-modeler.component';
   styleUrls: ['./business-process-template-bpmn.component.scss']
 })
 export class BusinessProcessTemplateBpmnComponent implements OnInit {
-  @ViewChild(BpmnModelerComponent, { static: false }) modeler: BpmnModelerComponent;
+  @ViewChild(BpmnModelerComponent) modeler: BpmnModelerComponent;
   @Input() form: FormGroup;
   @Input() readonly = false;
 

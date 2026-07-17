@@ -28,7 +28,7 @@ import { OperationListComponent } from './Operation/operation.list.component';
 import { DisableControlDirective } from '../common/directives/disabled-control';
 import { HistoryComponent } from '../common/history/history.component';
 import { DescendantsComponent } from '../common/descendants/descendants.component';
-import { DialogService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { InputValueDialogComponent } from './../dialog/input-value.dialog.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { JNgSelectComponent } from '../common/multiselect/ng.select.component';

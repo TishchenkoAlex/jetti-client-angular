@@ -2,7 +2,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AutoComplete } from 'primeng/components/autocomplete/autocomplete';
+import { AutoComplete } from 'primeng/autocomplete';
 import { Observable, Subscription } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { IComplexObject } from '../dynamic-form/dynamic-form-base';
@@ -62,7 +62,7 @@ export class AutocompleteComponent
   @Output() clear = new EventEmitter();
   @Output() change = new EventEmitter();
   @Output() focus = new EventEmitter();
-  @ViewChild("ac", { static: false }) input: AutoComplete;
+  @ViewChild("ac") input: AutoComplete;
   @Input() id: string;
   @Input() formControl: FormControl;
   @Input() appendTo;

@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
-import { MenuItem } from 'primeng/components/common/menuitem';
+import { MenuItem } from 'primeng/api';
 import { Observable, of, iif } from 'rxjs';
 import { mergeMap, tap } from 'rxjs/operators';
 import { AppComponent } from './app.component';

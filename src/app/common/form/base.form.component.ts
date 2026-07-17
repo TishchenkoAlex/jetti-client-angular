@@ -17,7 +17,7 @@ import { BusinessProcessTemplateBpmnComponent } from '../../business-process/bpm
   templateUrl: './base.form.component.html'
 })
 export class BaseDocFormComponent extends _baseDocFormComponent implements OnInit, OnDestroy {
-  @ViewChild(BusinessProcessTemplateBpmnComponent, { static: false })
+  @ViewChild(BusinessProcessTemplateBpmnComponent)
   private templateBpmn: BusinessProcessTemplateBpmnComponent;
 
   constructor(

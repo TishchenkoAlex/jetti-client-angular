@@ -5,10 +5,32 @@ import { filter, tap } from 'rxjs/operators';
 import { TableDynamicControl } from '../../common/dynamic-form/dynamic-form-base';
 import { cloneFormGroup, patchOptionsNoEvents } from '../../common/dynamic-form/dynamic-form.service';
 import { ApiService } from '../../services/api.service';
-import { EditableColumn, Table } from '../datatable/table';
+import { EditableColumn, Table } from 'primeng/table';
 import { DocService } from '../doc.service';
-import { FilterUtils, SortEvent } from 'primeng/api';
+import { SortEvent } from 'primeng/api';
+import { FilterUtils } from 'primeng/utils';
 import { ColumnDef } from 'jetti-middle/dist';
+
+const JETTI_FILTER_PREFIX = 'jetti-';
+const JETTI_FILTER_MATCH_MODES = ['contains', 'equals', 'gt', 'lt'];
+
+function unwrapTableValue(value: any): any {
+  if (value !== null && typeof value === 'object' && !Array.isArray(value) && 'value' in value) {
+    return value.value;
+  }
+
+  return value;
+}
+
+function registerJettiTableFilters(): void {
+  const filterUtils = FilterUtils as any;
+
+  JETTI_FILTER_MATCH_MODES.forEach(matchMode => {
+    const nativeFilter = filterUtils[matchMode].bind(FilterUtils);
+    filterUtils[`${JETTI_FILTER_PREFIX}${matchMode}`] = (value: any, filter: any) =>
+      nativeFilter(unwrapTableValue(value), filter);
+  });
+}
 
 const TablePartValidator: ValidatorFn = (c: AbstractControl) => {
   let res = null;
@@ -76,7 +98,9 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   private _subscription$: Subscription = Subscription.EMPTY;
   private _valueChanges$: Subscription = Subscription.EMPTY;
 
-  constructor(private api: ApiService, private ds: DocService, private cd: ChangeDetectorRef) { }
+  constructor(private api: ApiService, private ds: DocService, private cd: ChangeDetectorRef) {
+    registerJettiTableFilters();
+  }
 
   ngOnInit() {
     this.columns = this.control.controls.map((el) => <ColumnDef>{
@@ -211,7 +235,10 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   }
 
   onFilterInput(value, col) {
-    this.table.filter(value, col.field, this.filters[col.field].machMode.value, this.formGroup.getRawValue());
+    const currentValue = this.formGroup.getRawValue();
+    this.dataSource = currentValue;
+    this.table.value = currentValue;
+    this.table.filter(value, col.field, `${JETTI_FILTER_PREFIX}${this.filters[col.field].machMode.value}`);
   }
 
   nextMachMode(col) {
@@ -224,7 +251,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
 
   clearFilter(field) {
     this.filters[field].value = null;
-    this.table.filter(null, field, '');
+    this.table.filter(null, field, `${JETTI_FILTER_PREFIX}contains`);
   }
 
   sortData(data: any[], event: SortEvent) {
@@ -255,10 +282,11 @@ export class TablePartsComponent implements OnInit, OnDestroy {
 
   customSort(event: SortEvent) {
     this.isSorted = true;
-    event.data = this.filteredValue || this.formGroup.getRawValue();
-    const rows = this.sortData([...event.data], event);
+    const rows = this.sortData([...(this.filteredValue || this.formGroup.getRawValue())], event);
     this.selection = [];
     this.formGroup.setValue(rows);
+    this.dataSource = this.formGroup.getRawValue();
+    event.data.splice(0, event.data.length, ...this.dataSource);
     this.formGroup.markAsDirty();
     return rows;
   }

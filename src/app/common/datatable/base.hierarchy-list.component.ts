@@ -1,8 +1,7 @@
 import { AuthService } from 'src/app/auth/auth.service';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MenuItem } from 'primeng/components/common/menuitem';
-import { SortMeta } from 'primeng/components/common/sortmeta';
+import { MenuItem, SortMeta } from 'primeng/api';
 import { merge, Observable, Subject, Subscription, of, BehaviorSubject, combineLatest, fromEvent } from 'rxjs';
 import { debounceTime, filter, map, take, tap } from 'rxjs/operators';
 import { v1, v4 } from 'uuid';
@@ -12,9 +11,10 @@ import { UserSettingsService } from './../../auth/settings/user.settings.service
 import { ApiDataSource } from './../../common/datatable/api.datasource.v2';
 import { DocService } from './../../common/doc.service';
 import { LoadingService } from './../../common/loading.service';
-import { Table } from './table';
+import { Table } from 'primeng/table';
 import { DynamicFormService } from '../dynamic-form/dynamic-form.service';
-import { DialogService, TreeNode } from 'primeng/api';
+import { TreeNode } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { TreeTable } from 'primeng/treetable';
 import {
   buildColumnDef, ColumnDef, DocumentBase, DocumentOptions, FormListFilter,
@@ -57,8 +57,8 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
   pageSize$: Observable<number>;
 
 
-  @ViewChild('tbl', { static: false }) tbl: Table;
-  @ViewChild('treeTable', { static: false }) treeTable: TreeTable;
+  @ViewChild('tbl') tbl: Table;
+  @ViewChild('treeTable') treeTable: TreeTable;
 
   get columnsSettingsState() { return this._columnsSettingsState$.value; }
   get filterSettingsState() { return this._filterSettingsState$.value; }
