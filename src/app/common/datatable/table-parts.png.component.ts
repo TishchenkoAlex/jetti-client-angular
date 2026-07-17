@@ -7,8 +7,7 @@ import { cloneFormGroup, patchOptionsNoEvents } from '../../common/dynamic-form/
 import { ApiService } from '../../services/api.service';
 import { EditableColumn, Table } from 'primeng/table';
 import { DocService } from '../doc.service';
-import { SortEvent } from 'primeng/api';
-import { FilterUtils } from 'primeng/utils';
+import { FilterService, SortEvent } from 'primeng/api';
 import { ColumnDef } from 'jetti-middle/dist';
 
 const JETTI_FILTER_PREFIX = 'jetti-';
@@ -22,13 +21,16 @@ function unwrapTableValue(value: any): any {
   return value;
 }
 
-function registerJettiTableFilters(): void {
-  const filterUtils = FilterUtils as any;
+function registerJettiTableFilters(filterService: FilterService): void {
+  const filters = filterService.filters as any;
 
   JETTI_FILTER_MATCH_MODES.forEach(matchMode => {
-    const nativeFilter = filterUtils[matchMode].bind(FilterUtils);
-    filterUtils[`${JETTI_FILTER_PREFIX}${matchMode}`] = (value: any, filter: any) =>
-      nativeFilter(unwrapTableValue(value), filter);
+    const nativeFilter = filters[matchMode].bind(filters);
+    filterService.register(
+      `${JETTI_FILTER_PREFIX}${matchMode}`,
+      (value: any, filterValue: any, filterLocale?: string) =>
+        nativeFilter(unwrapTableValue(value), filterValue, filterLocale)
+    );
   });
 }
 
@@ -98,8 +100,13 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   private _subscription$: Subscription = Subscription.EMPTY;
   private _valueChanges$: Subscription = Subscription.EMPTY;
 
-  constructor(private api: ApiService, private ds: DocService, private cd: ChangeDetectorRef) {
-    registerJettiTableFilters();
+  constructor(
+    private api: ApiService,
+    private ds: DocService,
+    private cd: ChangeDetectorRef,
+    filterService: FilterService
+  ) {
+    registerJettiTableFilters(filterService);
   }
 
   ngOnInit() {

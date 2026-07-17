@@ -1,7 +1,7 @@
 import { environment } from 'src/environments/environment';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
-import { ScrollPanel } from '../../node_modules/primeng/scrollpanel';
+import { ScrollPanel } from 'primeng/scrollpanel';
 import { AuthService } from './auth/auth.service';
 import { Title } from '@angular/platform-browser';
 
