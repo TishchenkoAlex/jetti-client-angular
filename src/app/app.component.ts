@@ -1,9 +1,10 @@
 import { environment } from 'src/environments/environment';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { AuthService } from './auth/auth.service';
 import { Title } from '@angular/platform-browser';
+import { filter } from 'rxjs/operators';
 
 enum MenuOrientation { STATIC, OVERLAY, SLIM, HORIZONTAL }
 
@@ -39,11 +40,13 @@ export class AppComponent implements AfterViewInit {
     public auth: AuthService, private swUpdate: SwUpdate, private titleService: Title) {
 
     if (this.swUpdate.isEnabled) {
-      this.swUpdate.available.subscribe(() => {
-        if (confirm('Jetti apps: New version available. Load new version?')) {
-          window.location.reload();
-        }
-      });
+      this.swUpdate.versionUpdates
+        .pipe(filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY'))
+        .subscribe(() => {
+          if (confirm('Jetti apps: New version available. Load new version?')) {
+            window.location.reload();
+          }
+        });
 
     }
   }
