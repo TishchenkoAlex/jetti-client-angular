@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
 import { BehaviorSubject } from 'rxjs';
-import { filter, map, shareReplay, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { MSAL_LOGIN_SCOPES } from 'src/environments/msal-config';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { IAccount, ILoginResponse } from 'jetti-middle/dist';
 export const ANONYMOUS_USER: ILoginResponse = { account: undefined, token: '', photo: undefined };
@@ -27,27 +28,43 @@ export class AuthService {
 
   constructor(private router: Router, private http: HttpClient, private msalService: MsalService) { }
 
-  public async login() {
-    await this.msalService.loginPopup({ scopes: ['user.read'] });
-    const user = this.msalService.getAccount().userName;
-    const acquireTokenSilentResult = await this.msalService.acquireTokenSilent({ scopes: ['user.read'] });
+  public login() {
+    return this.msalService.loginPopup({ scopes: MSAL_LOGIN_SCOPES }).pipe(
+      switchMap(loginResult => {
+        if (!loginResult.account) {
+          throw new Error('Microsoft authentication did not return an account.');
+        }
 
-    return this.http.post<ILoginResponse>(`${environment.auth}login`,
-      {
-        email: user,
-        password: null,
-        token: acquireTokenSilentResult.accessToken,
-        timezoneOffset: (new Date).getTimezoneOffset()
-      }).pipe(
-        shareReplay(),
-        tap(loginResponse => this.init(loginResponse))
-      );
+        this.msalService.instance.setActiveAccount(loginResult.account);
+        return this.msalService.acquireTokenSilent({
+          account: loginResult.account,
+          scopes: MSAL_LOGIN_SCOPES,
+        });
+      }),
+      switchMap(tokenResult => {
+        const account = tokenResult.account || this.getMsalAccount();
+        if (!account) {
+          throw new Error('Microsoft authentication account is not available.');
+        }
+
+        return this.http.post<ILoginResponse>(`${environment.auth}login`, {
+          email: account.username,
+          password: null,
+          token: tokenResult.accessToken,
+          timezoneOffset: (new Date).getTimezoneOffset()
+        });
+      }),
+      shareReplay(),
+      tap(loginResponse => this.init(loginResponse))
+    );
   }
 
   public logout() {
     localStorage.removeItem('jetti_token');
-    const account = this.msalService.getAccount();
-    if (account) this.msalService.logout();
+    const account = this.getMsalAccount();
+    if (account) {
+      this.msalService.logoutPopup({ account }).pipe(take(1)).subscribe();
+    }
     this._userProfile$.next({ ...ANONYMOUS_USER });
     return this.router.navigate([''], { queryParams: {} });
   }
@@ -146,5 +163,9 @@ export class AuthService {
       this.token = loginResponse.token;
       this._userProfile$.next(loginResponse);
     }
+  }
+
+  private getMsalAccount() {
+    return this.msalService.instance.getActiveAccount() || this.msalService.instance.getAllAccounts()[0];
   }
 }
