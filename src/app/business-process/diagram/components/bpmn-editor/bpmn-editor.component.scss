@@ -2,7 +2,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 600px;
+  min-height: 800px;
 }
 
 .bp-bpmn-editor {
@@ -10,7 +10,7 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  min-height: 600px;
+  min-height: 800px;
   border: 1px solid var(--surface-border, #d9d9d9);
   background: var(--surface-ground, #ffffff);
 }
@@ -35,15 +35,6 @@
   text-align: center;
 }
 
-.bp-bpmn-editor__selection {
-  min-width: 0;
-  margin-left: auto;
-  overflow: hidden;
-  color: #555555;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .bp-bpmn-editor__feedback {
   display: flex;
   gap: 12px;
@@ -60,9 +51,20 @@
 }
 
 .bp-bpmn-editor__canvas {
+  position: relative;
   flex: 1;
-  min-height: 550px;
+  min-height: 750px;
   overflow: hidden;
+}
+
+// bpmn-js creates a 100%-high child inside a flex item whose height is based
+// on min-height. Absolute positioning makes the actual interactive viewport
+// follow the complete canvas box instead of collapsing to its intrinsic height.
+:host ::ng-deep .bp-bpmn-editor__canvas > .bjs-container {
+  position: absolute !important;
+  inset: 0;
+  width: auto !important;
+  height: auto !important;
 }
 
 .bp-bpmn-editor__canvas:focus {

@@ -30,10 +30,6 @@
         (click)="fitViewport()" [disabled]="loading"></button>
     </div>
 
-    <span *ngIf="selectedElement" class="bp-bpmn-editor__selection"
-      [title]="selectedElement.type + ': ' + selectedElement.id">
-      {{selectedElement.name || selectedElement.id}}
-    </span>
   </div>
 
   <div *ngIf="loading || error" class="bp-bpmn-editor__feedback" aria-live="polite">

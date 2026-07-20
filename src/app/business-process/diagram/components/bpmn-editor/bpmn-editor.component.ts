@@ -242,7 +242,7 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
     const canvas = this.modeler?.get<BpmnCanvas>('canvas');
     if (!canvas) return;
 
-    const zoom = this.ngZone.runOutsideAngular(() => canvas.zoom('fit-viewport'));
+    const zoom = this.ngZone.runOutsideAngular(() => canvas.zoom('fit-viewport', 'auto'));
     this.setZoom(zoom);
   }
 

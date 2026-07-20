@@ -42,8 +42,8 @@ export class BaseTreeListComponent implements OnInit, OnDestroy {
             label: '(All)',
             data: { id: undefined, description: '(All)', type: this.type, value: null, code: null },
             expanded: true,
-            expandedIcon: 'fa fa-folder-open',
-            collapsedIcon: 'fa fa-folder',
+            expandedIcon: 'pi pi-folder-open',
+            collapsedIcon: 'fas fa-folder',
             children: this.buildTreeNodes(tree, null),
           }]),
           tap(treeNodes => {
@@ -79,8 +79,8 @@ export class BaseTreeListComponent implements OnInit, OnDestroy {
         label: el.description,
         data: { id: el.id, description: el.description, type: this.type, value: el.description, code: null },
         expanded: true,
-        expandedIcon: 'fa fa-folder-open',
-        collapsedIcon: 'fa fa-folder',
+        expandedIcon: 'pi pi-folder-open',
+        collapsedIcon: 'fas fa-folder',
         children: this.buildTreeNodes(tree, el.id) || [],
       };
     });

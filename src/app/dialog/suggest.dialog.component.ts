@@ -59,6 +59,10 @@ export class SuggestDialogComponent implements OnInit, OnDestroy {
     return Type.isCatalog(this.type);
   }
 
+  get isTypeSelection() {
+    return Type.isType(this.type);
+  }
+
   showTree = false;
   showTreeButton = false;
   dataSource: ApiDataSource;
@@ -83,8 +87,8 @@ export class SuggestDialogComponent implements OnInit, OnDestroy {
     const data: { [x: string]: string }[] = [
       { description: "string" },
       { code: "string" },
-      { id: "string" },
     ];
+    if (!this.isTypeSelection) data.push({ id: "string" });
     if (Type.isDocument(this.type)) data.push({ date: "datetime" });
     if (this.type) {
       if (!Type.isType(this.type))

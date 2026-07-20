@@ -1,5 +1,5 @@
-<div [ngStyle]="{ display: 'flex' }" [class]="'scroll-' + type" [id]="type">
-  <div style="display: flex; flex-direction: column">
+<div [ngStyle]="{ display: 'flex' }" [class]="'jetti-suggest-layout scroll-' + type" [id]="type">
+  <div class="jetti-suggest-content">
     <p-toolbar *ngIf="!readonly">
       <div class="jetti-toolbar-start">
         <button
@@ -83,7 +83,7 @@
         [scrollable]="true"
         [scrollHeight]="scrollHeight + 'px'"
         [tableStyle]="{ width: '100%', 'table-layout': 'fixed' }"
-        styleClass="jetti-suggest-tree-table"
+        styleClass="jetti-hierarchy-tree-table jetti-suggest-tree-table"
         class="noselect"
         [multiSortMeta]="multiSortMeta"
         (onLazyLoad)="onLazyLoad($event)"
@@ -248,68 +248,9 @@
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
                     <i
-                      *ngIf="
-                        rowData.isfolder &&
-                        !rowNode.expanded &&
-                        rowData['deleted'] &&
-                        !rowData['archived']
-                      "
-                      class="pi pi-folder"
-                      style="color: #d9534f"
-                    >
-                    </i>
-                    <i
-                      *ngIf="
-                        rowData.isfolder &&
-                        !rowNode.expanded &&
-                        rowData['deleted'] &&
-                        rowData['archived']
-                      "
-                      class="pi pi-folder"
-                      style="color: #929292"
-                    >
-                    </i>
-                    <i
-                      *ngIf="
-                        rowData.isfolder &&
-                        !rowNode.expanded &&
-                        !rowData['deleted']
-                      "
-                      class="pi pi-folder"
-                      style="color: #d1cf38"
-                    >
-                    </i>
-                    <i
-                      *ngIf="
-                        rowData.isfolder &&
-                        rowNode.expanded &&
-                        rowData['deleted'] &&
-                        !rowData['archived']
-                      "
-                      class="pi pi-folder-open"
-                      style="color: #d9534f"
-                    >
-                    </i>
-                    <i
-                      *ngIf="
-                        rowData.isfolder &&
-                        rowNode.expanded &&
-                        rowData['deleted'] &&
-                        rowData['archived']
-                      "
-                      class="pi pi-folder-open"
-                      style="color: #929292"
-                    >
-                    </i>
-                    <i
-                      *ngIf="
-                        rowData.isfolder &&
-                        rowNode.expanded &&
-                        !rowData['deleted']
-                      "
-                      class="pi pi-folder-open"
-                      style="color: #d1cf38"
-                    >
+                      *ngIf="rowData.isfolder"
+                      [class]="rowNode.expanded ? 'pi pi-folder-open' : 'fas fa-folder'"
+                      [style.color]="rowData['deleted'] ? (rowData['archived'] ? '#929292' : '#d9534f') : '#d1cf38'">
                     </i>
                     <i
                       *ngIf="

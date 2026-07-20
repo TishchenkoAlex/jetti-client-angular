@@ -113,7 +113,8 @@
 
 <div *ngIf="showDialog">
   <p-dialog *ngIf="useHierarchyList" [(visible)]="showDialog" [modal]="true" [responsive]="true" [closable]="true"
-    [closeOnEscape]="true" [blockScroll]="true" [style]="{height: '81vh', width: '80%'}" [appendTo]="appendTo">
+    [closeOnEscape]="true" [blockScroll]="true" [style]="{height: '81vh', width: '80%'}"
+    [contentStyle]="{width: '100%'}" styleClass="jetti-suggest-dialog" [appendTo]="appendTo">
 
     <p-header>
       {{this.placeholder}}
@@ -146,7 +147,8 @@
   </p-dialog>
 
   <p-dialog *ngIf="!useHierarchyList" [(visible)]="showDialog" [modal]="true" [responsive]="true" [closable]="true"
-    [closeOnEscape]="true" [blockScroll]="false" [style]="{height: '600px', width: '80%'}" [appendTo]="appendTo">
+    [closeOnEscape]="true" [blockScroll]="false" [style]="{height: '600px', width: '80%'}"
+    [contentStyle]="{width: '100%'}" styleClass="jetti-suggest-dialog" [appendTo]="appendTo">
 
     <p-header>
       {{this.placeholder}}

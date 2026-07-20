@@ -1,4 +1,4 @@
-<div [ngStyle]="{'display': showTree ? 'flex': 'block'}" [class]="'scroll-' + type" [id]="type">
+<div [ngStyle]="{'display': showTree ? 'flex': 'block'}" [class]="'jetti-suggest-layout scroll-' + type" [id]="type">
 
   <div *ngIf="showTree" style="margin-right: 4px;">
     <j-tree-list #tl [type]="type" (selectionChange)="parentChange($event)" [showCommands]="false" [id]="selection"
@@ -10,8 +10,8 @@
     <j-hierarchy-list #tl [type]="type" (selectionChange)="parentChange($event)" [showCommands]="false" [id]="selection">
     </j-hierarchy-list>
   </div> -->
-  <div style="display: flex; flex-direction: column;">
-    <p-toolbar *ngIf="!readonly">
+  <div class="jetti-suggest-content">
+    <p-toolbar *ngIf="!readonly && !isTypeSelection">
       <div class="jetti-toolbar-start">
         <button id="add" icon="fa fa-plus" class="p-button-success" pButton type="button" (click)="add()"
           [disabled]="(lds.busy$ | async)"></button>
@@ -33,13 +33,13 @@
         [lazyLoadOnInit]="true" [resizableColumns]="true">
         <ng-template pTemplate="colgroup" let-columns>
           <colgroup>
-            <col>
+            <col *ngIf="!isTypeSelection">
             <col *ngFor="let column of tbl.columns">
           </colgroup>
         </ng-template>
         <ng-template #ttt pTemplate="header" let-columns>
           <tr>
-            <th [ngStyle]="{'width': '26px', 'text-align': 'center'}"></th>
+            <th *ngIf="!isTypeSelection" [ngStyle]="{'width': '26px', 'text-align': 'center'}"></th>
             <th pReorderableColumn pResizableColumn [pSortableColumn]="column.field" [pSortableColumn]="column.field"
               *ngFor="let column of tbl.columns" [ngStyle]="column.style">
               {{column.label}}
@@ -47,7 +47,7 @@
             </th>
           </tr>
           <tr cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial>
-            <th [ngStyle]="{'width': '26px', 'text-align': 'center'}"></th>
+            <th *ngIf="!isTypeSelection" [ngStyle]="{'width': '26px', 'text-align': 'center'}"></th>
             <th *ngFor="let column of tbl.columns" [ngStyle]="column.style" [ngSwitch]="column.type"
               class="jetti-table-filter-cell">
               <div *ngSwitchCase="'boolean'">
@@ -93,7 +93,8 @@
 
         <ng-template pTemplate="body" let-rowData>
           <tr [pSelectableRow]="rowData" (dblclick)="select(rowData)" [class]="'scrollTo-' + type">
-            <td class="jetti-table-cell" [ngStyle]="{'width': '26px', 'text-align': 'center'}">
+            <td *ngIf="!isTypeSelection" class="jetti-table-cell"
+              [ngStyle]="{'width': '26px', 'text-align': 'center'}">
 <i
                 *ngIf="
                   !rowData.isfolder && rowData['posted'] && !rowData['deleted']

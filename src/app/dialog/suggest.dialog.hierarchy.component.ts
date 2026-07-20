@@ -302,10 +302,10 @@ export class SuggestDialogHierarchyComponent implements OnInit, OnDestroy {
           key: el.id,
           data: el,
           leaf: !el.isfolder,
-          icon: "pi pi-folder-open",
+          icon: "fas fa-folder",
           expanded: false,
           expandedIcon: "pi pi-folder-open",
-          collapsedIcon: "pi pi-folder",
+          collapsedIcon: "fas fa-folder",
           children: this.buildTreeNodes(tree, el.id) || [],
         };
         node.expanded =

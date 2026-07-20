@@ -771,33 +771,68 @@ body .jetti-suggest-tree-table .p-treetable-scrollable-body table {
   table-layout: fixed;
 }
 
-body .jetti-suggest-tree-table .jetti-tree-description-cell,
-body .jetti-suggest-tree-table .jetti-tree-node-icons {
+// Suggest dialogs must use the whole content area instead of the intrinsic
+// width of their custom component hosts.
+body .jetti-suggest-dialog .p-dialog-content,
+body .jetti-suggest-dialog j-suggest-list,
+body .jetti-suggest-dialog j-suggest-hierarchy-list,
+body .jetti-suggest-dialog .jetti-suggest-layout,
+body .jetti-suggest-dialog .jetti-suggest-content,
+body .jetti-suggest-dialog .jetti-suggest-tree,
+body .jetti-suggest-dialog .p-datatable,
+body .jetti-suggest-dialog .p-treetable {
+  width: 100%;
+  min-width: 0;
+}
+
+body .jetti-suggest-dialog j-suggest-list,
+body .jetti-suggest-dialog j-suggest-hierarchy-list {
+  display: block;
+}
+
+body .jetti-suggest-dialog .jetti-suggest-layout,
+body .jetti-suggest-dialog .jetti-suggest-content {
+  flex: 1 1 0;
+}
+
+body .jetti-suggest-dialog .jetti-suggest-content {
+  display: flex;
+  flex-direction: column;
+}
+
+body .jetti-suggest-dialog .jetti-suggest-content > .p-toolbar,
+body .jetti-suggest-dialog .jetti-suggest-content > div {
+  width: 100%;
+  min-width: 0;
+}
+
+body .jetti-hierarchy-tree-table .jetti-tree-description-cell,
+body .jetti-hierarchy-tree-table .jetti-tree-node-icons {
   display: inline-flex;
   min-width: 0;
   align-items: center;
 }
 
-body .jetti-suggest-tree-table .jetti-tree-description-cell {
+body .jetti-hierarchy-tree-table .jetti-tree-description-cell {
   width: 100%;
 }
 
-body .jetti-suggest-tree-table .jetti-tree-node-icons {
+body .jetti-hierarchy-tree-table .jetti-tree-node-icons {
   flex: 0 0 auto;
   gap: 4px;
   margin-inline-end: 6px;
 }
 
-body .jetti-suggest-tree-table .jetti-tree-description-cell > span:not(.jetti-tree-node-icons),
-body .jetti-suggest-tree-table .jetti-tree-description-cell > i {
+body .jetti-hierarchy-tree-table .jetti-tree-description-cell > span:not(.jetti-tree-node-icons),
+body .jetti-hierarchy-tree-table .jetti-tree-description-cell > i {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-body .jetti-suggest-tree-table .jetti-tree-node-icons p-treetabletoggler,
-body .jetti-suggest-tree-table .jetti-tree-node-icons .p-treetable-toggler,
-body .jetti-suggest-tree-table .jetti-tree-node-icons > i {
+body .jetti-hierarchy-tree-table .jetti-tree-node-icons p-treetabletoggler,
+body .jetti-hierarchy-tree-table .jetti-tree-node-icons .p-treetable-toggler,
+body .jetti-hierarchy-tree-table .jetti-tree-node-icons > i {
   display: inline-flex;
   align-items: center;
   justify-content: center;
