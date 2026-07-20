@@ -240,8 +240,11 @@ export class SuggestDialogHierarchyComponent implements OnInit, OnDestroy {
         .forEach((node) => this.findSelectedNode(node.children, id));
   }
 
-  onLazyLoad(event) {
-    this.multiSortMeta = event.multiSortMeta;
+  onLazyLoad(event: { multiSortMeta?: SortMeta[]; sortField?: string; sortOrder?: number }) {
+    if (!this.dataSource) return;
+    if (Array.isArray(event?.multiSortMeta)) {
+      this.multiSortMeta = event.multiSortMeta;
+    }
     if (this.treeNodesVisible && event.sortField) {
       if (this.multiSortMeta.filter((e) => e.field === event.sortField).length)
         this.multiSortMeta

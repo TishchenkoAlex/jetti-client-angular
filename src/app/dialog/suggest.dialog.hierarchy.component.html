@@ -66,7 +66,7 @@
       </div>
     </p-toolbar>
 
-    <div *ngIf="treeNodesVisible && dataSource">
+    <div *ngIf="treeNodesVisible && dataSource" class="jetti-suggest-tree">
       <p-treeTable
         #treeTable
         [value]="treeNodes"
@@ -82,6 +82,8 @@
         [resizableColumns]="true"
         [scrollable]="true"
         [scrollHeight]="scrollHeight + 'px'"
+        [tableStyle]="{ width: '100%', 'table-layout': 'fixed' }"
+        styleClass="jetti-suggest-tree-table"
         class="noselect"
         [multiSortMeta]="multiSortMeta"
         (onLazyLoad)="onLazyLoad($event)"
@@ -90,8 +92,7 @@
       >
         <ng-template pTemplate="colgroup" let-columns>
           <colgroup>
-            <!-- <col> -->
-            <col *ngFor="let column of columns" />
+            <col *ngFor="let column of columns" [ngStyle]="column.style" />
           </colgroup>
         </ng-template>
 
@@ -240,8 +241,9 @@
                     [id]="column.field"
                   ></i>
                 </span>
-                <span *ngSwitchCase="'string'" [id]="column.field">
-                  <span *ngIf="column.field === 'description'">
+                <span *ngSwitchCase="'string'" [id]="column.field"
+                  [class.jetti-tree-description-cell]="column.field === 'description'">
+                  <span *ngIf="column.field === 'description'" class="jetti-tree-node-icons">
                     <p-treeTableToggler
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
@@ -382,9 +384,7 @@
         [(selection)]="selectedRow"
         (onLazyLoad)="onLazyLoad($event)"
         [multiSortMeta]="multiSortMeta"
-        [lazyLoadOnInit]="false"
-        [scrollable]="true"
-        [reorderableColumns]="true"
+        [lazyLoadOnInit]="true"
         [resizableColumns]="true"
       >
         <ng-template pTemplate="colgroup" let-columns>

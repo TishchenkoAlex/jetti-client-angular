@@ -221,9 +221,12 @@ export class SuggestDialogComponent implements OnInit, OnDestroy {
     this.debonce$.next({ col, event, center });
   }
 
-  onLazyLoad(event) {
-    this.multiSortMeta = event.multiSortMeta;
-    this.prepareDataSource();
+  onLazyLoad(event: { multiSortMeta?: SortMeta[] }) {
+    if (!this.dataSource) return;
+    if (Array.isArray(event?.multiSortMeta)) {
+      this.multiSortMeta = event.multiSortMeta;
+    }
+    this.prepareDataSource(this.multiSortMeta);
     this.dataSource.sort();
   }
 

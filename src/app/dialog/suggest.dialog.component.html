@@ -30,7 +30,7 @@
         [lazy]="true" sortMode="multiple" [scrollable]="true" [reorderableColumns]="true" [(selection)]="selection"
         [filterDelay]="500" [metaKeySelection]="true" [columns]="columns" class="noselect" [scrollHeight]="'415px'"
         [(selection)]="selection" (onLazyLoad)="onLazyLoad($event)" [multiSortMeta]="multiSortMeta"
-        [lazyLoadOnInit]="false" [scrollable]="true" [reorderableColumns]="true" [resizableColumns]="true">
+        [lazyLoadOnInit]="true" [resizableColumns]="true">
         <ng-template pTemplate="colgroup" let-columns>
           <colgroup>
             <col>

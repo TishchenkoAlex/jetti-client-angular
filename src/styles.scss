@@ -4,6 +4,7 @@
   font-size: 13px;
   --jetti-font-family: "Roboto", "Trebuchet MS", Arial, Helvetica, sans-serif;
   --jetti-control-height: 28px;
+  --jetti-autocomplete-input-min-width: calc(3ch + 0.686rem);
   --jetti-button-size: 28px;
   --jetti-icon-size: 16px;
   --jetti-table-row-height: 27px;
@@ -414,14 +415,15 @@ body .ui-table .ui-table-tfoot > tr > td {
 }
 
 .ng-select-container-flexible .ng-select .ng-select-container {
-  min-height: 25.44px;
+  min-height: var(--jetti-control-height);
 }
 
 .ng-select-container-mini .ng-select .ng-select-container {
-  min-height: 18.16px;
+  min-height: var(--jetti-control-height);
   .ng-value-container {
-    padding-top: 2px;
-    min-height: 14.16px;
+    min-height: calc(var(--jetti-control-height) - 2px);
+    align-items: center;
+    padding-top: 0;
   }
 }
 
@@ -430,12 +432,13 @@ ng-dropdown-panel[ng-reflect-position="bottom"] {
 }
 
 .ng-select-container-mini-yellow .ng-select .ng-select-container {
-  min-height: 18.16px;
-  background-color: "lightgoldenrodyellow";
+  min-height: var(--jetti-control-height);
+  background-color: lightgoldenrodyellow;
   .ng-value-container {
-    background-color: "lightgoldenrodyellow";
-    padding-top: 2px;
-    min-height: 14.16px;
+    min-height: calc(var(--jetti-control-height) - 2px);
+    align-items: center;
+    padding-top: 0;
+    background-color: lightgoldenrodyellow;
   }
 }
 
@@ -587,6 +590,18 @@ body .p-select {
   min-height: var(--jetti-control-height);
 }
 
+body .p-select {
+  height: var(--jetti-control-height);
+}
+
+body .p-select .p-select-label {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  padding-block: var(--jetti-density-padding-y);
+  line-height: 1;
+}
+
 body .p-button .p-button-icon {
   font-size: var(--jetti-icon-size);
 }
@@ -630,6 +645,9 @@ body .jetti-table-filter-cell {
 
 body .jetti-table-filter-cell > div,
 body .jetti-table-filter-cell > input,
+body .jetti-table-filter-cell .p-inputtext,
+body .jetti-table-filter-cell p-select,
+body .jetti-table-filter-cell .p-select,
 body .jetti-table-filter-cell p-inputgroup,
 body .jetti-table-filter-cell .p-inputgroup,
 body .jetti-table-filter-cell p-datepicker,
@@ -638,6 +656,12 @@ body .jetti-table-filter-cell j-autocomplete-png,
 body .jetti-table-filter-cell j-ng-select {
   width: 100%;
   min-width: 0;
+}
+
+body .jetti-table-filter-cell .p-inputtext,
+body .jetti-table-filter-cell .p-select,
+body .jetti-table-filter-cell .p-datepicker {
+  box-sizing: border-box;
 }
 
 body .jetti-table-inputgroup {
@@ -737,6 +761,50 @@ body .p-treetable .p-treetable-tbody > tr > td {
   white-space: nowrap;
 }
 
+body .jetti-suggest-tree-table .p-treetable-scrollable-header-box {
+  background: var(--surface-section);
+}
+
+body .jetti-suggest-tree-table .p-treetable-scrollable-header-table,
+body .jetti-suggest-tree-table .p-treetable-scrollable-body table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+body .jetti-suggest-tree-table .jetti-tree-description-cell,
+body .jetti-suggest-tree-table .jetti-tree-node-icons {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+}
+
+body .jetti-suggest-tree-table .jetti-tree-description-cell {
+  width: 100%;
+}
+
+body .jetti-suggest-tree-table .jetti-tree-node-icons {
+  flex: 0 0 auto;
+  gap: 4px;
+  margin-inline-end: 6px;
+}
+
+body .jetti-suggest-tree-table .jetti-tree-description-cell > span:not(.jetti-tree-node-icons),
+body .jetti-suggest-tree-table .jetti-tree-description-cell > i {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body .jetti-suggest-tree-table .jetti-tree-node-icons p-treetabletoggler,
+body .jetti-suggest-tree-table .jetti-tree-node-icons .p-treetable-toggler,
+body .jetti-suggest-tree-table .jetti-tree-node-icons > i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
 p-autocomplete,
 p-autocomplete .p-autocomplete,
 j-autocomplete-png .p-autocomplete {
@@ -761,7 +829,13 @@ j-autocomplete-png .jetti-autocomplete-group {
 
 j-autocomplete-png .jetti-autocomplete-group > .p-inputwrapper,
 j-autocomplete-png .jetti-autocomplete-group > .p-inputtext {
-  min-width: 0;
+  min-width: var(--jetti-autocomplete-input-min-width);
+}
+
+j-autocomplete-png .jetti-autocomplete-group > p-autocomplete,
+j-autocomplete-png .jetti-autocomplete-group .p-autocomplete,
+j-autocomplete-png .jetti-autocomplete-group .p-autocomplete-input {
+  min-width: var(--jetti-autocomplete-input-min-width);
 }
 
 j-autocomplete-png .jetti-autocomplete-boolean {
