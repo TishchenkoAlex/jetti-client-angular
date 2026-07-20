@@ -24,7 +24,7 @@ export class TabControllerComponent {
     public tabStore: TabsStore,
     private cd: ChangeDetectorRef) {
 
-    this.tabStore.state$.subscribe(store => {
+    this.tabStore.state$.subscribe(() => {
       setTimeout(() => this.cd.markForCheck());
     });
 
@@ -47,7 +47,7 @@ export class TabControllerComponent {
           index = tabStore.selectedIndex;
         }
         setTimeout(() => this.tabStore.selectedIndex = index);
-        setTimeout(() => scrollIntoViewIfNeeded(params.type, 'ui-state-highlight'));
+        setTimeout(() => scrollIntoViewIfNeeded(params.type));
       });
 
     merge(this.ds.save$, this.ds.delete$).pipe(filter(doc => doc.id === this.route.snapshot.params.id))
@@ -76,14 +76,16 @@ export class TabControllerComponent {
     }
   }
 
-  onTabSelected(event: { index: number, originalEvent: Event }) {
-    event.originalEvent.stopImmediatePropagation();
-    this.selectTab(this.tabStore.state.tabs[event.index]);
+  onTabSelected(value: string | number) {
+    const index = Number(value);
+    const tab = this.tabStore.state.tabs[index];
+    if (tab) this.selectTab(tab);
   }
 
-  onTabClose(event: { index: number, originalEvent: Event }) {
-    event.originalEvent.stopImmediatePropagation();
-    const tab = this.tabStore.state.tabs[event.index];
+  onTabClose(event: Event, index: number) {
+    event.preventDefault();
+    event.stopPropagation();
+    const tab = this.tabStore.state.tabs[index];
     const component = this.components.find(e => e.id === tab.id && e.type === tab.type);
     if (component && component.componentRef.instance.close) {
       component.componentRef.instance.close();

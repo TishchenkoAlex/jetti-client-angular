@@ -1,19 +1,18 @@
 <p-dataView [value]="attachmets$ | async" layout="grid" emptyMessage="No attachmets found">
   <p-header>
     <p-toolbar styleClass="NoBorder">
-      <div class="ui-toolbar-group-left">
+      <div class="jetti-toolbar-start">
         <button [disabled]="!settings.length" pButton type="button" icon="pi pi-plus" class="p-button-success"
           (click)="showDialog($event, true)"></button>
       </div>
     </p-toolbar>
   </p-header>
   <ng-template let-item pTemplate="listItem">
-    <div class="ui-g-12">
+    <div class="jetti-col-12">
       <div class="item-details">
         <div>
           <img [src]="item.URL" style="max-width: 100%; height: auto;" (click)="showDialog($event, false, item)">
-          <div class="ui-g-12"><b>{{item.AttachmentTypeDescription}}: "{{item.description}}"</b></div>
-          <!-- <div *ngIf="item.TagsString" class="ui-g-12"><b>{{item.TagsString}}</b></div> -->
+          <div class="jetti-col-12"><b>{{item.AttachmentTypeDescription}}: "{{item.description}}"</b></div>
         </div>
         <button pButton type="button" icon="pi pi-search" (click)="showDialog($event, false, item)"></button>
         <button *ngIf="settings.length" pButton type="button" icon="pi pi-cog"
@@ -26,14 +25,14 @@
   </ng-template>
 
   <ng-template let-item pTemplate="gridItem">
-    <div style="padding:.5em" class="ui-g-12 ui-md-3">
+    <div style="padding:.5em" class="jetti-col-12 jetti-col-md-3">
       <p-panel [header]="item.Description" [style]="{'text-align':'center', 'height': '100%'}">
         <img [src]="item.URL" style="max-width: 100%; width:auto; height:auto;"
           (click)="showDialog($event, false, item)">
         <div class="item-detail">{{item.AttachmentTypeDescription}}</div>
         <div class="item-detail"><b>{{item.description}}</b></div>
         <!-- <div *ngIf="item.TagsString" class="item-detail">{{item.TagsString}}</div> -->
-        <hr class="ui-widget-content" style="border-top:0">
+        <hr class="jetti-separator" style="border-top:0">
         <button pButton type="button" icon="pi pi-search" (click)="showDialog($event, false, item)"></button>
         <button *ngIf="settings.length" pButton type="button" icon="pi pi-cog" class="p-button-warn"
           style="margin-left: 5px;margin-right: 5px;" (click)="showDialog($event, true, item)"></button>
@@ -98,11 +97,11 @@
 
     <div style="margin-top: 10px">
       <p-toolbar styleClass="NoBorder">
-        <div class="ui-toolbar-group-left">
+        <div class="jetti-toolbar-start">
           <button pButton type="button" id="OK" icon="fa fa-check-square" label="Save" class="p-button-warn"
             (click)="saveAttachment()"></button>
         </div>
-        <div class="ui-toolbar-group-right">
+        <div class="jetti-toolbar-end">
           <button pButton type="button" id="Remove" icon="far fa-trash-alt" label="Remove" class="p-button-danger"
             *ngIf="this.selectedAttachment.id" (click)="delAttachment(this.selectedAttachment.id)"></button>
         </div>

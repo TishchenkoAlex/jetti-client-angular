@@ -5,7 +5,7 @@
         <form novalidate [formGroup]="form" cdkTrapFocus>
           <p-panel #mp [header]='header' [toggleable]="false">
             <p-toolbar *ngIf="!readonly">
-              <div class="ui-toolbar-group-left">
+              <div class="jetti-toolbar-start">
                 <button pButton type="button" id="Search" icon="fab fa-searchengin" label="Search"
                   pTooltip="Post and close" tooltipPosition="top" showDelay="2000" class="p-button-warn"
                   (click)="executeServerMethod('search')"></button>
@@ -41,10 +41,10 @@
               </div>
 
               <div *ngIf="tables$ | async as tables" style="padding-top: 20px;">
-                <p-tabView *ngIf="tables.length" class="tabViewClassInForm">
+                <div *ngIf="tables.length" class="jetti-form-table-container">
                   <j-table-part-png (onDoubleClick)="openUsedInPage($event)" [formGroup]="form.controls[tables[0].key]"
                     [control]="tables[0]"></j-table-part-png>
-                </p-tabView>
+                </div>
               </div>
               <ng-content></ng-content>
             </div>

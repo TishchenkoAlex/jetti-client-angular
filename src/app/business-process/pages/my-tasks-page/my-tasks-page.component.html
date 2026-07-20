@@ -1,6 +1,6 @@
 <div style="display: flex; flex-direction: column; overflow-x: auto;">
   <p-toolbar>
-    <div class="ui-toolbar-group-left">
+    <div class="jetti-toolbar-start">
       <button pButton type="button" label="Refresh" icon="pi pi-refresh" class="p-button-info"
         [disabled]="loading" (click)="loadTasks()"></button>
       <label style="margin-left: 12px;">
@@ -9,13 +9,13 @@
       </label>
     </div>
 
-    <div class="ui-toolbar-group-right">
+    <div class="jetti-toolbar-end">
       <input pInputText type="text" placeholder="Search"
         (input)="Tasklist.filterGlobal($event.target.value, 'contains')" style="width:auto">
     </div>
   </p-toolbar>
 
-  <div *ngIf="error" class="ui-message ui-messages-error" style="margin: 8px 0;">{{error}}</div>
+  <div *ngIf="error" class="jetti-message jetti-message-error" style="margin: 8px 0;">{{error}}</div>
   <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '4px'}"></p-progressBar>
 
   <p-table #Tasklist [columns]="columns" [value]="tasks" dataKey="id" sortMode="multiple"
@@ -41,7 +41,7 @@
 
     <ng-template pTemplate="body" let-rowData let-columns="columns">
       <tr (dblclick)="open(rowData)">
-        <td *ngFor="let column of columns" class="ui-resizable-column" [ngSwitch]="column.type" [ngStyle]="column.style">
+        <td *ngFor="let column of columns" class="jetti-table-cell" [ngSwitch]="column.type" [ngStyle]="column.style">
           <span *ngSwitchCase="'date'">{{rowData[column.field] | date:'dd.MM.yyyy HH:mm:ss'}}</span>
           <span *ngSwitchCase="'number'">{{rowData[column.field] | number:'1.2-2'}}</span>
           <span *ngSwitchDefault>{{rowData[column.field] || ''}}</span>

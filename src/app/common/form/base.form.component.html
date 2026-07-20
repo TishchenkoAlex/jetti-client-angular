@@ -5,8 +5,9 @@
         <p-panel #mp
           [header]="(description$ | async)?.value + ' (' + (metadata$ | async).description + ')' + ((isPosted$ | async) ? ' [posted]' : ' [unposted]') + (readonly ? ' [readonly]' : '' )+ ((isArchived$ | async) ? ' [archived]' : '' )"
           [toggleable]="true" toggler="header">
-          <p-toolbar>
-            <div *ngIf="!isHistory && !readonly" class="ui-toolbar-group-left">
+          <p-toolbar styleClass="jetti-form-toolbar">
+            <ng-template pTemplate="start">
+              <div *ngIf="!isHistory && !readonly" class="jetti-toolbar-actions">
               <button pButton type="button" id="PostClose" icon="fa fa-check-square" label="Post&Close"
                 pTooltip="Post and close" tooltipPosition="top" showDelay="2000" class="p-button-warn"
                 [disabled]="!form.valid || (lds.busy$ | async)" (click)="postClose()"
@@ -31,8 +32,10 @@
                 pTooltip="Delete" tooltipPosition="top" showDelay="2000"
                 *ngIf="!(isNew$ | async) && type !== 'BusinessProcess.Template'" (click)="delete()"
                 [disabled]="(lds.busy$ | async)"></button>
-            </div>
-            <div *ngIf="!isHistory" class="ui-toolbar-group-right">
+              </div>
+            </ng-template>
+            <ng-template pTemplate="end">
+              <div *ngIf="!isHistory" class="jetti-toolbar-actions">
               <p-splitButton *ngIf="(copyTo$ | async)?.length" [model]="copyTo$ | async"
                 styleClass="p-button-secondary" label="base on">
               </p-splitButton>
@@ -47,14 +50,16 @@
                 (click)="print()"></button>
               <button pButton type="button" icon="pi pi-refresh" class="p-button-secondary" pTooltip="Refresh"
                 tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)" (click)="refresh()"></button>
-            </div>
+              </div>
+            </ng-template>
           </p-toolbar>
 
-          <div fxLayout="column" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial *ngIf="v$ | async as v">
+          <div class="jetti-dynamic-form" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial
+            *ngIf="v$ | async as v">
 
-            <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+            <div class="jetti-form-grid"
               *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
-              <div fxFlex *ngFor="let d of [0,1,2]">
+              <div class="jetti-form-grid-cell" *ngFor="let d of [0,1,2]">
                 <j-control *ngIf="headFields[i+d]" [control]="headFields[i+d]" [form]="form">
                 </j-control>
               </div>
@@ -62,9 +67,9 @@
 
             <br *ngIf="fieldsetsFields.length > 0">
             <p-fieldset *ngIf="fieldsetsFields.length > 0" legend="Ещё..." [toggleable]="true" collapsed=true>
-              <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+              <div class="jetti-form-grid"
                 *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
-                <div fxFlex *ngFor="let d of [0,1,2]">
+                <div class="jetti-form-grid-cell" *ngFor="let d of [0,1,2]">
                   <j-control *ngIf="fieldsetsFields[i+d]" [control]="fieldsetsFields[i+d]" [form]="form">
                   </j-control>
                 </div>
@@ -73,13 +78,16 @@
 
             <div *ngIf="tables$ | async as tables">
               <br *ngIf="tables.length">
-              <p-tabView *ngIf="tables.length" class="tabViewClassInForm">
-                <div *ngFor="let c of tables;">
-                  <p-tabPanel [header]="c.label">
+              <p-tabs *ngIf="tables.length" [value]="0" class="jetti-form-tabs">
+                <p-tablist>
+                  <p-tab *ngFor="let c of tables; let index = index" [value]="index">{{ c.label }}</p-tab>
+                </p-tablist>
+                <p-tabpanels>
+                  <p-tabpanel *ngFor="let c of tables; let index = index" [value]="index">
                     <j-control [control]="c" [form]="form"></j-control>
-                  </p-tabPanel>
-                </div>
-              </p-tabView>
+                  </p-tabpanel>
+                </p-tabpanels>
+              </p-tabs>
             </div>
 
             <j-control *ngIf="vk.info" [control]="vk.info" [form]="form"></j-control>
@@ -97,9 +105,9 @@
             [form]="form" [readonly]="readonly">
           </bp-business-process-template-bpmn>
 
-          <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+          <div class="jetti-form-grid"
             *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
-            <div fxFlex *ngFor="let d of [0,1,2]">
+            <div class="jetti-form-grid-cell" *ngFor="let d of [0,1,2]">
               <j-control *ngIf="panel.standalone[i+d]" [control]="panel.standalone[i+d]" [form]="form">
               </j-control>
             </div>
@@ -108,9 +116,9 @@
           <br *ngIf="panel.fieldsets.length > 0">
           <p-fieldset *ngFor="let fieldset of panel.fieldsets" [legend]="fieldset.fieldset" [toggleable]="true"
             collapsed=true>
-            <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+            <div class="jetti-form-grid"
               *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
-              <div fxFlex *ngFor="let d of [0,1,2]">
+              <div class="jetti-form-grid-cell" *ngFor="let d of [0,1,2]">
                 <j-control *ngIf="fieldset.controls[i+d]" [control]="fieldset.controls[i+d]" [form]="form">
                 </j-control>
               </div>
@@ -118,16 +126,19 @@
           </p-fieldset>
 
           <br *ngIf="panel.tables.length > 0">
-          <p-tabView *ngIf="panel.tables.length" class="tabViewClassInForm">
-            <div *ngFor="let table of panel.tables">
-              <p-tabPanel [header]="table.label">
+          <p-tabs *ngIf="panel.tables.length" [value]="0" class="jetti-form-tabs">
+            <p-tablist>
+              <p-tab *ngFor="let table of panel.tables; let index = index" [value]="index">{{ table.label }}</p-tab>
+            </p-tablist>
+            <p-tabpanels>
+              <p-tabpanel *ngFor="let table of panel.tables; let index = index" [value]="index">
                 <j-control [control]="table" [form]="form"></j-control>
-              </p-tabPanel>
-            </div>
-          </p-tabView>
+              </p-tabpanel>
+            </p-tabpanels>
+          </p-tabs>
 
-          <div *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
-            <j-control *ngIf="panel.fullwidth[i]" [control]="panel.fullwidth[i]" [form]="form"></j-control>
+          <div *ngFor="let control of panel.fullwidth">
+            <j-control [control]="control" [form]="form"></j-control>
           </div>
 
         </p-panel>

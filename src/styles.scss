@@ -1,9 +1,38 @@
+:root {
+  // Angular 8 used body font-size: 0.8em (12.8px with the browser default).
+  // A 13px root keeps text parity and also scales PrimeNG 18 rem-based spacing.
+  font-size: 13px;
+  --jetti-font-family: "Roboto", "Trebuchet MS", Arial, Helvetica, sans-serif;
+  --jetti-control-height: 28px;
+  --jetti-button-size: 28px;
+  --jetti-icon-size: 16px;
+  --jetti-table-row-height: 27px;
+  --jetti-density-padding-x: 0.343rem;
+  --jetti-density-padding-y: 0.343rem;
+  --jetti-border-radius: 4px;
+  --jetti-border-color: #d9d9d9;
+  --jetti-primary-color: #337ab7;
+  --jetti-selected-background: #186ba0;
+  --jetti-selected-color: #ffffff;
+
+  // Compatibility variables used by application-owned components.
+  --primary-color: var(--jetti-primary-color);
+  --surface-border: var(--jetti-border-color);
+  --surface-ground: #f6f7f9;
+  --surface-section: #f5f5f5;
+  --surface-card: #ffffff;
+  --text-color: #222222;
+  --text-color-secondary: #777777;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -ms-overflow-style: none;
   margin: 0;
-  font-size: 0.8em !important;
+  color: var(--text-color);
+  font-family: var(--jetti-font-family);
+  font-size: 1rem !important;
 }
 
 html,
@@ -17,7 +46,7 @@ body {
 }
 
 .ui-table .ui-table-tbody > tr > td {
-  height: 27px;
+  height: var(--jetti-table-row-height);
   white-space: nowrap;
   /* Отменяем перенос текста */
   overflow: hidden;
@@ -44,14 +73,14 @@ body .ui-tabview.ui-tabview-top .ui-tabview-panels {
 }
 
 .ui-inputtext {
-  padding: 0.343em 0.343em !important;
+  padding: var(--jetti-density-padding-y) var(--jetti-density-padding-x) !important;
 }
 
 .ui-dropdown label.ui-dropdown-label {
   display: flex !important;
   align-items: center !important;
   font-size: 1em !important;
-  padding: 0.343em 0.343em !important;
+  padding: var(--jetti-density-padding-y) var(--jetti-density-padding-x) !important;
   margin: 0 !important;
 }
 
@@ -61,7 +90,7 @@ body .ui-tabview.ui-tabview-top .ui-tabview-panels {
 }
 
 .ui-table .ui-table-tbody > tr > td.ui-editing-cell input {
-  padding: 0.343em 0.343em !important;
+  padding: var(--jetti-density-padding-y) var(--jetti-density-padding-x) !important;
 }
 
 .tabViewClassInForm .ui-table .ui-table-tbody > tr > td {
@@ -420,13 +449,13 @@ ng-dropdown-panel[ng-reflect-position="bottom"] {
   user-select: none;
 }
 
-// PrimeNG 18 TabView compatibility until the deprecated component is migrated to Tabs.
-body p-tabview .p-tablist-tab-list {
+// PrimeNG 18 Tabs contract replacing deprecated TabView/TabPanel.
+body p-tabs .p-tablist-tab-list {
   background: transparent;
   border-color: #dddddd;
 }
 
-body p-tabview .p-tab {
+body p-tabs .p-tab {
   margin-right: 2px;
   padding: 12px 10px;
   background: #f5f5f5;
@@ -436,19 +465,64 @@ body p-tabview .p-tab {
   color: #337ab7;
 }
 
-body p-tabview .p-tab-active {
+body p-tabs .p-tab-active {
   background: #ffffff;
   color: #337ab7;
 }
 
-body p-tabview .p-tabpanels {
+body p-tabs .p-tabpanels {
   padding: 0;
   background: transparent;
 }
 
+body .jetti-form-tabs .p-tab {
+  padding: 6px 8px;
+}
+
+body .jetti-form-tabs .p-tabpanels,
+.jetti-form-table-container {
+  padding: 0;
+  border: 1px solid #dddddd;
+  border-top: 0;
+  background: #ffffff;
+}
+
+body .jetti-workspace-tabs .p-tab {
+  gap: 5px;
+  user-select: none;
+}
+
+.jetti-tab-close {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.jetti-tab-close:hover {
+  background: rgb(0 0 0 / 8%);
+}
+
+body .jetti-list-settings-drawer .p-drawer-content {
+  padding: 0;
+}
+
+body .jetti-list-settings-drawer .jetti-settings-select .p-select {
+  width: 100%;
+  min-width: 251px;
+}
+
 // PrimeNG 18 compact compatibility for the existing dense desktop layout.
 body .p-inputtext {
-  padding: 0.343em;
+  min-height: var(--jetti-control-height);
+  padding: var(--jetti-density-padding-y) var(--jetti-density-padding-x);
 }
 
 body .p-toolbar {
@@ -456,10 +530,65 @@ body .p-toolbar {
   gap: 1px;
 }
 
+body .p-toolbar .p-toolbar-start,
+body .p-toolbar .p-toolbar-center,
+body .p-toolbar .p-toolbar-end,
+.jetti-toolbar-start,
+.jetti-toolbar-end,
+.jetti-toolbar-actions,
+.jetti-selected-total {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 1px;
+}
+
+.jetti-toolbar-end {
+  margin-inline-start: auto;
+}
+
+body .jetti-list-toolbar,
+body .jetti-paginator-toolbar,
+body .jetti-settings-toolbar,
+body .jetti-dialog-toolbar,
+body .jetti-form-toolbar {
+  min-height: calc(var(--jetti-button-size) + 4px);
+}
+
+body .jetti-list-toolbar .p-toolbar-end,
+body .jetti-paginator-toolbar .p-toolbar-end,
+body .jetti-settings-toolbar .p-toolbar-end,
+body .jetti-dialog-toolbar .p-toolbar-end,
+body .jetti-form-toolbar .p-toolbar-end {
+  margin-inline-start: auto;
+}
+
+body .jetti-form-toolbar .p-splitbutton .p-button {
+  min-height: var(--jetti-button-size);
+}
+
+.jetti-toolbar-action {
+  display: inline-flex;
+}
+
+.jetti-total-button {
+  min-width: 62px;
+  font-variant-numeric: tabular-nums;
+}
+
 body .p-button.p-button-icon-only {
-  width: 28px;
-  height: 28px;
+  width: var(--jetti-button-size);
+  height: var(--jetti-button-size);
   padding: 0;
+}
+
+body .p-button,
+body .p-select {
+  min-height: var(--jetti-control-height);
+}
+
+body .p-button .p-button-icon {
+  font-size: var(--jetti-icon-size);
 }
 
 body .p-button.p-button-secondary {
@@ -477,19 +606,129 @@ body .p-button.p-button-secondary:not(:disabled):hover {
 body .p-datatable .p-datatable-thead > tr > th,
 body .p-datatable .p-datatable-tbody > tr > td,
 body .p-datatable .p-datatable-tfoot > tr > td {
-  padding: 0.343em;
+  padding: var(--jetti-density-padding-y) var(--jetti-density-padding-x);
 }
 
 body .p-datatable .p-datatable-tbody > tr > td {
-  height: 27px;
+  height: var(--jetti-table-row-height);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.jetti-table-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body .jetti-table-filter-cell {
+  padding: 2px 4px;
+  font-size: xx-small;
+  vertical-align: middle;
+}
+
+body .jetti-table-filter-cell > div,
+body .jetti-table-filter-cell > input,
+body .jetti-table-filter-cell p-inputgroup,
+body .jetti-table-filter-cell .p-inputgroup,
+body .jetti-table-filter-cell p-datepicker,
+body .jetti-table-filter-cell .p-datepicker,
+body .jetti-table-filter-cell j-autocomplete-png,
+body .jetti-table-filter-cell j-ng-select {
+  width: 100%;
+  min-width: 0;
+}
+
+body .jetti-table-inputgroup {
+  width: 100%;
+  min-width: 0;
+}
+
+body .jetti-table-inputgroup > .p-inputtext,
+body .jetti-table-inputgroup > .p-inputwrapper,
+body .jetti-table-inputgroup > p-datepicker {
+  min-width: 0;
+}
+
+body .jetti-table-inputgroup > .p-button.p-button-icon-only {
+  flex: 0 0 var(--jetti-button-size);
+}
+
 body .p-datatable .p-datatable-thead > tr > th,
 body .p-datatable .p-datatable-tfoot > tr > td {
   font-weight: normal;
+}
+
+// Native PrimeNG 18 table contract for hierarchy/operation lists.
+// Keep these rules scoped: other tables are migrated in later checkpoints.
+body .jetti-operation-table.p-datatable {
+  border: 1px solid var(--jetti-border-color);
+  border-radius: var(--jetti-border-radius);
+  overflow: hidden;
+}
+
+body .jetti-operation-table .p-datatable-table-container {
+  overflow: auto;
+}
+
+body .jetti-operation-table .p-datatable-thead > tr > th {
+  height: var(--jetti-table-row-height);
+  background: #f5f5f5;
+  color: #222222;
+  vertical-align: middle;
+}
+
+body .jetti-operation-table .p-datatable-thead > tr:first-child > th {
+  text-align: center;
+}
+
+body .jetti-operation-table .p-datatable-thead > tr > th:first-child,
+body .jetti-operation-table .p-datatable-tbody > tr > td:first-child,
+body .jetti-operation-table .p-datatable-thead > tr > th:last-child,
+body .jetti-operation-table .p-datatable-tbody > tr > td:last-child {
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+}
+
+body .jetti-operation-table .p-datatable-sort-icon {
+  width: 12px;
+  height: 12px;
+  margin-inline-start: 3px;
+}
+
+body .jetti-operation-table .jetti-table-filter-cell {
+  padding: 2px 4px;
+  font-size: xx-small;
+  vertical-align: middle;
+}
+
+body .jetti-operation-table .jetti-table-filter-cell > div,
+body .jetti-operation-table .jetti-table-filter-cell > input,
+body .jetti-operation-table .jetti-table-filter-cell p-datepicker,
+body .jetti-operation-table .jetti-table-filter-cell .p-datepicker,
+body .jetti-operation-table .jetti-table-filter-cell j-autocomplete-png,
+body .jetti-operation-table .jetti-table-filter-cell j-ng-select {
+  width: 100%;
+}
+
+body .jetti-operation-table .jetti-table-status-cell {
+  padding-inline: 0;
+  text-align: center;
+}
+
+body .jetti-operation-table .p-datatable-tbody > tr.p-datatable-row-selected,
+body .jetti-operation-table .p-datatable-tbody > tr.p-datatable-row-selected > td {
+  background: var(--jetti-selected-background);
+  color: var(--jetti-selected-color);
+}
+
+body .jetti-operation-table .p-datatable-tbody > tr.p-datatable-row-selected a,
+body .jetti-operation-table .p-datatable-tbody > tr.p-datatable-row-selected .pi,
+body .jetti-operation-table .p-datatable-tbody > tr.p-datatable-row-selected .fa,
+body .jetti-operation-table .p-datatable-tbody > tr.p-datatable-row-selected .far {
+  color: inherit;
 }
 
 body .p-treetable .p-treetable-tbody > tr > td {
@@ -508,17 +747,186 @@ p-autocomplete .p-autocomplete-input {
   width: 100%;
 }
 
-j-autocomplete-png .p-button.p-button-icon-only {
-  flex: 0 0 28px;
+j-autocomplete-png {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+j-autocomplete-png form,
+j-autocomplete-png .jetti-autocomplete-group {
+  width: 100%;
+  min-width: 0;
+}
+
+j-autocomplete-png .jetti-autocomplete-group > .p-inputwrapper,
+j-autocomplete-png .jetti-autocomplete-group > .p-inputtext {
+  min-width: 0;
+}
+
+j-autocomplete-png .jetti-autocomplete-boolean {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--jetti-control-height);
+  align-items: center;
+  gap: 0.35rem;
+  padding-inline: var(--jetti-density-padding-x);
+  background: #ffffff;
+  border: 1px solid var(--jetti-border-color);
+  border-radius: var(--jetti-border-radius) 0 0 var(--jetti-border-radius);
+}
+
+j-autocomplete-png .jetti-autocomplete-group > .p-button.p-button-icon-only {
+  flex: 0 0 var(--jetti-button-size);
+}
+
+j-autocomplete-png .jetti-autocomplete-group > .p-button:last-of-type {
+  border-start-end-radius: var(--jetti-border-radius);
+  border-end-end-radius: var(--jetti-border-radius);
+}
+
+.jetti-operation-filter-panel {
+  padding: 6px;
+}
+
+.jetti-operation-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 35px;
+  margin-block: 12px 6px;
+}
+
+.jetti-operation-filter {
+  min-width: 0;
+}
+
+.jetti-dynamic-form {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.jetti-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 35px;
+}
+
+.jetti-form-grid-cell,
+j-control,
+.jetti-form-control,
+.jetti-control-field {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.jetti-form-control-labeled {
+  margin-top: 24px;
+}
+
+.jetti-form-control .p-inputtext,
+.jetti-form-control .p-inputnumber,
+.jetti-form-control .p-inputnumber-input,
+.jetti-form-control .p-select,
+.jetti-form-control textarea,
+.jetti-form-control angular-editor {
+  width: 100%;
+  min-width: 0;
+}
+
+.jetti-form-control .jetti-control-inputgroup > .p-button.p-button-icon-only {
+  flex: 0 0 var(--jetti-button-size);
+}
+
+.jetti-form-control .jetti-control-inputgroup > .p-button:last-of-type {
+  border-start-end-radius: var(--jetti-border-radius);
+  border-end-end-radius: var(--jetti-border-radius);
+}
+
+.jetti-boolean-field {
+  display: flex;
+  min-height: var(--jetti-control-height);
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.jetti-link-field {
+  min-height: var(--jetti-control-height);
+  align-content: center;
+}
+
+.jetti-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -0.5rem;
+}
+
+.jetti-grid-nopad {
+  margin: 0;
+}
+
+.jetti-col-12,
+.jetti-col-md-3,
+.jetti-col-md-4 {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.jetti-fluid input,
+.jetti-fluid textarea,
+.jetti-fluid .p-inputtext,
+.jetti-fluid .p-inputwrapper,
+.jetti-fluid .p-select {
+  width: 100%;
+}
+
+.jetti-message {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--jetti-border-radius);
+}
+
+.jetti-message-error {
+  color: #a12622;
+  background: #fef0ef;
+  border-color: #f4b8b5;
+}
+
+.jetti-separator {
+  border-color: var(--jetti-border-color);
+}
+
+@media (min-width: 768px) {
+  .jetti-col-md-3 {
+    width: 25%;
+  }
+
+  .jetti-col-md-4 {
+    width: 33.3333%;
+  }
+}
+
+@media (max-width: 900px) {
+  .jetti-operation-filters,
+  .jetti-form-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
 }
 
 // Compatibility for the legacy floating-label markup used by shared controls.
 // PrimeNG 18 no longer styles the old ui-float-label class.
-.ui-float-label {
+.ui-float-label,
+.jetti-float-label {
   position: relative;
 }
 
-.ui-float-label > label {
+.ui-float-label > label,
+.jetti-float-label > label {
   position: absolute;
   z-index: 1;
   top: 50%;
@@ -533,7 +941,12 @@ j-autocomplete-png .p-button.p-button-icon-only {
 
 .ui-float-label:focus-within > label,
 .ui-float-label:has(.p-inputwrapper-filled) > label,
-.ui-float-label:has(input.p-filled) > label {
+.ui-float-label:has(input.p-filled) > label,
+.jetti-float-label:focus-within > label,
+.jetti-float-label:has(.p-inputwrapper-filled) > label,
+.jetti-float-label:has(input.p-filled) > label,
+.jetti-float-label > input[type="date"] ~ label,
+.jetti-float-label > input[type="datetime-local"] ~ label {
   top: -0.15rem;
   font-size: 12px;
   transform: translateY(-100%);

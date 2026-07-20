@@ -1,12 +1,23 @@
-<p-tabView #tv [controlClose]="true" [activeIndex]="(tabStore.state$ | async).selectedIndex"
-  (onClose)="onTabClose($event)" (onChange)="onTabSelected($event)">
-  <p-tabPanel #tp *ngFor="let tab of (tabStore.state$ | async).tabs" header="{{ tab.header | bcEllipsis:40 }}"
-    [tooltip]="tab.header" [leftIcon]="tab.icon" [closable]="tab.type !== 'home'" style="user-select: none;">
-    <ng-template pTemplate="content">
+<ng-container *ngIf="tabStore.state$ | async as state">
+  <p-tabs class="jetti-workspace-tabs" [value]="state.selectedIndex" [scrollable]="true"
+    (valueChange)="onTabSelected($event)">
+    <p-tablist>
+      <p-tab *ngFor="let tab of state.tabs; let index = index" [value]="index" [title]="tab.header">
+        <i [class]="tab.icon"></i>
+        <span>{{ tab.header | bcEllipsis:40 }}</span>
+        <button *ngIf="tab.type !== 'home'" type="button" class="jetti-tab-close"
+          [attr.aria-label]="'Close ' + tab.header" (click)="onTabClose($event, index)">
+          <i class="pi pi-times"></i>
+        </button>
+      </p-tab>
+    </p-tablist>
+    <p-tabpanels>
+      <p-tabpanel *ngFor="let tab of state.tabs; let index = index" [value]="index">
       <div class="card" style="padding: 0; margin: 0;user-select: none;">
         <dynamic-component [type]="tab.type" [kind]="tab.id ? 'form' :'list'" [id]="tab.id || ''" [data]="tab.data">
         </dynamic-component>
       </div>
-    </ng-template>
-  </p-tabPanel>
-</p-tabView>
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+</ng-container>

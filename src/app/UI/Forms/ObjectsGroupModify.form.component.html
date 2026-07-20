@@ -4,7 +4,7 @@
       <form novalidate [formGroup]="form" cdkTrapFocus>
         <p-panel #mp [header]='header' [toggleable]="true">
           <p-toolbar *ngIf="!onlyViewMode">
-            <div *ngIf="isModeLoad" class="ui-toolbar-group-left">
+            <div *ngIf="isModeLoad" class="jetti-toolbar-start">
               <button pButton type="button" id="ReadReciever" label="2. Загрузить структуру приемника"
                 class="p-button-info" (click)="ReadRecieverStructure()"></button>
               <button pButton type="button" id="matchColumnsByName" label="3. Сопоставить колонки по именам"
@@ -21,7 +21,7 @@
                 (click)="prepareToLoading()"></button>
             </div>
             <div *ngIf="isModeModify">
-              <div class="ui-toolbar-group-left">
+              <div class="jetti-toolbar-start">
                 <button pButton type="button" id="fillPropSettings" label="Настроить поля" class="p-button-info"
                   (click)="fillPropSettings()"></button>
                 <button pButton type="button" id="createFilterAndModifyElements" label="Создать элементы"
@@ -30,7 +30,7 @@
                   (click)="selectFilter()"></button>
               </div>
 
-              <div class="ui-toolbar-group-right">
+              <div class="jetti-toolbar-end">
                 <button pButton type="button" id="saveToJSON" label="Сохранить в JSON" class="p-button-info"
                   (click)="saveToJSON()"></button>
                 <p-fileUpload customUpload="true" accept=".json" mode="basic" chooseLabel="Загрузить из JSON"
@@ -69,13 +69,16 @@
           </p-fieldset>
 
           <br *ngIf="panel.tables.length > 0">
-          <p-tabView *ngIf="panel.tables.length" class="tabViewClassInForm">
-            <div *ngFor="let table of panel.tables">
-              <p-tabPanel [header]="table.label">
+          <p-tabs *ngIf="panel.tables.length" [value]="0" class="jetti-form-tabs">
+            <p-tablist>
+              <p-tab *ngFor="let table of panel.tables; let index = index" [value]="index">{{ table.label }}</p-tab>
+            </p-tablist>
+            <p-tabpanels>
+              <p-tabpanel *ngFor="let table of panel.tables; let index = index" [value]="index">
                 <j-control [control]="table" [form]="form"></j-control>
-              </p-tabPanel>
-            </div>
-          </p-tabView>
+              </p-tabpanel>
+            </p-tabpanels>
+          </p-tabs>
 
           <div *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
             <j-control *ngIf="panel.fullwidth[i]" [control]="panel.fullwidth[i]" [form]="form"></j-control>

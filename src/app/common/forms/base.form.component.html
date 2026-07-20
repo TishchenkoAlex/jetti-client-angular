@@ -1,29 +1,29 @@
 <form novalidate [formGroup]="form" cdkTrapFocus>
   <p-panel [toggleable]="true" [header]="docDescription">
-    <p-toolbar>
-      <div class="ui-toolbar-group-left">
+    <p-toolbar styleClass="jetti-form-toolbar">
+      <ng-template pTemplate="start">
         <button pButton type="button" icon="fa fa-check-square-o" label="Execute" class="p-button-warn"
           [disabled]="!form.valid" (click)="Execute()"></button>
-      </div>
-      <div class="ui-toolbar-group-right">
+      </ng-template>
+      <ng-template pTemplate="end">
         <button pButton type="button" icon="fa fa-close" class="p-button-danger" (click)="close()"></button>
-      </div>
+      </ng-template>
     </p-toolbar>
-    <div fxLayout="column" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial>
+    <div class="jetti-dynamic-form" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial>
 
-      <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="0px"
+      <div class="jetti-form-grid"
         *ngFor="let i of [0,3,6,9,12,15]">
-        <div fxFlex>
+        <div class="jetti-form-grid-cell">
           <j-control
             *ngIf="v[i+0] && v[i+0].order > 0 && v[i+0].order !== 1000 && v[i+0].controlType !== 'table' && v[i+0].controlType !== 'script'"
             [control]="v[i+0]" [form]="form"></j-control>
         </div>
-        <div fxFlex>
+        <div class="jetti-form-grid-cell">
           <j-control
             *ngIf="v[i+1] && v[i+1].order > 0 && v[i+1].order !== 1000 && v[i+1].controlType !== 'table' && v[i+1].controlType !== 'script'"
             [control]="v[i+1]" [form]="form"></j-control>
         </div>
-        <div fxFlex>
+        <div class="jetti-form-grid-cell">
           <j-control
             *ngIf="v[i+2] && v[i+2].order > 0 && v[i+2].order !== 1000 && v[i+2].controlType !== 'table' && v[i+2].controlType !== 'script'"
             [control]="v[i+2]" [form]="form"></j-control>
@@ -31,13 +31,16 @@
       </div>
 
       <br *ngIf="tables.length">
-      <p-tabView *ngIf="tables.length" class="tabViewClassInForm">
-        <div *ngFor="let control of tables; let i = index">
-          <p-tabPanel [header]="control.label">
+      <p-tabs *ngIf="tables.length" [value]="0" class="jetti-form-tabs">
+        <p-tablist>
+          <p-tab *ngFor="let control of tables; let index = index" [value]="index">{{ control.label }}</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel *ngFor="let control of tables; let index = index" [value]="index">
             <j-control [control]="control" [form]="form"></j-control>
-          </p-tabPanel>
-        </div>
-      </p-tabView>
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
 
     </div>
     <ng-content></ng-content>

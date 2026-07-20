@@ -12,6 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { Textarea } from 'primeng/inputtextarea';
 import { MenuModule } from 'primeng/menu';
@@ -23,7 +24,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { TabViewModule } from 'primeng/tabview';
+import { TabsModule } from 'primeng/tabs';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AccordionModule } from 'primeng/accordion';
@@ -34,7 +35,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ListboxModule } from 'primeng/listbox';
 import { TableModule } from 'primeng/table';
 import { DynamicDialog } from 'primeng/dynamicdialog';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 import { TriStateCheckboxComponent } from './common/tri-state-checkbox/tri-state-checkbox.component';
 
 @NgModule({
@@ -48,9 +49,10 @@ import { TriStateCheckboxComponent } from './common/tri-state-checkbox/tri-state
     ButtonModule,
     SplitButtonModule,
     InputNumberModule,
+    InputGroupModule,
     ConfirmDialogModule,
     DialogModule,
-    SidebarModule,
+    DrawerModule,
     TooltipModule,
     AccordionModule,
     FieldsetModule,
@@ -88,7 +90,7 @@ import { TriStateCheckboxComponent } from './common/tri-state-checkbox/tri-state
     ToastModule,
     ScrollPanelModule,
     TableModule,
-    TabViewModule,
+    TabsModule,
     DataViewModule,
     FileUploadModule,
     ListboxModule,

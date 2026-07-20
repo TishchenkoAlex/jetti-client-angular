@@ -1,15 +1,13 @@
 <p-toolbar>
-  <div *ngIf="!readOnly" class="ui-toolbar-group-left">
+  <div *ngIf="!readOnly" class="jetti-toolbar-start">
     <button pButton type="button" icon="pi pi-plus" class="p-button-success" (click)="add()"></button>
     <button pButton type="button" icon="pi pi-clone" class="p-button-secondary" (click)="copy()"
       *ngIf="selection?.length === 1"></button>
     <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="delete()"
       *ngIf="selection?.length > 0"></button>
   </div>
-  <div class="ui-toolbar-group-right">
-    <div class="ui-inputgroup">
-      <button pButton type="button" icon="pi pi-filter" class="p-button-secondary" [ngStyle]="{ 'filter': filtersVisible ? 'invert(20%)' : undefined}" (click)="filtersVisible = !filtersVisible"></button>
-    </div>
+  <div class="jetti-toolbar-end">
+    <button pButton type="button" icon="pi pi-filter" class="p-button-secondary" [ngStyle]="{ 'filter': filtersVisible ? 'invert(20%)' : undefined}" (click)="filtersVisible = !filtersVisible"></button>
   </div>
 </p-toolbar>
 
@@ -40,17 +38,17 @@
     <tr *ngIf="filters && filtersVisible">
       <th style="width: 50px"> </th>
       <th *ngFor="let col of columns" [ngSwitch]="col.type">
-        <div *ngSwitchCase="'number'" class="ui-inputgroup">
+        <p-inputgroup *ngSwitchCase="'number'" styleClass="jetti-table-inputgroup">
           <input pInputText type="numeric" [(ngModel)]="filters[col.field].value"
             (input)="onFilterInput($event.target.value, col)"  [disabled]="isSorted">
           <button pButton type="button" [icon]="filters[col.field].machMode.label" class="p-button-secondary" [disabled]="isSorted"
             (click)="nextMachMode(col)"></button>
           <button pButton type="button" icon="pi pi-times" class="p-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
-        </div>
+        </p-inputgroup>
         <j-tri-state-checkbox *ngSwitchCase="'boolean'" [disabled]="isSorted" [(ngModel)]="filters[col.field].value"
           (triStateChange)="onFilterInput($event.value, col)"></j-tri-state-checkbox>
-        <div *ngSwitchCase="'datetime'" class="ui-inputgroup">
+        <p-inputgroup *ngSwitchCase="'datetime'" styleClass="jetti-table-inputgroup">
           <p-datepicker showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
             [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
             (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'"
@@ -60,8 +58,8 @@
             (click)="nextMachMode(col)"></button>
           <button pButton type="button" icon="pi pi-times" class="p-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
-        </div>
-        <div *ngSwitchCase="'date'" class="ui-inputgroup">
+        </p-inputgroup>
+        <p-inputgroup *ngSwitchCase="'date'" styleClass="jetti-table-inputgroup">
           <p-datepicker showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
             [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
             (onSelect)="onFilterInput($event, col)" (onClearClick)="onFilterInput(null, col)" [dateFormat]="'dd.mm.yy'">
@@ -70,13 +68,13 @@
             (click)="nextMachMode(col)"></button>
           <button pButton type="button" icon="pi pi-times" class="p-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
-        </div>
-        <div *ngSwitchDefault class="ui-inputgroup">
+        </p-inputgroup>
+        <p-inputgroup *ngSwitchDefault styleClass="jetti-table-inputgroup">
           <input pInputText type="text" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
             (input)="onFilterInput($event.target.value, col)">
           <button pButton type="button" icon="pi pi-times" class="p-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
-        </div>
+        </p-inputgroup>
       </th>
     </tr>
   </ng-template>
@@ -87,7 +85,7 @@
         {{rowIndex + 1}}
       </td>
       <td *ngFor="let col of columns" [ngStyle]="col.style" pEditableColumn [pEditableColumnField]="col.field"
-        [pEditableColumnDisabled]="pEditableColumnDisabled" class="ui-resizable-column">
+        [pEditableColumnDisabled]="pEditableColumnDisabled" class="jetti-table-cell">
         <p-cellEditor>
           <ng-template pTemplate="input">
             <j-control [control]="col.control" [form]="getControl(rowData.index)"></j-control>
@@ -110,7 +108,7 @@
           </ng-template>
         </p-cellEditor>
       </td>
-      <td class="ui-resizable-column"></td>
+      <td class="jetti-table-cell"></td>
     </tr>
   </ng-template>
 

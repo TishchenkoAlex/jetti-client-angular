@@ -77,7 +77,7 @@ export class FormControlInfo {
     this.style = options.style || { 'width': '200px', 'min-width': '200px', 'max-width': '200px' };
     this.totals = options.totals;
     this.owner = options.owner;
-    this.showLabel = true;
+    this.showLabel = options.showLabel !== false;
     this.storageType = options.storageType;
     this.value = options.value;
     this.isAdditional = options.isAdditional;

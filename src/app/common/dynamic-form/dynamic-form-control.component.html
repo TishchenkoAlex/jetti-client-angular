@@ -1,18 +1,20 @@
-<div [formGroup]="form" [ngSwitch]="control.controlType" *ngIf="!control.hidden" [style.marginTop]="marginTop()"
-  class="ui-fluid">
-  <div *ngSwitchCase="'string'" class="ui-inputgroup" style="display: flex"
-    [ngClass]="{'ui-float-label' : control.showLabel}">
-    <input [required]="control.required" pInputText [formControlName]="control.key" [readonly]="control.readOnly"
+<div [formGroup]="form" [ngSwitch]="control.controlType" *ngIf="!control.hidden"
+  class="jetti-form-control" [class.jetti-form-control-labeled]="control.showLabel">
+  <p-inputgroup *ngSwitchCase="'string'"
+    [styleClass]="control.showLabel ? 'jetti-control-inputgroup jetti-float-label' : 'jetti-control-inputgroup'">
+    <input [required]="control.required" pInputText [id]="control.key" [formControlName]="control.key"
+      [readonly]="control.readOnly"
       autocomplete="off" (focus)="$event.target.select()" spellcheck="false">
     <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
       pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1
       [disabled]="this.isEMPTY || control.readOnly"></button>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
-  </div>
+  </p-inputgroup>
 
-  <div *ngSwitchCase="'URL'" class="ui-inputgroup" style="display: flex"
-    [ngClass]="{'ui-float-label' : control.showLabel}">
-    <input [required]="control.required" pInputText [formControlName]="control.key" [readonly]="control.readOnly"
+  <p-inputgroup *ngSwitchCase="'URL'"
+    [styleClass]="control.showLabel ? 'jetti-control-inputgroup jetti-float-label' : 'jetti-control-inputgroup'">
+    <input [required]="control.required" pInputText [id]="control.key" [formControlName]="control.key"
+      [readonly]="control.readOnly"
       autocomplete="off" (focus)="$event.target.select()" spellcheck="false">
     <button pButton type="button" icon="pi pi-external-link" class="p-button-secondary" pTooltip="Open"
       tooltipPosition="top" showDelay="2000" [disabled]="this.isEMPTY" (click)="handleOpenURL($event)"
@@ -21,32 +23,38 @@
       pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1
       [disabled]="this.isEMPTY || control.readOnly"></button>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
+  </p-inputgroup>
+
+  <div *ngSwitchCase="'link'" class="jetti-control-field jetti-link-field">
+    <a *ngIf="!this.isEMPTY" role="button" tabindex="0" (click)="handleOpenURL()"
+      (keydown.enter)="handleOpenURL()">{{control.label + ": " + formControl.value}}</a>
   </div>
 
-  <div *ngSwitchCase="'link'">
-    <a *ngIf="!this.isEMPTY" (click)="handleOpenURL()">{{control.label + ": " + formControl.value}}</a>
-  </div>
-
-  <div *ngSwitchCase="'enum'" [ngClass]="{'ui-float-label' : control.showLabel}">
+  <div *ngSwitchCase="'enum'" class="jetti-control-field"
+    [class.jetti-float-label]="control.showLabel">
     <p-select [options]="control.valuesOptions" [formControlName]="control.key" [autoDisplayFirst]="false"
-      [readonly]="control.readOnly" [required]="control.required" appendTo="body"></p-select>
+      [readonly]="control.readOnly" [required]="control.required" [inputId]="control.key"
+      appendTo="body"></p-select>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
   </div>
 
-  <div *ngSwitchCase="'textarea'" [ngClass]="{'ui-float-label' : control.showLabel}">
-    <textarea [required]="control.required" pInputTextarea [formControlName]="control.key" [readonly]="control.readOnly"
-      (focus)="$event.target.select()" spellcheck="false" [ngStyle]="control.style">
+  <div *ngSwitchCase="'textarea'" class="jetti-control-field"
+    [class.jetti-float-label]="control.showLabel">
+    <textarea [required]="control.required" pInputTextarea [id]="control.key"
+      [formControlName]="control.key" [readonly]="control.readOnly" (focus)="$event.target.select()"
+      spellcheck="false" [ngStyle]="control.style">
     </textarea>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
   </div>
 
-  <div *ngSwitchCase="'HTML'">
+  <div *ngSwitchCase="'HTML'" class="jetti-control-field">
     <angular-editor [required]="control.required" [formControlName]="control.key" spellcheck="false"
       [ngStyle]="control.style">
     </angular-editor>
   </div>
 
-  <div *ngSwitchCase="'number'" [ngClass]="{'ui-float-label' : control.showLabel}">
+  <div *ngSwitchCase="'number'" class="jetti-control-field"
+    [class.jetti-float-label]="control.showLabel">
     <p-inputNumber [required]="control.required" [formControlName]="control.key" [readonly]="control.readOnly"
       (onFocus)="$event.target.select()" [inputId]="control.key" [step]="0.01" [format]="true"
       [minFractionDigits]="2" [maxFractionDigits]="2">
@@ -60,23 +68,27 @@
     [showLabel]="control.showLabel" (focus)="pc.select()" [storageType]="control.storageType" [appendTo]="appendTo">
   </j-autocomplete-png>
 
-  <div *ngSwitchCase="'date'" [ngClass]="{'ui-float-label' : control.showLabel}">
-    <input pInputText class="calendar" [value]="dateTimeValue | date: 'yyyy-MM-dd'" [required]="control.required"
+  <div *ngSwitchCase="'date'" class="jetti-control-field"
+    [class.jetti-float-label]="control.showLabel">
+    <input pInputText class="calendar" [id]="control.key" [value]="dateTimeValue | date: 'yyyy-MM-dd'"
+      [required]="control.required"
       [readonly]="control.readOnly" autocomplete="off" (input)="parseDate($event.target.value)"
       (focus)="$event.target.select()" spellcheck="false" type="date"
       [ngClass]="{'ng-dirty ng-invalid': formControl?.invalid }" [disabled]="this.formControl?.disabled">
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
   </div>
 
-  <div *ngSwitchCase="'datetime'" [ngClass]="{'ui-float-label' : control.showLabel}">
-    <input pInputText class="calendar" [value]="dateTimeValue | date:'yyyy-MM-ddTHH:mm:ss'" step="1"
+  <div *ngSwitchCase="'datetime'" class="jetti-control-field"
+    [class.jetti-float-label]="control.showLabel">
+    <input pInputText class="calendar" [id]="control.key"
+      [value]="dateTimeValue | date:'yyyy-MM-ddTHH:mm:ss'" step="1"
       [required]="control.required" [readonly]="control.readOnly" autocomplete="off"
       (input)="parseDate($event.target.value)" (focus)="$event.target.select()" spellcheck="false" type="datetime-local"
       [ngClass]="{'ng-dirty ng-invalid': formControl?.invalid }" [disabled]="this.formControl?.disabled">
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
   </div>
 
-  <div *ngSwitchCase="'boolean'" [style.marginTop]="control.showLabel ? '27px': ''">
+  <div *ngSwitchCase="'boolean'" class="jetti-control-field jetti-boolean-field">
     <p-checkbox *ngSwitchCase="'boolean'" binary="true" [inputId]="control.key"
       [formControlName]="control.key"></p-checkbox>
     <label *ngIf="control.showLabel" [for]="control.key">{{ control.label }}</label>

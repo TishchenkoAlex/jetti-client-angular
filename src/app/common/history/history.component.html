@@ -1,5 +1,5 @@
 <p-toolbar>
-  <div class="ui-toolbar-group-left">
+  <div class="jetti-toolbar-start">
     <button id="open" label="Open" class="p-button-success" pButton type="button" (click)="openOnClick()"
     [disabled]="(lds.busy$ | async) || !selection"></button>
     <button id="restore" label="Restore" class="p-button-warn" pButton type="button" (click)="restore()"
@@ -24,7 +24,7 @@
 
   <ng-template pTemplate="body" let-rowData>
     <tr [pSelectableRow]="rowData" (dblclick)="openHistory(rowData)">
-      <td class="ui-resizable-column" style="text-align: center;">
+      <td class="jetti-table-cell" style="text-align: center;">
         <i *ngIf="!rowData.isfolder && rowData['posted'] && !rowData['deleted']" class="fa fa-check-square"
           style="color: #5cb85c"></i>
         <i *ngIf="!rowData.isfolder && rowData['deleted']" class="fa fa-minus-square" style="color: #d9534f"></i>
@@ -33,16 +33,16 @@
         <i *ngIf="rowData.isfolder && rowData['deleted']" class="fa fa-folder" style="color: #d9534f"></i>
         <i *ngIf="rowData.isfolder && !rowData['deleted']" class="fa fa-folder" style="color: #5cb85c"></i>
       </td>
-      <td class="ui-resizable-column" style="text-align: center;">
+      <td class="jetti-table-cell" style="text-align: center;">
         {{rowData.userName }}
       </td>
-      <td class="ui-resizable-column" style="text-align: center;">
+      <td class="jetti-table-cell" style="text-align: center;">
         {{rowData.timestamp | date: 'dd.MM.y HH:mm:ss'}}
       </td>
-      <td class="ui-resizable-column" style="text-align: center;">
+      <td class="jetti-table-cell" style="text-align: center;">
         {{rowData.code }}
       </td>
-      <td class="ui-resizable-column">
+      <td class="jetti-table-cell">
         {{rowData.description }}
       </td>
     </tr>

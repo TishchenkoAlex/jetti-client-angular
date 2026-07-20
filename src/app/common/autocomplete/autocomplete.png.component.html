@@ -1,68 +1,70 @@
 <form novalidate [formGroup]="form">
 
   <div *ngIf="value?.type === 'string'">
-    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
-      <input pInputText [ngModel]="suggest.value.value" [ngModelOptions]="{standalone: true}" [required]="required"
+    <p-inputgroup [styleClass]="showLabel ? 'jetti-autocomplete-group jetti-float-label' : 'jetti-autocomplete-group'">
+      <input pInputText [id]="id + '-input'" [ngModel]="suggest.value.value" [ngModelOptions]="{standalone: true}" [required]="required"
         [readonly]="readOnly" autocomplete="off" spellcheck="false" (focus)="$event.target.select()"
         (ngModelChange)="value={id: 'string', code: '', type: 'string', value: $event}">
-      <button pButton type="button" icon="pi pi-close" class="p-button-secondary" (click)="handleReset($event)"
+      <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
         pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
-      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
-    </div>
+      <label *ngIf="showLabel" [for]="id + '-input'">{{placeholder}}</label>
+    </p-inputgroup>
   </div>
 
   <div *ngIf="value?.type === 'number'">
-    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
-      <input pInputText [ngModel]="suggest.value.value" [ngModelOptions]="{standalone: true}" [required]="required"
+    <p-inputgroup [styleClass]="showLabel ? 'jetti-autocomplete-group jetti-float-label' : 'jetti-autocomplete-group'">
+      <input pInputText [id]="id + '-input'" [ngModel]="suggest.value.value" [ngModelOptions]="{standalone: true}" [required]="required"
         type="number" [readonly]="readOnly" autocomplete="off" (focus)="$event.target.select()"
         (ngModelChange)="value={id: 'number', code: '', type: 'number', value: $event}">
-      <button pButton type="button" icon="pi pi-close" class="p-button-secondary" (click)="handleReset($event)"
+      <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
         pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
-      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
-    </div>
+      <label *ngIf="showLabel" [for]="id + '-input'">{{placeholder}}</label>
+    </p-inputgroup>
   </div>
 
   <div *ngIf="value?.type === 'datetime'">
-    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
-      <input pInputText class="calendar"
+    <p-inputgroup [styleClass]="showLabel ? 'jetti-autocomplete-group jetti-float-label' : 'jetti-autocomplete-group'">
+      <input pInputText class="calendar" [id]="id + '-input'"
         [value]="isDate(suggest.value.value) ? (suggest.value.value | date:'yyy-MM-ddTHH:mm:ss') : null" step=1
         [required]="required" [readonly]="readOnly" autocomplete="off" spellcheck="false"
         (focus)="$event.target.select()" type="datetime-local" (input)="parseDate($event.target.value)">
-      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
-      <button pButton type="button" icon="pi pi-close" class="p-button-secondary" (click)="handleReset($event)"
+      <label *ngIf="showLabel" [for]="id + '-input'">{{placeholder}}</label>
+      <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
         pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
-    </div>
+    </p-inputgroup>
   </div>
 
   <div *ngIf="value?.type === 'date'">
-    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
-      <input pInputText class="calendar"
+    <p-inputgroup [styleClass]="showLabel ? 'jetti-autocomplete-group jetti-float-label' : 'jetti-autocomplete-group'">
+      <input pInputText class="calendar" [id]="id + '-input'"
         [value]="isDate(suggest.value.value) ? (suggest.value.value | date:'yyy-MM-dd') : null" [required]="required"
         [readonly]="readOnly" autocomplete="off" spellcheck="false" (focus)="$event.target.select()" type="date"
         (input)="parseDate($event.target.value)">
-      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
-      <button pButton type="button" icon="pi pi-close" class="p-button-secondary" (click)="handleReset($event)"
+      <label *ngIf="showLabel" [for]="id + '-input'">{{placeholder}}</label>
+      <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
         pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1></button>
-    </div>
+    </p-inputgroup>
   </div>
 
-  <div *ngIf="value?.type === 'boolean'">
-    <p-checkbox binary="true" [inputId]="id + '-checkbox'" [ngModel]="suggest.value.value"
-      [ngModelOptions]="{standalone: true}"
-      (ngModelChange)="value={id: 'boolean', code: '', type: 'boolean', value: $event}">
-    </p-checkbox>
-    <label *ngIf="showLabel" [for]="id + '-checkbox'">{{ placeholder }}</label>
-    <button pButton type="button" icon="pi pi-close" class="p-button-secondary" (click)="handleReset($event)"
+  <p-inputgroup *ngIf="value?.type === 'boolean'" styleClass="jetti-autocomplete-group">
+    <span class="jetti-autocomplete-boolean">
+      <p-checkbox binary="true" [inputId]="id + '-checkbox'" [ngModel]="suggest.value.value"
+        [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="value={id: 'boolean', code: '', type: 'boolean', value: $event}">
+      </p-checkbox>
+      <label *ngIf="showLabel" [for]="id + '-checkbox'">{{ placeholder }}</label>
+    </span>
+    <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
       pTooltip="Clear" tooltipPosition="top" showDelay="2000"></button>
-  </div>
+  </p-inputgroup>
 
-  <span *ngIf="isComplexValue">
-    <div class="ui-inputgroup" style="display: flex" [ngClass]="{'ui-float-label' : showLabel}">
-      <p-autoComplete #ac [formControl]="suggest" [suggestions]="Suggests$ | async" [required]="required"
+  <ng-container *ngIf="isComplexValue">
+    <p-inputgroup [styleClass]="showLabel ? 'jetti-autocomplete-group jetti-float-label' : 'jetti-autocomplete-group'">
+      <p-autocomplete #ac [formControl]="suggest" [suggestions]="Suggests$ | async" [required]="required"
         autocomplete="off" (completeMethod)="getSuggests($event.query)" [optionLabel]="autocompleteOptionLabel"
         (onSelect)="searchComplete(suggest.value)" [inputStyle]="inputStyle" dataKey="id"
         (onFocus)="this.focus.emit($event)" (onClear)="onClear($event)" [autoHighlight]="true" spellcheck="false"
-        [fluid]="true" appendTo="body" [disableControl]="suggest.disabled">
+        [fluid]="true" appendTo="body" [disableControl]="suggest.disabled" [inputId]="id + '-input'">
 
 
       <ng-template let-data pTemplate="item">
@@ -94,7 +96,7 @@
           </div>
         </ng-template>
 
-      </p-autoComplete>
+      </p-autocomplete>
       <button pButton type="button" icon="pi pi-search" class="p-button-secondary"
         *ngIf="showFind && !readOnly && !this.form.disabled" pTooltip="Select" tooltipPosition="top" showDelay="2000"
         (click)="handleSearch($event)" [tabIndex]=-1 [disabled]="suggest.disabled"></button>
@@ -104,9 +106,9 @@
       <button pButton type="button" icon="pi pi-times" class="p-button-secondary"
         *ngIf="showClear && !readOnly && !this.form.disabled" pTooltip="Clear" tooltipPosition="top" showDelay="2000"
         (click)="handleReset($event)" [tabIndex]=-1 [disabled]="this.suggest.disabled"></button>
-      <label *ngIf="showLabel" for="suggest">{{placeholder}}</label>
-    </div>
-  </span>
+      <label *ngIf="showLabel" [for]="id + '-input'">{{placeholder}}</label>
+    </p-inputgroup>
+  </ng-container>
 </form>
 
 <div *ngIf="showDialog">
@@ -120,12 +122,12 @@
       [settings]="filters" (Select)="searchComplete($event)" (Close)="searchComplete(null)">
     </j-suggest-hierarchy-list>
     <p-footer>
-      <p-toolbar>
-        <div class="ui-toolbar-group-left">
+      <p-toolbar styleClass="jetti-dialog-toolbar">
+        <ng-template pTemplate="start">
           <button pButton type="button" icon="fa fa-check-square-o" label="Select&Close" class="p-button-warn"
             [disabled]="!slh.isSelectEnabled" (click)="slh.select(slh.selectedNode || slh.selectedRow)"></button>
-        </div>
-        <div class="ui-toolbar-group-right">
+        </ng-template>
+        <ng-template pTemplate="end">
           <button pButton type="button" icon="pi pi-fast-backward"
             (click)="slh.selectedRow = null; slh.dataSource?.first()"
             [disabled]="!slh.dataSource?.continuation?.first"></button>
@@ -138,7 +140,7 @@
           <button pButton type="button" icon="pi pi-fast-forward"
             (click)="slh.selectedRow = null; slh.dataSource?.last()"
             [disabled]="!slh.dataSource?.continuation?.last"></button>
-        </div>
+        </ng-template>
       </p-toolbar>
     </p-footer>
   </p-dialog>
@@ -153,12 +155,12 @@
       [settings]="filters" (Select)="searchComplete($event)" (Close)="searchComplete(null)" [pageSize]="15">
     </j-suggest-list>
     <p-footer>
-      <p-toolbar>
-        <div class="ui-toolbar-group-left">
+      <p-toolbar styleClass="jetti-dialog-toolbar">
+        <ng-template pTemplate="start">
           <button pButton type="button" icon="fa fa-check-square-o" label="Select&Close" class="p-button-warn"
             [disabled]="!sl.selection[0]" (click)="sl.select(sl.selection[0])"></button>
-        </div>
-        <div class="ui-toolbar-group-right">
+        </ng-template>
+        <ng-template pTemplate="end">
           <button pButton type="button" icon="pi pi-fast-backward" (click)="sl.selection = []; sl.dataSource?.first()"
             [disabled]="!sl.dataSource?.continuation?.first"></button>
           <button pButton type="button" icon="pi pi-step-backward" (click)="sl.selection = []; sl.dataSource?.prev()"
@@ -167,7 +169,7 @@
             [disabled]="!sl.dataSource?.continuation?.last"></button>
           <button pButton type="button" icon="pi pi-fast-forward" (click)="sl.selection = []; sl.dataSource?.last()"
             [disabled]="!sl.dataSource?.continuation?.last"></button>
-        </div>
+        </ng-template>
       </p-toolbar>
     </p-footer>
   </p-dialog>

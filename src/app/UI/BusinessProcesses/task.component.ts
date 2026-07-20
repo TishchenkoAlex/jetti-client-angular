@@ -13,7 +13,9 @@ export class TaskComponent implements OnInit {
   @Input() Task: ITask;
   @Input() ProcessID: string;
 
-  get showProp() { return false; }
+  get showProp() {
+    return false;
+  }
   get getProcessID() {
     return this.ProcessID === '' || this.ProcessID === undefined ? this.Task.ProcessID : this.ProcessID;
   }
@@ -24,7 +26,7 @@ export class TaskComponent implements OnInit {
 
   ngOnInit() {
     this.loadProcessParticipants();
-    }
+  }
 
   constructor(public bpAPI: BPApi) {
   }
@@ -38,9 +40,10 @@ export class TaskComponent implements OnInit {
     this._ProcessParticipants$ = this.bpAPI.GetParticipantsByProcessID(this.getProcessID);
   }
 
-  handleTabChange(e) {
-    if (e.index === 1 && this.mapImgSrc.length === 0) { this.loadMap(); }
-
+  handleTabChange(value: string | number) {
+    if (Number(value) === 2 && this.mapImgSrc.length === 0) {
+      this.loadMap();
+    }
   }
 
 }

@@ -4,7 +4,7 @@
       <form novalidate [formGroup]="form" cdkTrapFocus>
         <p-toolbar>
 
-          <div class="ui-toolbar-group-left">
+          <div class="jetti-toolbar-start">
             <button pButton type="button" id="getJobsStat" label="Статистика" class="p-button-info"
               (click)="executeServerMethod('getJobsStat')"></button>
             <p-splitButton styleClass="p-button-success" label="Очередь" [model]="splitCommands.queue">
@@ -13,7 +13,7 @@
 
 
 
-          <div class="ui-toolbar-group-right">
+          <div class="jetti-toolbar-end">
             <p-splitButton styleClass="p-button-success" label="Новая задача" [model]="splitCommands.add">
             </p-splitButton>
             <!-- <p-splitButton styleClass="p-button-warn" label="Отменить" [model]="splitCommands.cancel">
@@ -51,13 +51,16 @@
           </p-fieldset>
 
           <br *ngIf="panel.tables.length > 0">
-          <p-tabView *ngIf="panel.tables.length" class="tabViewClassInForm">
-            <div *ngFor="let table of panel.tables">
-              <p-tabPanel [header]="table.label">
+          <p-tabs *ngIf="panel.tables.length" [value]="0" class="jetti-form-tabs">
+            <p-tablist>
+              <p-tab *ngFor="let table of panel.tables; let index = index" [value]="index">{{ table.label }}</p-tab>
+            </p-tablist>
+            <p-tabpanels>
+              <p-tabpanel *ngFor="let table of panel.tables; let index = index" [value]="index">
                 <j-control [control]="table" [form]="form"></j-control>
-              </p-tabPanel>
-            </div>
-          </p-tabView>
+              </p-tabpanel>
+            </p-tabpanels>
+          </p-tabs>
 
           <div *ngFor="let i of [0,3,6,9,12,15,18,21,24,27,30]">
             <j-control *ngIf="panel.fullwidth[i]" [control]="panel.fullwidth[i]" [form]="form"></j-control>

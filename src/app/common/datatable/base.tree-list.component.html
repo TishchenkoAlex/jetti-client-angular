@@ -1,6 +1,6 @@
 <div style="width: 300px; margin-right: 2px">
   <p-toolbar *ngIf="showCommands">
-    <div class="ui-toolbar-group-left">
+    <div class="jetti-toolbar-start">
       <button pButton type="button" icon="pi pi-plus" class="p-button-success" (click)="add()"
         [disabled]="(lds.busy$ | async)"></button>
       <button pButton type="button" icon="far fa-edit" class="p-button-secondary" (click)="open()"

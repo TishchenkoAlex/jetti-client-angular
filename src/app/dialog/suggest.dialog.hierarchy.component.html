@@ -1,7 +1,7 @@
 <div [ngStyle]="{ display: 'flex' }" [class]="'scroll-' + type" [id]="type">
   <div style="display: flex; flex-direction: column">
     <p-toolbar *ngIf="!readonly">
-      <div class="ui-toolbar-group-left">
+      <div class="jetti-toolbar-start">
         <button
           id="add"
           icon="fa fa-plus"
@@ -54,7 +54,7 @@
           *ngIf="selectionData"
         ></button>
       </div>
-      <div class="ui-toolbar-group-right">
+      <div class="jetti-toolbar-end">
         <button
           pButton
           type="button"
@@ -115,7 +115,7 @@
               *ngFor="let column of columns"
               [ngStyle]="column.style"
               [ngSwitch]="column.type"
-              class="ui-fluid ui-column-filter"
+              class="jetti-table-filter-cell"
             >
               <div *ngSwitchCase="'boolean'">
                 <j-tri-state-checkbox
@@ -210,9 +210,8 @@
             [ttSelectableRow]="rowNode"
             (dblclick)="onNodeDblclick(rowNode)"
           >
-            <!-- <td class="ui-resizable-column" [ngStyle]="{'width': '1px', 'text-align': 'center'}"></td> -->
             <td
-              class="ui-resizable-column"
+              class="jetti-table-cell"
               *ngFor="let column of columns"
               [ngStyle]="column.style"
             >
@@ -415,7 +414,7 @@
               *ngFor="let column of tbl.columns"
               [ngStyle]="column.style"
               [ngSwitch]="column.type"
-              class="ui-fluid ui-column-filter"
+              class="jetti-table-filter-cell"
             >
               <div *ngSwitchCase="'boolean'">
                 <j-tri-state-checkbox
@@ -506,18 +505,8 @@
             (dblclick)="select(rowData)"
             [class]="'scrollTo-' + type"
           >
-            <!-- <td class="ui-resizable-column" [ngStyle]="{'width': '1px', 'text-align': 'center'}"></td> -->
-            <!-- <td class="ui-resizable-column" [ngStyle]="{'width': '26px', 'text-align': 'center'}">
-              <i *ngIf="!rowData.isfolder && rowData['posted'] && !rowData['deleted']" class="fa fa-check-square"
-                style="color: #5cb85c"></i>
-              <i *ngIf="!rowData.isfolder && rowData['deleted']" class="fa fa-minus-square" style="color: #d9534f"></i>
-              <i *ngIf="!rowData.isfolder && !rowData['posted'] && !rowData['deleted']" class="far fa-square"
-                style="color: #f0ad4e"></i>
-              <i *ngIf="rowData.isfolder && rowData['deleted']" class="fa fa-folder" style="color: #d9534f"></i>
-              <i *ngIf="rowData.isfolder && !rowData['deleted']" class="fa fa-folder" style="color: #5cb85c"></i>
-            </td> -->
             <td
-              class="ui-resizable-column"
+              class="jetti-table-cell"
               *ngFor="let column of tbl.columns"
               [ngStyle]="column.style"
               [class]="'scrollTo-' + type"

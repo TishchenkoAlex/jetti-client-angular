@@ -1,12 +1,12 @@
 <p-dialog [header]="title" [visible]="visible" [modal]="true" [responsive]="true" [style]="{width: '420px'}"
   (onHide)="onCancel()">
-  <div class="ui-g ui-fluid">
-    <div class="ui-g-12" *ngIf="requiresUser">
+  <div class="jetti-grid jetti-fluid">
+    <div class="jetti-col-12" *ngIf="requiresUser">
       <label>User ID</label>
       <input pInputText type="text" [(ngModel)]="userId">
     </div>
 
-    <div class="ui-g-12">
+    <div class="jetti-col-12">
       <label>Comment</label>
       <textarea pInputTextarea rows="4" [(ngModel)]="comment"></textarea>
     </div>

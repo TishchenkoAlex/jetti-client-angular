@@ -9,35 +9,35 @@ import { filter, take } from 'rxjs/operators';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-  <div fxLayout="column" style="padding: 6px" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial>
-    <div *ngIf="getSuperColumn('company')" fxLayout="row" fxLayout.xs="column" fxLayoutGap="35px" fxLayoutGap.xs="6px" style="margin-top: 12px; margin-bottom: 6px">
-      <div fxFlex *ngIf="['in','not in'].includes(getSuperColumn('company').filter.center)">
+  <div class="jetti-operation-filter-panel" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial>
+    <div *ngIf="getSuperColumn('company')" class="jetti-operation-filters">
+      <div class="jetti-operation-filter" *ngIf="['in','not in'].includes(getSuperColumn('company').filter.center)">
         <j-ng-select class="ng-select-container-mini-yellow" placeholder="Select company"
            storageType="elements" type="Catalog.Company" id="company"
            [selectedItems]="getSuperColumn('company').filter.right" maxVisibleItems="1"
            (select)="super.update(getSuperColumn('company'), $event,  getSuperColumn('company').filter.center)">
         </j-ng-select>
       </div>
-      <div fxFlex *ngIf="!['in','not in'].includes(getSuperColumn('company').filter.center)">
+      <div class="jetti-operation-filter" *ngIf="!['in','not in'].includes(getSuperColumn('company').filter.center)">
         <j-autocomplete-png [ngModel]="getSuperColumn('company')?.filter.right" [inputStyle]="{'background-color': 'lightgoldenrodyellow'}"
           (ngModelChange)="super.update(getSuperColumn('company'), $event, '=')" (clear)="super.update(getSuperColumn('company'), $event,  '=')"
           id="company" placeholder="Select company" type="Catalog.Company">
         </j-autocomplete-png>
       </div>
-      <div fxFlex *ngIf="!super.group && ['in','not in'].includes(getSuperColumn('Group').filter.center)">
+      <div class="jetti-operation-filter" *ngIf="!super.group && ['in','not in'].includes(getSuperColumn('Group').filter.center)">
         <j-ng-select class="ng-select-container-mini-yellow"
             storageType="elements" type="Catalog.Operation.Group" id="Group"
             [selectedItems]="getSuperColumn('Group').filter.right" maxVisibleItems="1" placeholder="Select group of operation"
             (select)="super.update(getSuperColumn('Group'), $event,  getSuperColumn('Group').filter.center)">
         </j-ng-select>
       </div>
-      <div fxFlex *ngIf="!super.group && !['in','not in'].includes(getSuperColumn('Group').filter.center)">
+      <div class="jetti-operation-filter" *ngIf="!super.group && !['in','not in'].includes(getSuperColumn('Group').filter.center)">
         <j-autocomplete-png [ngModel]="getSuperColumn('Group')?.filter.right" [inputStyle]="{'background-color': 'lightgoldenrodyellow'}"
           (ngModelChange)="super.update(getSuperColumn('Group'), $event, '=')" (clear)="super.update(getSuperColumn('Group'), $event,  '=')"
           id="Group" placeholder="Select group of operation" type="Catalog.Operation.Group">
         </j-autocomplete-png>
       </div>
-      <div fxFlex *ngIf="['in','not in'].includes(getSuperColumn('user').filter.center)">
+      <div class="jetti-operation-filter" *ngIf="['in','not in'].includes(getSuperColumn('user').filter.center)">
         <j-ng-select class="ng-select-container-mini-yellow"
             *ngIf="['in','not in'].includes(getSuperColumn('user').filter.center)"
             storageType="elements" type="Catalog.User" id="user"
@@ -45,7 +45,7 @@ import { filter, take } from 'rxjs/operators';
             (select)="super.update(getSuperColumn('user'), $event,  getSuperColumn('user').filter.center)">
         </j-ng-select>
       </div>
-      <div fxFlex *ngIf="!['in','not in'].includes(getSuperColumn('user').filter.center)">
+      <div class="jetti-operation-filter" *ngIf="!['in','not in'].includes(getSuperColumn('user').filter.center)">
         <j-autocomplete-png [ngModel]="getSuperColumn('user')?.filter.right" [inputStyle]="{'background-color': 'lightgoldenrodyellow'}"
           (ngModelChange)="super.update(getSuperColumn('user'), $event, '=')" (clear)="super.update(getSuperColumn('user'), $event,  '=')"
           id="user" placeholder="Select user" type="Catalog.User">

@@ -1,17 +1,19 @@
 <div class="container-fluid">
-  <p-tabView (onChange)="handleTabChange($event)">
-    <p-tabPanel header="Реквизиты" *ngIf="showProp">
-      <!-- <span class="ui-float-label">
-                <input id="float-input" type="text" size="30" pInputText>
-                <label for="float-input">Username</label>
-            </span> -->
-    </p-tabPanel>
-    <p-tabPanel header="Согласующие">
+  <p-tabs [value]="showProp ? 0 : 1" (valueChange)="handleTabChange($event)">
+    <p-tablist>
+      <p-tab *ngIf="showProp" [value]="0">Реквизиты</p-tab>
+      <p-tab [value]="1">Согласующие</p-tab>
+      <p-tab [value]="2">Карта маршрута</p-tab>
+    </p-tablist>
+    <p-tabpanels>
+    <p-tabpanel [value]="0" *ngIf="showProp">
+    </p-tabpanel>
+    <p-tabpanel [value]="1">
       <!-- <ng-template pTemplate="content"> -->
       <p-table  [value]="_ProcessParticipants$ | async" [resizableColumns]="true">
         <ng-template pTemplate="header">
           <tr>
-            <th *ngFor="let column of ProcessParticipantsFields" class="ui-resizable-column" style="text-align: center;" [ngStyle] = "column.style">
+            <th *ngFor="let column of ProcessParticipantsFields" class="jetti-table-cell" style="text-align: center;" [ngStyle] = "column.style">
               {{column.label}}
               <!-- <span *ngIf="column.visible" title=""></span> -->
             </th>
@@ -20,7 +22,7 @@
         <ng-template pTemplate="body" let-rowData>
           <tr>
             <!-- <td *ngFor="let column of rowDatasFields" [ngStyle]="{'background-columnor': rowData.Current.Trim() === '' ? 'rgb(138, 170, 121)': 'rgb(183, 182, 194)'}"> -->
-            <td *ngFor="let column of ProcessParticipantsFields" class="ui-resizable-column" style="text-align: center;"
+            <td *ngFor="let column of ProcessParticipantsFields" class="jetti-table-cell" style="text-align: center;"
               [ngSwitch]="column.type" [ngStyle] = "column.style">
               <span *ngSwitchCase="'date'">
                 <span >
@@ -38,13 +40,11 @@
         </ng-template>
       </p-table>
       <!-- </ng-template>    -->
-    </p-tabPanel>
-    <p-tabPanel header="Карта маршрута">
-      <ng-template pTemplate="content">
-        <img [src]="mapImgSrc">
+    </p-tabpanel>
+    <p-tabpanel [value]="2">
+        <img [src]="mapImgSrc" alt="Карта маршрута процесса">
         <!-- <img src="http://localhost/JettiProcesses/hs/Processes/pwd/GetMapByProcessID/CashApplication?ProcessID=000000053"> -->
-      </ng-template>
-
-    </p-tabPanel>
-  </p-tabView>
+    </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
 </div>

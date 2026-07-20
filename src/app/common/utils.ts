@@ -1,20 +1,33 @@
-export function scrollIntoViewIfNeeded(type, style, direction = false) {
-  let target;
-  let highlight = document.getElementsByClassName(`scrollTo-${type} ${style}`);
-  if (highlight.length) target = highlight[highlight.length - 1];
-  else {
-    highlight = document.getElementsByClassName(`scrollTo-${type}`);
-    if (highlight.length) target = highlight[0];
-  }
-  const table = document.getElementById(type);
-  const scrollEl = table ? table.getElementsByClassName('ui-table-scrollable-body') : [];
-  if (!(target && scrollEl.length)) return;
+export function scrollIntoViewIfNeeded(
+  type: string,
+  selectedClass = 'p-datatable-row-selected',
+  direction = false
+) {
+  const listRoots = Array.from(document.querySelectorAll<HTMLElement>('[data-jetti-list]'));
+  const matchingRoots = listRoots.filter(element => element.dataset.jettiList === type);
+  const listRoot = [...matchingRoots].reverse().find(element => element.getClientRects().length > 0) ||
+    matchingRoots[matchingRoots.length - 1] ||
+    document.getElementById(type);
+  const scope = listRoot || document;
+  const rows = Array.from(scope.getElementsByClassName(`scrollTo-${type}`)) as HTMLElement[];
+  const selectedRows = rows.filter(row =>
+    [selectedClass, 'p-datatable-row-selected', 'p-treetable-row-selected']
+      .some(className => row.classList.contains(className))
+  );
+  const target = selectedRows[selectedRows.length - 1] || rows[0];
+  const scrollElement = listRoot?.querySelector<HTMLElement>(
+    '.p-datatable-table-container, .p-treetable-table-container'
+  );
+
+  if (!(target && scrollElement)) return;
 
   const targetRect = target.getBoundingClientRect();
-  const scrollRect = scrollEl[0].getBoundingClientRect();
-  if (targetRect.bottom > scrollRect.bottom) return target.scrollIntoView(direction ? true : false);
-  if (targetRect.top <= scrollRect.top) return target.scrollIntoView(direction ? false : true);
-  if (direction) return target.scrollIntoView(false);
+  const scrollRect = scrollElement.getBoundingClientRect();
+  const isOutsideViewport = targetRect.bottom > scrollRect.bottom || targetRect.top < scrollRect.top;
+
+  if (isOutsideViewport || direction) {
+    target.scrollIntoView({ block: direction ? 'end' : 'nearest', inline: 'nearest' });
+  }
 }
 
 export function MaxTextWidth(text: string[], fontsize: number) {

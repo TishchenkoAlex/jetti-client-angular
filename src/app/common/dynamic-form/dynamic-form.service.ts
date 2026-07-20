@@ -81,7 +81,7 @@ export function getFormGroup(schema: { [x: string]: any }, model: { [x: string]:
       const onChangeServer = !!prop['onChangeServer'];
       const storageType = prop['storageType'] as StorageType || 'elements';
       const headerStyle = prop['headerStyle'];
-      const showLabel = prop['showLabel'] || true;
+      const showLabel = prop['showLabel'] !== false;
       const valuesOptions = prop['valuesOptions'] || [];
       const validators = prop['validators'];
       const panel = prop['panel'];

@@ -747,7 +747,7 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
         } catch (err) { this.ds.openSnackBar('error', s.description, err); }
       }
       this.selection = [s];
-      setTimeout(() => scrollIntoViewIfNeeded(this.type, 'ui-state-highlight'));
+      setTimeout(() => scrollIntoViewIfNeeded(this.type));
     }
     this.lds.counter = 0;
     this.dataSource.refresh(this.selection[0].id);
@@ -769,7 +769,7 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
       } catch (err) { this.ds.openSnackBar('error', s.description, err); }
 
       this.selection = [s];
-      setTimeout(() => scrollIntoViewIfNeeded(this.type, 'ui-state-highlight'));
+      setTimeout(() => scrollIntoViewIfNeeded(this.type));
     }
     this.lds.counter = 0;
     this.dataSource.refresh(this.selection[0].id);

@@ -4,7 +4,7 @@
       [header]="description?.value?.concat(isPosted ? ', [проведена]' : ', [не проведена]').concat(isSuperUser ? ' *GODMODE' : '')"
       [toggleable]="true" toggler="header">
       <p-toolbar *ngIf="!isHistory">
-        <div class="ui-toolbar-group-left">
+        <div class="jetti-toolbar-start">
           <button pButton type="button" id="PostClose " icon="fa fa-check-square" label="Post&Close"
             pTooltip="Post and close" tooltipPosition="top" showDelay="2000" class="p-button-warn"
             [disabled]="!form.valid || (lds.busy$ | async)" (click)="postClose()" *ngIf="isAvailablePost"></button>
@@ -22,7 +22,7 @@
             [disabled]="(lds.busy$ | async)"></button>
         </div>
 
-        <div class="ui-toolbar-group-right">
+        <div class="jetti-toolbar-end">
           <button pButton type="button" label="Report" class="p-button-warn" (click)="OpenReport()"
             [disabled]="(lds.busy$ | async)"></button>
           <p-splitButton *ngIf="(copyTo$ | async)?.length" [model]="copyTo$ | async" styleClass="p-button-secondary"
@@ -182,20 +182,25 @@
       <ng-content></ng-content>
 
       <div *ngIf="isPayRollUsed" style="margin-top: 24px;">
-        <p-tabView class="tabViewClassInForm">
-          <p-tabPanel header="Сотрудники">
+        <p-tabs [value]="0" class="jetti-form-tabs">
+          <p-tablist>
+            <p-tab [value]="0">Сотрудники</p-tab>
+          </p-tablist>
+          <p-tabpanels>
+          <p-tabpanel [value]="0">
             <j-control [control]="Operation == 'Выплата дивидендов' ? vk.PayRollsDividend : vk.PayRolls" [form]="form"></j-control>
-          </p-tabPanel>
-        </p-tabView>
+          </p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
       </div>
 
     </p-panel>
 
     <p-panel *ngIf="useItemsTable" header="Товары/Услуги" toggleable="true" collapsed=true toggler="header">
-      <p-tabView class="tabViewClassInForm">
+      <div class="jetti-form-table-container">
         <j-control [control]="vk.Items" [form]="form">
         </j-control>
-      </p-tabView>
+      </div>
     </p-panel>
 
     <p-panel *ngIf="additionalFields.length > 0" [toggleable]="true" header="Дополнительные реквизиты"

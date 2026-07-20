@@ -12,7 +12,7 @@
   </div> -->
   <div style="display: flex; flex-direction: column;">
     <p-toolbar *ngIf="!readonly">
-      <div class="ui-toolbar-group-left">
+      <div class="jetti-toolbar-start">
         <button id="add" icon="fa fa-plus" class="p-button-success" pButton type="button" (click)="add()"
           [disabled]="(lds.busy$ | async)"></button>
         <button id="open" icon="far fa-edit" class="p-button-secondary" pButton type="button" (click)="open()"
@@ -49,7 +49,7 @@
           <tr cdkTrapFocus [cdkTrapFocusAutoCapture]="true" cdkFocusInitial>
             <th [ngStyle]="{'width': '26px', 'text-align': 'center'}"></th>
             <th *ngFor="let column of tbl.columns" [ngStyle]="column.style" [ngSwitch]="column.type"
-              class="ui-fluid ui-column-filter">
+              class="jetti-table-filter-cell">
               <div *ngSwitchCase="'boolean'">
                 <j-tri-state-checkbox [ngModel]="filters[column.field]?.value"
                   (ngModelChange)="update(column, $event, '=')"></j-tri-state-checkbox>
@@ -93,7 +93,7 @@
 
         <ng-template pTemplate="body" let-rowData>
           <tr [pSelectableRow]="rowData" (dblclick)="select(rowData)" [class]="'scrollTo-' + type">
-            <td class="ui-resizable-column" [ngStyle]="{'width': '26px', 'text-align': 'center'}">
+            <td class="jetti-table-cell" [ngStyle]="{'width': '26px', 'text-align': 'center'}">
 <i
                 *ngIf="
                   !rowData.isfolder && rowData['posted'] && !rowData['deleted']
