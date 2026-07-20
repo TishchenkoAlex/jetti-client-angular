@@ -14,12 +14,11 @@
     {{error}}
   </div>
 
-  <bp-bpmn-modeler
+  <bp-bpmn-editor
     [xml]="xml"
     (xmlChange)="onXmlChange($event)"
-    (importError)="onImportError($event)"
-    (saveError)="onSaveError($event)">
-  </bp-bpmn-modeler>
+    (diagramError)="onDiagramError($event)">
+  </bp-bpmn-editor>
 
   <div *ngIf="savedXml">
     <h4>Saved XML preview</h4>

@@ -1,0 +1,46 @@
+<div class="bp-bpmn-editor" [class.bp-bpmn-editor--readonly]="readonly">
+  <div *ngIf="!readonly" class="bp-bpmn-editor__toolbar">
+    <div class="bp-bpmn-editor__toolbar-group">
+      <button pButton type="button" icon="pi pi-save" class="p-button-secondary"
+        aria-label="Apply diagram" pTooltip="Apply diagram" tooltipPosition="top"
+        (click)="saveXml()" [disabled]="loading"></button>
+
+      <button pButton type="button" icon="pi pi-undo" class="p-button-secondary"
+        aria-label="Undo" pTooltip="Undo" tooltipPosition="top"
+        (click)="undo()" [disabled]="loading || !canUndo"></button>
+
+      <button pButton type="button" icon="fa fa-redo" class="p-button-secondary"
+        aria-label="Redo" pTooltip="Redo" tooltipPosition="top"
+        (click)="redo()" [disabled]="loading || !canRedo"></button>
+    </div>
+
+    <div class="bp-bpmn-editor__toolbar-group">
+      <button pButton type="button" icon="pi pi-search-minus" class="p-button-secondary"
+        aria-label="Zoom out" pTooltip="Zoom out" tooltipPosition="top"
+        (click)="zoomOut()" [disabled]="loading || zoom <= 0.2"></button>
+
+      <span class="bp-bpmn-editor__zoom">{{zoom * 100 | number:'1.0-0'}}%</span>
+
+      <button pButton type="button" icon="pi pi-search-plus" class="p-button-secondary"
+        aria-label="Zoom in" pTooltip="Zoom in" tooltipPosition="top"
+        (click)="zoomIn()" [disabled]="loading || zoom >= 4"></button>
+
+      <button pButton type="button" icon="pi pi-expand" class="p-button-secondary"
+        aria-label="Fit viewport" pTooltip="Fit viewport" tooltipPosition="top"
+        (click)="fitViewport()" [disabled]="loading"></button>
+    </div>
+
+    <span *ngIf="selectedElement" class="bp-bpmn-editor__selection"
+      [title]="selectedElement.type + ': ' + selectedElement.id">
+      {{selectedElement.name || selectedElement.id}}
+    </span>
+  </div>
+
+  <div *ngIf="loading || error" class="bp-bpmn-editor__feedback" aria-live="polite">
+    <span *ngIf="loading" class="bp-bpmn-editor__status">Loading...</span>
+    <span *ngIf="error" class="bp-bpmn-editor__error">{{error}}</span>
+  </div>
+
+  <div #canvas class="bp-bpmn-editor__canvas" [attr.tabindex]="readonly ? -1 : 0"
+    [attr.aria-readonly]="readonly"></div>
+</div>

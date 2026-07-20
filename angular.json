@@ -32,6 +32,7 @@
               "node_modules/primeicons/primeicons.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "node_modules/bpmn-js/dist/assets/diagram-js.css",
+              "node_modules/bpmn-js/dist/assets/bpmn-js.css",
               "node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn.css",
               "src/styles.scss",
               "src/theme.scss"

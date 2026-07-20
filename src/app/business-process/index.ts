@@ -1,5 +1,6 @@
 export * from './business-process.module';
 export * from './bpmn';
+export * from './diagram';
 export * from './components';
 export * from './models';
 export * from './pages';

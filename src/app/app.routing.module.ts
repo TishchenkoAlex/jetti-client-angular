@@ -1,21 +1,30 @@
 import { Injectable, NgModule } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
 // eslint-disable-next-line max-len
-import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
+import { environment } from '../environments/environment';
 import { AuthGuardService } from './auth/auth.guard.service';
 import { DynamicFormService } from './common/dynamic-form/dynamic-form.service';
 import { TabControllerComponent } from './common/tabcontroller/tabcontroller.component';
 import { TabsStore } from './common/tabcontroller/tabs.store';
 import { ApiService } from './services/api.service';
-import { IViewModel } from 'jetti-middle/dist';
 
 @Injectable()
 export class AppRouteReuseStrategy extends RouteReuseStrategy {
-  shouldDetach(route: ActivatedRouteSnapshot): boolean { return false; }
-  store(route: ActivatedRouteSnapshot, detachedTree: DetachedRouteHandle): void { }
-  shouldAttach(route: ActivatedRouteSnapshot): boolean { return false; }
-  retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null { return null; }
-  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+  shouldDetach(): boolean {
+    return false;
+  }
+
+  store(): void { }
+
+  shouldAttach(): boolean {
+    return false;
+  }
+
+  retrieve(): DetachedRouteHandle | null {
+    return null;
+  }
+
+  shouldReuseRoute(): boolean {
     return true;
   }
 }
@@ -24,10 +33,12 @@ export class AppRouteReuseStrategy extends RouteReuseStrategy {
 export class TabResolver {
   constructor(private dfs: DynamicFormService, private api: ApiService, private tabStore: TabsStore) { }
 
-  public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  public resolve(route: ActivatedRouteSnapshot) {
     const { type, id = '', group = '', used = '' } = route.params;
     if (type === 'home') return null;
-    if (type.startsWith('Form.')) { return this.dfs.getFormView$(type); }
+    if (type.startsWith('Form.')) {
+      return this.dfs.getFormView$(type);
+    }
     const tabKey = { type, id, group, used };
     if (!this.tabStore.findTab(tabKey)) {
       return id ?
@@ -39,7 +50,16 @@ export class TabResolver {
 }
 
 /* eslint-disable max-len */
+const developmentRoutes: Routes = environment.production ? [] : [
+  {
+    path: 'business-process/bpmn-demo',
+    loadComponent: () => import('./business-process/diagram/components/bpmn-editor-demo/bpmn-editor-demo.component')
+      .then(module => module.BpmnEditorDemoComponent)
+  }
+];
+
 export const routes: Routes = [
+  ...developmentRoutes,
   { path: ':type/:id', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },
   { path: ':type', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },
   { path: ':type/used/:used', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },

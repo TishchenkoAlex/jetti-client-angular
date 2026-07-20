@@ -1,0 +1,150 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.bp-bpmn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  color: var(--text-color, #333333);
+}
+
+.bp-bpmn-demo__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.bp-bpmn-demo__header h1,
+.bp-bpmn-demo__header p,
+.bp-bpmn-demo__side-panel h2,
+.bp-bpmn-demo__selection p {
+  margin: 0;
+}
+
+.bp-bpmn-demo__header h1 {
+  margin-bottom: 4px;
+  font-size: 24px;
+}
+
+.bp-bpmn-demo__header p,
+.bp-bpmn-demo__selection p {
+  color: var(--text-color-secondary, #666666);
+}
+
+.bp-bpmn-demo__readonly {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.bp-bpmn-demo__message,
+.bp-bpmn-demo__error {
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.bp-bpmn-demo__message {
+  color: #1b5e20;
+  background: #e8f5e9;
+}
+
+.bp-bpmn-demo__error {
+  color: #b00020;
+  background: #ffebee;
+}
+
+.bp-bpmn-demo__content {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+.bp-bpmn-demo__editor {
+  min-width: 0;
+  min-height: 680px;
+}
+
+.bp-bpmn-demo__side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.bp-bpmn-demo__selection,
+.bp-bpmn-demo__xml {
+  padding: 12px;
+  border: 1px solid var(--surface-border, #d9d9d9);
+  border-radius: 4px;
+  background: var(--surface-card, #ffffff);
+}
+
+.bp-bpmn-demo__side-panel h2 {
+  font-size: 16px;
+}
+
+.bp-bpmn-demo__selection dl {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 12px 0 0;
+}
+
+.bp-bpmn-demo__selection dt {
+  font-weight: 600;
+}
+
+.bp-bpmn-demo__selection dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.bp-bpmn-demo__xml {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 480px;
+}
+
+.bp-bpmn-demo__xml-header,
+.bp-bpmn-demo__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bp-bpmn-demo__xml-header {
+  justify-content: space-between;
+}
+
+.bp-bpmn-demo__xml textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 400px;
+  padding: 8px;
+  resize: vertical;
+  border: 1px solid var(--surface-border, #bdbdbd);
+  border-radius: 4px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+@media (max-width: 1100px) {
+  .bp-bpmn-demo__content {
+    grid-template-columns: 1fr;
+  }
+
+  .bp-bpmn-demo__editor {
+    min-height: 600px;
+  }
+}

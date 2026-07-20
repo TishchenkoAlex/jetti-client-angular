@@ -1,0 +1,71 @@
+<main class="bp-bpmn-demo">
+  <header class="bp-bpmn-demo__header">
+    <div>
+      <h1>BPMN editor demo</h1>
+      <p>
+        Standalone development page. Diagram changes remain in browser memory and are not sent to the backend.
+      </p>
+    </div>
+
+    <label class="bp-bpmn-demo__readonly">
+      <input type="checkbox" [checked]="isReadonly" (change)="onReadonlyChange($event)">
+      Readonly
+    </label>
+  </header>
+
+  <div *ngIf="message" class="bp-bpmn-demo__message" role="status">
+    {{message}}
+  </div>
+
+  <div *ngIf="error" class="bp-bpmn-demo__error" role="alert">
+    {{error}}
+  </div>
+
+  <section class="bp-bpmn-demo__content">
+    <div class="bp-bpmn-demo__editor">
+      <bp-bpmn-editor
+        [xml]="xml"
+        [readonly]="isReadonly"
+        (xmlChange)="onXmlChange($event)"
+        (elementSelected)="onElementSelected($event)"
+        (importCompleted)="onImportCompleted($event)"
+        (diagramError)="onDiagramError($event)">
+      </bp-bpmn-editor>
+    </div>
+
+    <aside class="bp-bpmn-demo__side-panel">
+      <section class="bp-bpmn-demo__selection" aria-live="polite">
+        <h2>Selected element</h2>
+
+        <dl *ngIf="selectedElement; else noSelection">
+          <dt>ID</dt>
+          <dd>{{selectedElement.id}}</dd>
+          <dt>Type</dt>
+          <dd>{{selectedElement.type}}</dd>
+          <dt>Name</dt>
+          <dd>{{selectedElement.name || '—'}}</dd>
+        </dl>
+
+        <ng-template #noSelection>
+          <p>No BPMN element selected.</p>
+        </ng-template>
+      </section>
+
+      <section class="bp-bpmn-demo__xml">
+        <div class="bp-bpmn-demo__xml-header">
+          <h2>BPMN XML</h2>
+
+          <div class="bp-bpmn-demo__actions">
+            <button pButton type="button" class="p-button-secondary"
+              (click)="resetDiagram()">Reset</button>
+            <button pButton type="button"
+              (click)="applyXml()">Load XML</button>
+          </div>
+        </div>
+
+        <textarea [formControl]="xmlControl" spellcheck="false"
+          aria-label="BPMN XML source"></textarea>
+      </section>
+    </aside>
+  </section>
+</main>

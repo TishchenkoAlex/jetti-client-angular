@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BusinessProcessDiagramError } from '../diagram/models/business-process-diagram.models';
 import { DEFAULT_BPMN_XML } from './default-bpmn-xml';
 
 @Component({
@@ -17,16 +18,7 @@ export class BpmnDemoPageComponent {
     this.error = '';
   }
 
-  onImportError(error: any) {
-    this.error = this.getErrorMessage(error, 'BPMN import failed');
-  }
-
-  onSaveError(error: any) {
-    this.error = this.getErrorMessage(error, 'BPMN save failed');
-  }
-
-  private getErrorMessage(error: any, fallback: string): string {
-    if (error && error.message) return error.message;
-    return fallback;
+  onDiagramError(error: BusinessProcessDiagramError) {
+    this.error = error.message;
   }
 }

@@ -66,6 +66,7 @@ export class BaseDocFormComponent extends _baseDocFormComponent implements OnIni
     request.subscribe(template => {
       this.form.patchValue(this.routeMapper.toFormPatch(template), patchOptionsNoEvents);
       this.form.markAsPristine();
+      this.templateBpmn?.acceptSavedTemplate(template);
       this._form$.next(this.form);
       this.cd.markForCheck();
       this.ds.openSnackBar('success', template.description || template.code, 'saved');

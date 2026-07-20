@@ -5,13 +5,16 @@
 
   <div *ngIf="loading" class="bp-template-bpmn-status">Loading process map...</div>
   <div *ngIf="error" class="bp-template-bpmn-error">{{error}}</div>
+  <div *ngIf="mappingInvalidated" class="bp-template-bpmn-warning" role="status">
+    Visual mapping was cleared because the route or diagram changed.
+  </div>
 
-  <bp-bpmn-modeler
+  <bp-bpmn-editor
     *ngIf="xml && !loading"
     [xml]="xml"
     [readonly]="readonly"
+    (diagramChanged)="onDiagramChanged()"
     (xmlChange)="onXmlChange($event)"
-    (importError)="onError($event)"
-    (saveError)="onError($event)">
-  </bp-bpmn-modeler>
+    (diagramError)="onError($event)">
+  </bp-bpmn-editor>
 </div>
