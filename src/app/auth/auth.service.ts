@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IPublicClientApplication } from '@azure/msal-browser';
-import { BehaviorSubject, from } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MSAL_LOGIN_SCOPES } from 'src/environments/msal-config';
@@ -23,9 +23,16 @@ export class AuthService {
   userRoles$ = this.userProfile$.pipe(map(u => u.account.roles));
   get userProfile() { return this._userProfile$.value; }
   get userEmail() { return this.tokenPayload ? this.tokenPayload['email'] : ''; }
-  get token() { return localStorage.getItem('jetti_token') || ''; }
-  set token(value) { localStorage.setItem('jetti_token', value); }
+  get token() { return this.environmentToken || localStorage.getItem('jetti_token') || ''; }
+  set token(value) {
+    if (!this.environmentToken) localStorage.setItem('jetti_token', value);
+  }
   get tokenPayload() { return jwt_decode<JwtPayload>(this.token); }
+
+  private get environmentToken(): string {
+    if (environment.production) return '';
+    return (environment.AUTH_TOKEN || '').trim().replace(/^Bearer\s+/i, '');
+  }
 
   constructor(
     private router: Router,
@@ -34,6 +41,8 @@ export class AuthService {
   ) { }
 
   public login() {
+    if (this.environmentToken) return this.getAccount().pipe(shareReplay());
+
     return from(this.msalInstance.loginPopup({ scopes: MSAL_LOGIN_SCOPES })).pipe(
       switchMap(loginResult => {
         if (!loginResult.account) {
@@ -66,20 +75,27 @@ export class AuthService {
 
   public logout() {
     localStorage.removeItem('jetti_token');
-    const account = this.getMsalAccount();
-    if (account) {
-      from(this.msalInstance.logoutPopup({ account })).pipe(take(1)).subscribe();
+    if (!this.environmentToken) {
+      const account = this.getMsalAccount();
+      if (account) {
+        from(this.msalInstance.logoutPopup({ account })).pipe(take(1)).subscribe();
+      }
     }
     this._userProfile$.next({ ...ANONYMOUS_USER });
     return this.router.navigate([''], { queryParams: {} });
   }
 
-  public getAccount() {
+  public getAccount(): Observable<ILoginResponse> {
+    if (!this.token) {
+      const anonymousUser = { ...ANONYMOUS_USER };
+      this._userProfile$.next(anonymousUser);
+      return of(anonymousUser);
+    }
+
     return this.http.get<IAccount>(`${environment.auth}account`).pipe(
-      tap(account => {
-        const LoginResponse: ILoginResponse = { account, token: this.token, photo: null };
-        this.init(LoginResponse);
-      }));
+      map(account => ({ account, token: this.token, photo: null })),
+      tap(loginResponse => this.init(loginResponse))
+    );
   }
 
   public isRoleAvailable(roleName: string): boolean {

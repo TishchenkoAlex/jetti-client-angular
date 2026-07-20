@@ -419,3 +419,122 @@ ng-dropdown-panel[ng-reflect-position="bottom"] {
 .ui-tabview-nav {
   user-select: none;
 }
+
+// PrimeNG 18 TabView compatibility until the deprecated component is migrated to Tabs.
+body p-tabview .p-tablist-tab-list {
+  background: transparent;
+  border-color: #dddddd;
+}
+
+body p-tabview .p-tab {
+  margin-right: 2px;
+  padding: 12px 10px;
+  background: #f5f5f5;
+  border: 1px solid #dddddd;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  color: #337ab7;
+}
+
+body p-tabview .p-tab-active {
+  background: #ffffff;
+  color: #337ab7;
+}
+
+body p-tabview .p-tabpanels {
+  padding: 0;
+  background: transparent;
+}
+
+// PrimeNG 18 compact compatibility for the existing dense desktop layout.
+body .p-inputtext {
+  padding: 0.343em;
+}
+
+body .p-toolbar {
+  padding: 1px;
+  gap: 1px;
+}
+
+body .p-button.p-button-icon-only {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+}
+
+body .p-button.p-button-secondary {
+  color: #333333;
+  background: #ffffff;
+  border-color: #cccccc;
+}
+
+body .p-button.p-button-secondary:not(:disabled):hover {
+  color: #333333;
+  background: #e6e6e6;
+  border-color: #adadad;
+}
+
+body .p-datatable .p-datatable-thead > tr > th,
+body .p-datatable .p-datatable-tbody > tr > td,
+body .p-datatable .p-datatable-tfoot > tr > td {
+  padding: 0.343em;
+}
+
+body .p-datatable .p-datatable-tbody > tr > td {
+  height: 27px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body .p-datatable .p-datatable-thead > tr > th,
+body .p-datatable .p-datatable-tfoot > tr > td {
+  font-weight: normal;
+}
+
+body .p-treetable .p-treetable-tbody > tr > td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+p-autocomplete,
+p-autocomplete .p-autocomplete,
+j-autocomplete-png .p-autocomplete {
+  width: 100%;
+}
+
+p-autocomplete .p-autocomplete-input {
+  width: 100%;
+}
+
+j-autocomplete-png .p-button.p-button-icon-only {
+  flex: 0 0 28px;
+}
+
+// Compatibility for the legacy floating-label markup used by shared controls.
+// PrimeNG 18 no longer styles the old ui-float-label class.
+.ui-float-label {
+  position: relative;
+}
+
+.ui-float-label > label {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0.5rem;
+  margin: 0;
+  color: #6b7280;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: top 0.15s, font-size 0.15s;
+}
+
+.ui-float-label:focus-within > label,
+.ui-float-label:has(.p-inputwrapper-filled) > label,
+.ui-float-label:has(input.p-filled) > label {
+  top: -0.15rem;
+  font-size: 12px;
+  transform: translateY(-100%);
+}

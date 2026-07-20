@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
 import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import { definePreset } from '@primeng/themes';
 import Aura from '@primeng/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import 'reflect-metadata';
@@ -23,7 +24,7 @@ import { AppProfileComponent } from './auth/app.profile.component';
 import { AuthService } from './auth/auth.service';
 import { MSAL_INSTANCE } from './auth/msal-instance';
 import { MaterialModule } from './material.module';
-import { PrimeNGModule } from './primeNG.module';
+import { calendarLocale, PrimeNGModule } from './primeNG.module';
 import { DynamicFormsModule } from './UI/dynamic.froms.module';
 import { UserFormsModule } from './UI/users.forms.module';
 
@@ -34,6 +35,24 @@ export function getJwtToken(): string {
 export function msalInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication(MsalConfiguration);
 }
+
+const JettiPreset = definePreset(Aura, {
+  semantic: {
+    primary: {
+      50: '{blue.50}',
+      100: '{blue.100}',
+      200: '{blue.200}',
+      300: '{blue.300}',
+      400: '{blue.400}',
+      500: '{blue.500}',
+      600: '{blue.600}',
+      700: '{blue.700}',
+      800: '{blue.800}',
+      900: '{blue.900}',
+      950: '{blue.950}',
+    },
+  },
+});
 
 @NgModule({
   declarations: [
@@ -63,8 +82,12 @@ export function msalInstanceFactory(): IPublicClientApplication {
     { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
     provideHttpClient(withInterceptorsFromDi()),
     providePrimeNG({
+      translation: calendarLocale,
       theme: {
-        preset: Aura,
+        preset: JettiPreset,
+        options: {
+          darkModeSelector: false,
+        },
       },
     }),
   ],

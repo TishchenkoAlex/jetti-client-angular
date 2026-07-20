@@ -102,6 +102,17 @@ export class AutocompleteComponent
   get EMPTY() {
     return { id: null, code: null, type: this.type, value: null };
   }
+
+  readonly autocompleteOptionLabel = (option: unknown): string => {
+    if (option === null || option === undefined) return '';
+    if (typeof option !== 'object') return String(option);
+
+    const item = option as Record<string, unknown>;
+    const label = item.value ?? item.description ?? item.label;
+    if (label === null || label === undefined || typeof label === 'object') return '';
+    return String(label);
+  };
+
   get isEMPTY() {
     return this.isComplexControl && !(this.value && this.value.value);
   }

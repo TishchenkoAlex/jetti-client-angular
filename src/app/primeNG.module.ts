@@ -4,13 +4,12 @@ import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { ConfirmationService } from 'primeng/api';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { DatePickerModule } from 'primeng/datepicker';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
@@ -21,6 +20,7 @@ import { PanelModule } from 'primeng/panel';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TabViewModule } from 'primeng/tabview';
@@ -44,7 +44,7 @@ import { TriStateCheckboxComponent } from './common/tri-state-checkbox/tri-state
     // DataTableModule,
     DynamicDialog,
     AutoCompleteModule,
-    CalendarModule,
+    DatePickerModule,
     ButtonModule,
     SplitButtonModule,
     InputNumberModule,
@@ -60,7 +60,7 @@ import { TriStateCheckboxComponent } from './common/tri-state-checkbox/tri-state
     SelectButtonModule,
     InputTextModule,
     // ChipsModule,
-    DropdownModule,
+    SelectModule,
     Textarea,
     // InputMaskModule,
     // PasswordModule,

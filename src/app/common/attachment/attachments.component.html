@@ -2,7 +2,7 @@
   <p-header>
     <p-toolbar styleClass="NoBorder">
       <div class="ui-toolbar-group-left">
-        <button [disabled]="!settings.length" pButton type="button" icon="pi pi-plus" class="ui-button-success"
+        <button [disabled]="!settings.length" pButton type="button" icon="pi pi-plus" class="p-button-success"
           (click)="showDialog($event, true)"></button>
       </div>
     </p-toolbar>
@@ -17,9 +17,9 @@
         </div>
         <button pButton type="button" icon="pi pi-search" (click)="showDialog($event, false, item)"></button>
         <button *ngIf="settings.length" pButton type="button" icon="pi pi-cog"
-          style="margin-left: 5px;margin-right: 5px;" class="ui-button-warning"
+          style="margin-left: 5px;margin-right: 5px;" class="p-button-warn"
           (click)="showDialog($event, true, item)"></button>
-        <button *ngIf="item.isFile" pButton type="button" icon="pi pi-download" class="ui-button-success"
+        <button *ngIf="item.isFile" pButton type="button" icon="pi pi-download" class="p-button-success"
           (click)="downloadAttachment(item)"></button>
       </div>
     </div>
@@ -35,9 +35,9 @@
         <!-- <div *ngIf="item.TagsString" class="item-detail">{{item.TagsString}}</div> -->
         <hr class="ui-widget-content" style="border-top:0">
         <button pButton type="button" icon="pi pi-search" (click)="showDialog($event, false, item)"></button>
-        <button *ngIf="settings.length" pButton type="button" icon="pi pi-cog" class="ui-button-warning"
+        <button *ngIf="settings.length" pButton type="button" icon="pi pi-cog" class="p-button-warn"
           style="margin-left: 5px;margin-right: 5px;" (click)="showDialog($event, true, item)"></button>
-        <button *ngIf="item.isFile" pButton type="button" icon="pi pi-download" class="ui-button-success"
+        <button *ngIf="item.isFile" pButton type="button" icon="pi pi-download" class="p-button-success"
           (click)="downloadAttachment(item)"></button>
       </p-panel>
     </div>
@@ -68,8 +68,8 @@
   <div *ngIf="editMode" style="padding: 0px;">
     <h1 class="headerText">Type</h1>
     <div style="max-width: auto; width: 100%;">
-      <p-dropdown styleClass="editInput" [options]="settings" [(ngModel)]="selectedSettings" required="true"
-        [panelStyle]="{'width': 'auto'}" optionLabel="AttachmentTypeDescription" appendTo="body"></p-dropdown>
+      <p-select styleClass="editInput" [options]="settings" [(ngModel)]="selectedSettings" required="true"
+        [panelStyle]="{'width': 'auto'}" optionLabel="AttachmentTypeDescription" appendTo="body"></p-select>
     </div>
 
     <div *ngIf="selectedSettings.StorageType === 'FILE'">
@@ -99,11 +99,11 @@
     <div style="margin-top: 10px">
       <p-toolbar styleClass="NoBorder">
         <div class="ui-toolbar-group-left">
-          <button pButton type="button" id="OK" icon="fa fa-check-square" label="Save" class="ui-button-warning"
+          <button pButton type="button" id="OK" icon="fa fa-check-square" label="Save" class="p-button-warn"
             (click)="saveAttachment()"></button>
         </div>
         <div class="ui-toolbar-group-right">
-          <button pButton type="button" id="Remove" icon="far fa-trash-alt" label="Remove" class="ui-button-danger"
+          <button pButton type="button" id="Remove" icon="far fa-trash-alt" label="Remove" class="p-button-danger"
             *ngIf="this.selectedAttachment.id" (click)="delAttachment(this.selectedAttachment.id)"></button>
         </div>
       </p-toolbar>

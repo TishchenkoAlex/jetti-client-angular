@@ -5,28 +5,28 @@
         <div>
           <p-toolbar>
             <div class="ui-toolbar-group-left">
-              <button id="CopySettingsFilters" icon="fa fa-plus" class="ui-button-success" pButton type="button"
+              <button id="CopySettingsFilters" icon="fa fa-plus" class="p-button-success" pButton type="button"
                 (click)="copySettings('filter')"></button>
-              <button type="button" icon="far fa-trash-alt" pButton class="ui-button-danger"
+              <button type="button" icon="far fa-trash-alt" pButton class="p-button-danger"
                 [disabled]="filterSettingsState.isReadonly" (click)="deleteSelectedSettings('filter')"></button>
-              <button type="button" icon="far fa-save" pButton class="ui-button-secondary"
+              <button type="button" icon="far fa-save" pButton class="p-button-secondary"
                 [disabled]="!filterSettingsState.isModify || filterSettingsState.isReadonly"
                 (click)="usSaveCurrentSettings('filter')"></button>
               <!-- <i class="pi pi-bars"></i>
-              <button id="showActiveFiltersOn" class="ui-button-success" pButton type="button" label="Active"
+              <button id="showActiveFiltersOn" class="p-button-success" pButton type="button" label="Active"
                 (click)="showActiveFilters=true" [disabled]="!activeFilters.length"></button>
-              <button id="showActiveFiltersOff" class="ui-button-warning" label="All" pButton type="button"
+              <button id="showActiveFiltersOff" class="p-button-warn" label="All" pButton type="button"
                 (click)="showActiveFilters=false" [disabled]="!allFilters.length"></button> -->
             </div>
             <div class="ui-toolbar-group-right">
-              <p-dropdown #ddSettingsFilter [ngModel]="filterSettingsState.selected" dataKey="id"
+              <p-select #ddSettingsFilter [ngModel]="filterSettingsState.selected" dataKey="id"
                 class="ui-dropdown-label-container-in-panel" (onChange)="_usOnUserSettingsChange($event, 'filter')"
                 optionLabel="description" [options]="filterSettingsState.settings" filter="true" editable="true">
-              </p-dropdown>
+              </p-select>
             </div>
           </p-toolbar>
         </div>
-        <p-table #columnsTbl [value]="visibleColumns" [rows]="visibleColumns" [responsive]="true" [scrollable]="true"
+        <p-table #columnsTbl [value]="visibleColumns" [rows]="visibleColumns" [scrollable]="true"
           [scrollHeight]="'calc(100vh - 80px)'">
           <ng-template pTemplate="body" let-rowData let-index="rowIndex">
             <tr [id]="rowData.field">
@@ -40,10 +40,10 @@
                 {{rowData.field}}
               </td>
               <td style="width: 138px; text-align: center; cursor: pointer;">
-                <p-dropdown optionLabel="label" optionValue="center" [(ngModel)]="rowData.filter.anyTemp"
+                <p-select optionLabel="label" optionValue="center" [(ngModel)]="rowData.filter.anyTemp"
                   [options]="rowData.matchOperators" (onChange)="_onColumnMatchOperatorChanged(rowData)"
                   appendTo="body">
-                </p-dropdown>
+                </p-select>
               </td>
               <td [ngSwitch]="rowData.type">
                 <div *ngSwitchCase="'boolean'">
@@ -65,39 +65,39 @@
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)">
                 </div>
                 <div *ngSwitchCase="'date'">
-                  <p-calendar *ngIf="rowData.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
-                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  <p-datepicker *ngIf="rowData.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'"
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
                     [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                  </p-calendar>
-                  <p-calendar *ngIf="rowData.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
-                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  </p-datepicker>
+                  <p-datepicker *ngIf="rowData.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'"
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
                     [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                  </p-calendar>
+                  </p-datepicker>
                 </div>
                 <div *ngSwitchCase="'datetime'">
-                  <p-calendar *ngIf="rowData.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
-                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  <p-datepicker *ngIf="rowData.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'"
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
                     [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                  </p-calendar>
-                  <p-calendar *ngIf="rowData.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
-                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                  </p-datepicker>
+                  <p-datepicker *ngIf="rowData.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                    [ngModel]="rowData.filter.right" readonlyInput="true" [appendTo]="'body'"
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [dateFormat]="dateFormat"
                     [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
                     [showTime]="rowData.filter.center === '='" [showSeconds]="rowData.filter.center === '='">
-                  </p-calendar>
+                  </p-datepicker>
                 </div>
                 <div *ngSwitchCase="'string'">
                   <input [ngModel]="rowData.filter.right" style="width: 100%;" pInputText
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)">
                 </div>
                 <div *ngSwitchCase="'enum'">
-                  <!-- <p-dropdown [options]="rowData.filter.value" [ngModel]="rowData.filter.right"
+                  <!-- <p-select [options]="rowData.filter.value" [ngModel]="rowData.filter.right"
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)" [showClear]="true"
                     >
-                  </p-dropdown> -->
+                  </p-select> -->
                   <j-ng-select ngDefaultControl class="ng-select-container-flexible" [options]="rowData.value"
                     [type]="rowData.type" [id]="rowData.field" [selectedItemsSimple]="rowData.filter.right"
                     (select)="update(rowData, $event,  rowData.filter.center)">
@@ -126,25 +126,25 @@
         <div>
           <p-toolbar>
             <div class="ui-toolbar-group-left">
-              <button id="CopySettings" icon="fa fa-plus" class="ui-button-success" pButton type="button"
+              <button id="CopySettings" icon="fa fa-plus" class="p-button-success" pButton type="button"
                 (click)="copySettings('columns')"></button>
-              <button type="button" icon="far fa-trash-alt" pButton class="ui-button-danger"
+              <button type="button" icon="far fa-trash-alt" pButton class="p-button-danger"
                 [disabled]="columnsSettingsState.isReadonly" (click)="deleteSelectedSettings('columns')"></button>
-              <button type="button" icon="far fa-save" pButton class="ui-button-secondary"
+              <button type="button" icon="far fa-save" pButton class="p-button-secondary"
                 [disabled]="!columnsSettingsState.isModify || columnsSettingsState.isReadonly"
                 (click)="usSaveCurrentSettings('columns')"></button>
             </div>
             <div class="ui-toolbar-group-right">
-              <p-dropdown #ddSettings [ngModel]="columnsSettingsState.selected" [panelStyle]="{'width': 'auto'}"
+              <p-select #ddSettings [ngModel]="columnsSettingsState.selected" [panelStyle]="{'width': 'auto'}"
                 class="ui-dropdown-label-container-in-panel" (onChange)="_usOnUserSettingsChange($event, 'columns')"
                 optionLabel="description" [options]="columnsSettingsState.settings" filter="true"
                 [editable]="!columnsSettingsState.isReadonly">
-              </p-dropdown>
+              </p-select>
             </div>
           </p-toolbar>
         </div>
 
-        <p-table #columnsTbl [value]="columns" [rows]="columns" [responsive]="true" [scrollable]="true"
+        <p-table #columnsTbl [value]="columns" [rows]="columns" [scrollable]="true"
           [scrollHeight]="'calc(100vh - 80px)'" (onRowReorder)="onColReorder(columns)">
           <ng-template pTemplate="body" let-rowData let-index="rowIndex">
             <tr *ngIf="true || !columnsSettingsState.isReadonly" [id]="rowData.field" [pReorderableRow]="index"
@@ -166,36 +166,36 @@
     <ng-content></ng-content>
     <p-toolbar>
       <div class="ui-toolbar-group-left" *ngIf="!readonly">
-        <button id="add" icon="fa fa-plus" class="ui-button-success" pButton type="button" (click)="add()"
+        <button id="add" icon="fa fa-plus" class="p-button-success" pButton type="button" (click)="add()"
           pTooltip="Add" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"></button>
-        <button id="addFolder" icon="fas fa-folder-plus" class="ui-button-warning" pButton type="button"
+        <button id="addFolder" icon="fas fa-folder-plus" class="p-button-warn" pButton type="button"
           (click)="add(true)" pTooltip="Add folder" tooltipPosition="top" showDelay="2000"
           [disabled]="(lds.busy$ | async)"></button>
-        <button id="open" icon="far fa-edit" class="ui-button-secondary" pButton type="button" pTooltip="Open"
+        <button id="open" icon="far fa-edit" class="p-button-secondary" pButton type="button" pTooltip="Open"
           tooltipPosition="top" showDelay="2000" (click)="open()" [disabled]="(lds.busy$ | async)"
           *ngIf="selectedData"></button>
-        <button id="copy" icon="far fa-copy" class="ui-button-secondary" pButton type="button" (click)="copy()"
+        <button id="copy" icon="far fa-copy" class="p-button-secondary" pButton type="button" (click)="copy()"
           pTooltip="Copy" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"
           *ngIf="selectedData"></button>
-        <button id="post" icon="fa fa-check" class="ui-button-warning" pButton type="button" (click)="post()"
+        <button id="post" icon="fa fa-check" class="p-button-warn" pButton type="button" (click)="post()"
           pTooltip="Post" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"
           *ngIf="selectedData && isDoc"></button>
-        <button id="unpost" icon="far fa-square" class="ui-button-warning" pButton type="button" pTooltip="Unpost"
+        <button id="unpost" icon="far fa-square" class="p-button-warn" pButton type="button" pTooltip="Unpost"
           tooltipPosition="top" showDelay="2000" (click)="post('unpost')" [disabled]="(lds.busy$ | async)"
           *ngIf="selectedData && isDoc"></button>
-        <button id="delete" icon="far fa-trash-alt" class="ui-button-danger" pButton type="button" (click)="delete()"
+        <button id="delete" icon="far fa-trash-alt" class="p-button-danger" pButton type="button" (click)="delete()"
           pTooltip="Delete" tooltipPosition="top" showDelay="2000" [disabled]="(lds.busy$ | async)"
           *ngIf="selectedData"></button>
       </div>
       <div *ngIf="!this.isRelationList" class="ui-toolbar-group-right">
         <span *ngIf="useSelectedTotal">
-          <button id="total" class="ui-button-secondary" pButton type="button" [label]="selectedTotal"
+          <button id="total" class="p-button-secondary" pButton type="button" [label]="selectedTotal"
             (click)="copyToClipboardSelectedTotal()"></button>
           <i class="pi pi-bars"></i>
         </span>
         <button *ngIf="isFilterAvailable" id="showDeleted" [icon]="this.isDeletedHidden ? 'fas fa-eye-slash' : 'fas fa-eye'" type="text" pButton
           type="button" (click)="this.isDeletedHidden = !this.isDeletedHidden"
-          [ngClass]="this.isDeletedHidden ? 'ui-button-success' : 'ui-button-danger'"
+          [ngClass]="this.isDeletedHidden ? 'p-button-success' : 'p-button-danger'"
           [pTooltip]="this.isDeletedHidden ? 'Show deleted' : 'Hide deleted'" tooltipPosition="top"
           showDelay="2000"></button>
         <span *ngIf="!isDoc && !usedInId">
@@ -258,29 +258,29 @@
                   pInputText type="numeric" (ngModelChange)="update(column, $event,  column.filter.center)">
               </div>
               <div *ngSwitchCase="'date'">
-                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                <p-datepicker *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
-                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                </p-datepicker>
+                <p-datepicker *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'datetime'">
-                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                <p-datepicker *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
-                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                </p-datepicker>
+                <p-datepicker *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
                   [showTime]="column.filter.center === '='" [showSeconds]="column.filter.center === '='">
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'string'">
                 <input [ngModel]="column.filter.right" pInputText (ngModelChange)="update(column, $event, 'like')">
@@ -446,6 +446,7 @@
     <div *ngIf="!treeNodesVisible">
       <p-table #tbl [value]="dataSource.result$ | async" selectionMode="multiple" dataKey="id" [lazy]="true"
         [rows]="pageSize$ | async" sortMode="multiple" [scrollable]="true" [reorderableColumns]="true"
+        [tableStyle]="{'min-width': tableMinWidth}"
         [filterDelay]="1000" (onContextMenuSelect)="onContextMenuSelect($event)" [contextMenu]="cm"
         [(contextMenuSelection)]="contextMenuSelection" [metaKeySelection]="true" [columns]="visibleColumns"
         class="noselect" [(selection)]="selection" (onLazyLoad)="onLazyLoad($event)" [(multiSortMeta)]="multiSortMeta"
@@ -453,8 +454,9 @@
         (onColReorder)="onColReorder($event.columns)">
         <ng-template pTemplate="colgroup" let-columns>
           <colgroup>
-            <col>
-            <col *ngFor="let column of tbl.columns">
+            <col style="width: 30px">
+            <col *ngFor="let column of tbl.columns" [ngStyle]="column.style">
+            <col style="width: 30px">
           </colgroup>
         </ng-template>
         <ng-template pTemplate="header">
@@ -493,38 +495,38 @@
                   pInputText type="numeric" (ngModelChange)="update(column, $event,  column.filter.center)">
               </div>
               <div *ngSwitchCase="'date'">
-                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                <p-datepicker *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
-                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                </p-datepicker>
+                <p-datepicker *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'datetime'">
-                <p-calendar *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                <p-datepicker *ngIf="column.filter.center === 'beetwen'" selectionMode="range" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
-                <p-calendar *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
-                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                </p-datepicker>
+                <p-datepicker *ngIf="column.filter.center !== 'beetwen'" selectionMode="single" showButtonBar="true"
+                  [ngModel]="column.filter.right" readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event,  column.filter.center)" [dateFormat]="dateFormat"
                   [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"
                   [showTime]="column.filter.center === '='" [showSeconds]="column.filter.center === '='">
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'string'">
                 <input [ngModel]="column.filter.right" pInputText
                   (ngModelChange)="update(column, $event, column.filter.center || 'like')">
               </div>
               <div *ngSwitchCase="'enum'">
-                <!-- <p-dropdown [options]="column.value" [ngModel]="column.filter.right"
+                <!-- <p-select [options]="column.value" [ngModel]="column.filter.right"
                   (ngModelChange)="update(column, $event, column.filter.center || '=')" [showClear]="true"
-                  appendTo="body"></p-dropdown> -->
+                  appendTo="body"></p-select> -->
                 <j-ng-select ngDefaultControl class="ng-select-container-mini" [type]="column.type" [id]="column.field"
                   [options]="column.value" [selectedItemsSimple]="column.filter.right" maxVisibleItems="0"
                   (select)="update(column, $event,  column.filter.center)">
@@ -634,7 +636,7 @@
 
     <p-toolbar>
       <div class="ui-toolbar-group-right">
-        <button pButton type="button" icon="pi pi-refresh" class="ui-button-secondary" pTooltip="Refresh"
+        <button pButton type="button" icon="pi pi-refresh" class="p-button-secondary" pTooltip="Refresh"
           tooltipPosition="top" showDelay="2000" (click)="refresh(id)" [disabled]="(lds.busy$ | async)"></button>
         <button pButton type="button" icon="pi pi-fast-backward" (click)="first()" pTooltip="First page"
           tooltipPosition="top" showDelay="2000"

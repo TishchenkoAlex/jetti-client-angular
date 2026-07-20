@@ -67,6 +67,18 @@ export class BaseHierarchyListComponent implements OnInit, OnDestroy {
   get id() { return this.selectedData ? this.selectedData.id : null; }
   set id(id: string) { this.selection = [{ id, type: this.type }]; this.selectedNode = { data: { id: id }, key: id, type: this.type }; }
   get visibleColumns() { return this.columns.filter(column => !column.hidden); }
+  get tableMinWidth() {
+    const columnsWidth = this.visibleColumns.reduce((total, column) => {
+      const style = typeof column.style === 'object' && column.style ? column.style as Record<string, unknown> : {};
+      const width = style['min-width'] || style['width'];
+      const parsedWidth = typeof width === 'number' ? width : parseFloat(String(width || ''));
+
+      return total + (Number.isFinite(parsedWidth) ? parsedWidth : 200);
+    }, 0);
+
+    // Posted state column and the trailing spacer cell.
+    return `${columnsWidth + 60}px`;
+  }
   get activeFilters() { return this.columns.filter(column => column.filter && column.filter.isActive).map(col => col.filter); }
   get filteredColumns() { return this.columns.filter(column => column.filter && column.filter.isActive); }
   get allFilters() {

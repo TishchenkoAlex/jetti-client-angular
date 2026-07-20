@@ -13,15 +13,15 @@
   <div style="display: flex; flex-direction: column;">
     <p-toolbar *ngIf="!readonly">
       <div class="ui-toolbar-group-left">
-        <button id="add" icon="fa fa-plus" class="ui-button-success" pButton type="button" (click)="add()"
+        <button id="add" icon="fa fa-plus" class="p-button-success" pButton type="button" (click)="add()"
           [disabled]="(lds.busy$ | async)"></button>
-        <button id="open" icon="far fa-edit" class="ui-button-secondary" pButton type="button" (click)="open()"
+        <button id="open" icon="far fa-edit" class="p-button-secondary" pButton type="button" (click)="open()"
           [disabled]="(lds.busy$ | async)" *ngIf="selection?.length == 1"></button>
-        <button id="copy" icon="far fa-copy" class="ui-button-secondary" pButton type="button" (click)="copy()"
+        <button id="copy" icon="far fa-copy" class="p-button-secondary" pButton type="button" (click)="copy()"
           [disabled]="(lds.busy$ | async)" *ngIf="selection?.length == 1"></button>
-        <button id="delete" icon="far fa-trash-alt" class="ui-button-danger" pButton type="button" (click)="delete()"
+        <button id="delete" icon="far fa-trash-alt" class="p-button-danger" pButton type="button" (click)="delete()"
           [disabled]="(lds.busy$ | async)" *ngIf="selection?.length"></button>
-        <button id="showTree" icon="fa fa-sitemap" class="ui-button-secondary" pButton type="button"
+        <button id="showTree" icon="fa fa-sitemap" class="p-button-secondary" pButton type="button"
           (click)="showTree = !showTree" [disabled]="(lds.busy$ | async)" *ngIf="showTreeButton"></button>
       </div>
     </p-toolbar>
@@ -59,26 +59,26 @@
                   (ngModelChange)="update(column, $event, '>=')">
               </div>
               <div *ngSwitchCase="'date'">
-                <p-calendar selectionMode="range" showButtonBar="true" [ngModel]="filters[column.field]?.value"
-                  readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                <p-datepicker selectionMode="range" showButtonBar="true" [ngModel]="filters[column.field]?.value"
+                  readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event, '=')" [dateFormat]="dateFormat" [monthNavigator]="true"
                   [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'datetime'">
-                <p-calendar selectionMode="range" showButtonBar="true" [ngModel]="filters[column.field]?.value"
-                  readonlyInput="true" [appendTo]="'body'" [locale]="locale"
+                <p-datepicker selectionMode="range" showButtonBar="true" [ngModel]="filters[column.field]?.value"
+                  readonlyInput="true" [appendTo]="'body'"
                   (ngModelChange)="update(column, $event, '=')" [dateFormat]="dateFormat" [monthNavigator]="true"
                   [yearNavigator]="true" yearRange="2010:2030">
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'string'">
                 <input [ngModel]="filters[column.field]?.value" pInputText
                   (ngModelChange)="update(column, $event, 'like')">
               </div>
               <div *ngSwitchCase="'enum'">
-                <p-dropdown [options]="column.value" [ngModel]="filters[column.field]?.value"
-                  (ngModelChange)="update(column, $event, '=')" [showClear]="true" appendTo="body"></p-dropdown>
+                <p-select [options]="column.value" [ngModel]="filters[column.field]?.value"
+                  (ngModelChange)="update(column, $event, '=')" [showClear]="true" appendTo="body"></p-select>
               </div>
               <div *ngSwitchDefault>
                 <j-autocomplete-png [checkValue]="false" [disabled]="isFilterFixed(column.field)"

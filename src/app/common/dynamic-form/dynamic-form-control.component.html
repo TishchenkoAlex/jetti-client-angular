@@ -4,7 +4,7 @@
     [ngClass]="{'ui-float-label' : control.showLabel}">
     <input [required]="control.required" pInputText [formControlName]="control.key" [readonly]="control.readOnly"
       autocomplete="off" (focus)="$event.target.select()" spellcheck="false">
-    <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" (click)="handleReset($event)"
+    <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
       pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1
       [disabled]="this.isEMPTY || control.readOnly"></button>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
@@ -14,10 +14,10 @@
     [ngClass]="{'ui-float-label' : control.showLabel}">
     <input [required]="control.required" pInputText [formControlName]="control.key" [readonly]="control.readOnly"
       autocomplete="off" (focus)="$event.target.select()" spellcheck="false">
-    <button pButton type="button" icon="pi pi-external-link" class="ui-button-secondary" pTooltip="Open"
+    <button pButton type="button" icon="pi pi-external-link" class="p-button-secondary" pTooltip="Open"
       tooltipPosition="top" showDelay="2000" [disabled]="this.isEMPTY" (click)="handleOpenURL($event)"
       [tabIndex]=-1></button>
-    <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" (click)="handleReset($event)"
+    <button pButton type="button" icon="pi pi-times" class="p-button-secondary" (click)="handleReset($event)"
       pTooltip="Clear" tooltipPosition="top" showDelay="2000" [tabindex]=-1
       [disabled]="this.isEMPTY || control.readOnly"></button>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
@@ -28,8 +28,8 @@
   </div>
 
   <div *ngSwitchCase="'enum'" [ngClass]="{'ui-float-label' : control.showLabel}">
-    <p-dropdown [options]="control.valuesOptions" [formControlName]="control.key" [autoDisplayFirst]="false"
-      [readonly]="control.readOnly" [required]="control.required" appendTo="body"></p-dropdown>
+    <p-select [options]="control.valuesOptions" [formControlName]="control.key" [autoDisplayFirst]="false"
+      [readonly]="control.readOnly" [required]="control.required" appendTo="body"></p-select>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
   </div>
 

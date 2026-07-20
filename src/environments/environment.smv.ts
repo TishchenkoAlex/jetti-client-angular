@@ -7,6 +7,7 @@ const BPAPI = 'https://bp.x100-group.com/JettiProcesses/hs';
 
 export const environment = {
   production: true,
+  AUTH_TOKEN: '',
   api: `${domain}/api/`,
   auth: `${domain}/auth/`,
   socket: domain,

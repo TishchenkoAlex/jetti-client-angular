@@ -10,6 +10,8 @@ export function createMsalConfiguration(authority: string): Configuration {
     auth: {
       clientId: '8497b6af-a0c3-4b55-9e60-11bc8ff237e4',
       authority,
+      redirectUri: window.location.origin,
+      postLogoutRedirectUri: window.location.origin,
       navigateToLoginRequestUrl: true,
     },
     cache: {

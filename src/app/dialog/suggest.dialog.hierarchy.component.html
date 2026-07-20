@@ -5,7 +5,7 @@
         <button
           id="add"
           icon="fa fa-plus"
-          class="ui-button-success"
+          class="p-button-success"
           pButton
           type="button"
           (click)="add()"
@@ -14,7 +14,7 @@
         <button
           id="addFolder"
           icon="fas fa-folder-plus"
-          class="ui-button-success"
+          class="p-button-success"
           pButton
           type="button"
           (click)="add(true)"
@@ -26,7 +26,7 @@
         <button
           id="open"
           icon="far fa-edit"
-          class="ui-button-secondary"
+          class="p-button-secondary"
           pButton
           type="button"
           (click)="open()"
@@ -36,7 +36,7 @@
         <button
           id="copy"
           icon="far fa-copy"
-          class="ui-button-secondary"
+          class="p-button-secondary"
           pButton
           type="button"
           (click)="copy()"
@@ -46,7 +46,7 @@
         <button
           id="delete"
           icon="far fa-trash-alt"
-          class="ui-button-danger"
+          class="p-button-danger"
           pButton
           type="button"
           (click)="delete()"
@@ -59,7 +59,7 @@
           pButton
           type="button"
           [label]="(this.showDeleted ? 'Hide ' : 'Show ') + 'deleted'"
-          class="ui-button-secondary"
+          class="p-button-secondary"
           (click)="showDeletedSet(!this.showDeleted, true)"
           [disabled]="lds.busy$ | async"
         ></button>
@@ -132,36 +132,34 @@
                 />
               </div>
               <div *ngSwitchCase="'date'">
-                <p-calendar
+                <p-datepicker
                   selectionMode="range"
                   showButtonBar="true"
                   [ngModel]="filters[column.field]?.value"
                   readonlyInput="true"
                   [appendTo]="'body'"
-                  [locale]="locale"
                   (ngModelChange)="update(column, $event, '=')"
                   [dateFormat]="dateFormat"
                   [monthNavigator]="true"
                   [yearNavigator]="true"
                   yearRange="2010:2030"
                 >
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'datetime'">
-                <p-calendar
+                <p-datepicker
                   selectionMode="range"
                   showButtonBar="true"
                   [ngModel]="filters[column.field]?.value"
                   readonlyInput="true"
                   [appendTo]="'body'"
-                  [locale]="locale"
                   (ngModelChange)="update(column, $event, '=')"
                   [dateFormat]="dateFormat"
                   [monthNavigator]="true"
                   [yearNavigator]="true"
                   yearRange="2010:2030"
                 >
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'string'">
                 <input
@@ -171,13 +169,13 @@
                 />
               </div>
               <div *ngSwitchCase="'enum'">
-                <p-dropdown
+                <p-select
                   [options]="column.value"
                   [ngModel]="filters[column.field]?.value"
                   (ngModelChange)="update(column, $event, '=')"
                   [showClear]="true"
                   appendTo="body"
-                ></p-dropdown>
+                ></p-select>
               </div>
               <div *ngSwitchDefault>
                 <j-autocomplete-png
@@ -434,36 +432,34 @@
                 />
               </div>
               <div *ngSwitchCase="'date'">
-                <p-calendar
+                <p-datepicker
                   selectionMode="range"
                   showButtonBar="true"
                   [ngModel]="filters[column.field]?.value"
                   readonlyInput="true"
                   [appendTo]="'body'"
-                  [locale]="locale"
                   (ngModelChange)="update(column, $event, '=')"
                   [dateFormat]="dateFormat"
                   [monthNavigator]="true"
                   [yearNavigator]="true"
                   yearRange="2010:2030"
                 >
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'datetime'">
-                <p-calendar
+                <p-datepicker
                   selectionMode="range"
                   showButtonBar="true"
                   [ngModel]="filters[column.field]?.value"
                   readonlyInput="true"
                   [appendTo]="'body'"
-                  [locale]="locale"
                   (ngModelChange)="update(column, $event, '=')"
                   [dateFormat]="dateFormat"
                   [monthNavigator]="true"
                   [yearNavigator]="true"
                   yearRange="2010:2030"
                 >
-                </p-calendar>
+                </p-datepicker>
               </div>
               <div *ngSwitchCase="'string'">
                 <input
@@ -473,13 +469,13 @@
                 />
               </div>
               <div *ngSwitchCase="'enum'">
-                <p-dropdown
+                <p-select
                   [options]="column.value"
                   [ngModel]="filters[column.field]?.value"
                   (ngModelChange)="update(column, $event, '=')"
                   [showClear]="true"
                   appendTo="body"
-                ></p-dropdown>
+                ></p-select>
               </div>
               <div *ngSwitchDefault>
                 <j-autocomplete-png

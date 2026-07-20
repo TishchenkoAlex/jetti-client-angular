@@ -13,8 +13,9 @@ export class ApiInterceptor implements HttpInterceptor {
   constructor(private lds: LoadingService, private auth: AuthService, private messageService: MessageService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const token = this.auth.token;
     req = req.clone({
-      setHeaders: { Authorization: `Bearer ${this.auth.token}` }, responseType: 'text',
+      setHeaders: token ? { Authorization: `Bearer ${token}` } : {}, responseType: 'text',
       body: req.body ? JSON.parse(JSON.stringify(req.body), dateReviverLocal) : req.body
     });
 
