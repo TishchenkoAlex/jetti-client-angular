@@ -12,15 +12,16 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { Textarea } from 'primeng/inputtextarea';
+import { MenuModule } from 'primeng/menu';
 import { PaginatorModule } from 'primeng/paginator';
 import { PanelModule } from 'primeng/panel';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { SpinnerModule } from 'primeng/spinner';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { TabViewModule } from 'primeng/tabview';
 import { ToastModule } from 'primeng/toast';
@@ -28,25 +29,25 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { AccordionModule } from 'primeng/accordion';
 import { TooltipModule } from 'primeng/tooltip';
 import { TreeTableModule } from 'primeng/treetable';
-import { SlideMenuModule } from 'primeng/slidemenu';
-import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
 import { DataViewModule } from 'primeng/dataview';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ListboxModule } from 'primeng/listbox';
 import { TableModule } from 'primeng/table';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DynamicDialog } from 'primeng/dynamicdialog';
 import { SidebarModule } from 'primeng/sidebar';
+import { TriStateCheckboxComponent } from './common/tri-state-checkbox/tri-state-checkbox.component';
 
 @NgModule({
+  imports: [TriStateCheckboxComponent],
   exports: [
     // SharedModule,
     // DataTableModule,
-    DynamicDialogModule,
+    DynamicDialog,
     AutoCompleteModule,
     CalendarModule,
     ButtonModule,
     SplitButtonModule,
-    SpinnerModule,
+    InputNumberModule,
     ConfirmDialogModule,
     DialogModule,
     SidebarModule,
@@ -60,12 +61,12 @@ import { SidebarModule } from 'primeng/sidebar';
     InputTextModule,
     // ChipsModule,
     DropdownModule,
-    InputTextareaModule,
+    Textarea,
     // InputMaskModule,
     // PasswordModule,
     // ToggleButtonModule,
     CheckboxModule,
-    TriStateCheckboxModule,
+    TriStateCheckboxComponent,
     // RadioButtonModule,
     PaginatorModule,
     ToolbarModule,
@@ -75,7 +76,7 @@ import { SidebarModule } from 'primeng/sidebar';
     // PanelMenuModule,
     // TabMenuModule,
     // MegaMenuModule,
-    SlideMenuModule,
+    MenuModule,
     // BreadcrumbModule,
     // TieredMenuModule,
     // StepsModule,

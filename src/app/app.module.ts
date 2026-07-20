@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import localeRUExtra from '@angular/common/locales/extra/ru';
 import localeRU from '@angular/common/locales/ru';
 import { LOCALE_ID, NgModule } from '@angular/core';
@@ -9,6 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
 import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import Aura from '@primeng/themes/aura';
+import { providePrimeNG } from 'primeng/config';
 import 'reflect-metadata';
 import { take } from 'rxjs/operators';
 import { environment, MsalConfiguration } from '../environments/environment';
@@ -46,7 +48,6 @@ export function msalInstanceFactory(): IPublicClientApplication {
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     MaterialModule,
     PrimeNGModule,
     MonacoEditorModule,
@@ -59,9 +60,15 @@ export function msalInstanceFactory(): IPublicClientApplication {
     { provide: LOCALE_ID, useValue: 'ru-RU' },
     AuthService,
     { provide: MSAL_INSTANCE, useFactory: msalInstanceFactory },
-    { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
+    provideHttpClient(withInterceptorsFromDi()),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+      },
+    }),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 

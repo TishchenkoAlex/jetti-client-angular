@@ -47,10 +47,11 @@
   </div>
 
   <div *ngIf="value?.type === 'boolean'">
-    <p-checkbox binary="true" [label]="showLabel ? placeholder : ''" [ngModel]="suggest.value.value"
+    <p-checkbox binary="true" [inputId]="id + '-checkbox'" [ngModel]="suggest.value.value"
       [ngModelOptions]="{standalone: true}"
       (ngModelChange)="value={id: 'boolean', code: '', type: 'boolean', value: $event}">
     </p-checkbox>
+    <label *ngIf="showLabel" [for]="id + '-checkbox'">{{ placeholder }}</label>
     <button pButton type="button" icon="pi pi-close" class="ui-button-secondary" (click)="handleReset($event)"
       pTooltip="Clear" tooltipPosition="top" showDelay="2000"></button>
   </div>

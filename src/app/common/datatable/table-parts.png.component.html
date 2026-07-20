@@ -48,8 +48,8 @@
           <button pButton type="button" icon="pi pi-times" class="ui-button-secondary" [disabled]="isSorted"
             (click)="clearFilter(col.field)"></button>
         </div>
-        <p-triStateCheckbox *ngSwitchCase="'boolean'" [disabled]="isSorted" [(ngModel)]="filters[col.field].value"
-          (onChange)="onFilterInput($event.value, col)"></p-triStateCheckbox>
+        <j-tri-state-checkbox *ngSwitchCase="'boolean'" [disabled]="isSorted" [(ngModel)]="filters[col.field].value"
+          (triStateChange)="onFilterInput($event.value, col)"></j-tri-state-checkbox>
         <div *ngSwitchCase="'datetime'" class="ui-inputgroup">
           <p-calendar showButtonBar="true" readonlyInput="true" [(ngModel)]="filters[col.field].value" [disabled]="isSorted"
             [appendTo]="'body'" [monthNavigator]="true" [yearNavigator]="true" yearRange="2010:2030"

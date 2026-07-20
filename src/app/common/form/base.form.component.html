@@ -193,8 +193,8 @@
       <p-confirmDialog [key]="id" [closeOnEscape]="true" [closable]="true" #cdlg appendTo="body">
         <p-footer>
           <div cdkTrapFocus>
-            <button type="button" pButton icon="fa fa-check" label="Yes" (click)="cdlg.accept()"></button>
-            <button type="button" pButton icon="fas fa-times" label="No" (click)="cdlg.reject()"></button>
+            <button type="button" pButton icon="fa fa-check" label="Yes" (click)="cdlg.onAccept()"></button>
+            <button type="button" pButton icon="fas fa-times" label="No" (click)="cdlg.onReject()"></button>
           </div>
         </p-footer>
       </p-confirmDialog>

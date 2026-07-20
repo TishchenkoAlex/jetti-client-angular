@@ -47,9 +47,9 @@
               </td>
               <td [ngSwitch]="rowData.type">
                 <div *ngSwitchCase="'boolean'">
-                  <p-triStateCheckbox [ngModel]="rowData.filter.right"
+                  <j-tri-state-checkbox [ngModel]="rowData.filter.right"
                     (ngModelChange)="update(rowData, $event,  rowData.filter.center)">
-                  </p-triStateCheckbox>
+                  </j-tri-state-checkbox>
                 </div>
                 <div *ngSwitchCase="'number'">
                   <div *ngIf="rowData.filter.center === 'beetwen'"
@@ -199,8 +199,7 @@
           [pTooltip]="this.isDeletedHidden ? 'Show deleted' : 'Hide deleted'" tooltipPosition="top"
           showDelay="2000"></button>
         <span *ngIf="!isDoc && !usedInId">
-          <p-slideMenu #addMenu [model]="addMenuItems" [popup]="true" effectDuration="300" easing="ease-in"
-            [viewportHeight]="125"></p-slideMenu>
+          <p-menu #addMenu [model]="addMenuItems" [popup]="true"></p-menu>
           <button #addMenuBtn type="button" pButton icon="pi pi-list" (click)="addMenu.toggle($event)"
             pTooltip="More..." tooltipPosition="top" showDelay="2000"></button>
         </span>
@@ -243,8 +242,8 @@
             <th *ngFor="let column of treeTable.columns" [ngStyle]="column.style" [ngSwitch]="column.type"
               class="ui-fluid ui-column-filter">
               <div *ngSwitchCase="'boolean'">
-                <p-triStateCheckbox [ngModel]="column.filter.right || false"
-                  (ngModelChange)="update(column, $event, '=')"></p-triStateCheckbox>
+                <j-tri-state-checkbox [ngModel]="column.filter.right || false"
+                  (ngModelChange)="update(column, $event, '=')"></j-tri-state-checkbox>
               </div>
               <div *ngSwitchCase="'number'">
                 <div *ngIf="column.filter.center === 'beetwen'"
@@ -470,16 +469,16 @@
           </tr>
           <tr *ngIf="isFilterAvailable">
             <th [ngStyle]="{'width': '30px', 'text-align': 'center', padding: 0, margin: 0}">
-              <p-triStateCheckbox [ngModel]="columns[postedCol.field]?.value"
-                (ngModelChange)="update(postedCol, $event, '=')"></p-triStateCheckbox>
+              <j-tri-state-checkbox [ngModel]="columns[postedCol.field]?.value"
+                (ngModelChange)="update(postedCol, $event, '=')"></j-tri-state-checkbox>
             </th>
             <th *ngFor="let column of tbl.columns" [ngStyle]="column.style" [ngSwitch]="column.type"
               class="ui-fluid ui-column-filter">
 
               <div *ngSwitchCase="'boolean'">
-                <p-triStateCheckbox [ngModel]="column.filter.right"
+                <j-tri-state-checkbox [ngModel]="column.filter.right"
                   (ngModelChange)="update(column, $event, column.filter.center || '=')">
-                </p-triStateCheckbox>
+                </j-tri-state-checkbox>
               </div>
               <div *ngSwitchCase="'number'">
                 <div *ngIf="column.filter.center === 'beetwen'"
@@ -660,8 +659,8 @@
 <p-confirmDialog [key]="'list: ' + this.id" [closeOnEscape]="true" [closable]="true" #cdlg appendTo="body">
   <p-footer>
     <div cdkTrapFocus>
-      <button type="button" pButton icon="fa fa-check" label="Yes" (click)="cdlg.accept()"></button>
-      <button type="button" pButton icon="fas fa-times" label="No" (click)="cdlg.reject()"></button>
+      <button type="button" pButton icon="fa fa-check" label="Yes" (click)="cdlg.onAccept()"></button>
+      <button type="button" pButton icon="fas fa-times" label="No" (click)="cdlg.onReject()"></button>
     </div>
   </p-footer>
 </p-confirmDialog>

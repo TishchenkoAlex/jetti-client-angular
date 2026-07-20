@@ -5,9 +5,6 @@
         <button [disabled]="!settings.length" pButton type="button" icon="pi pi-plus" class="ui-button-success"
           (click)="showDialog($event, true)"></button>
       </div>
-      <div class="ui-toolbar-group-right">
-        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
-      </div>
     </p-toolbar>
   </p-header>
   <ng-template let-item pTemplate="listItem">

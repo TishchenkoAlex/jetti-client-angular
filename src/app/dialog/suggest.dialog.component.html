@@ -51,8 +51,8 @@
             <th *ngFor="let column of tbl.columns" [ngStyle]="column.style" [ngSwitch]="column.type"
               class="ui-fluid ui-column-filter">
               <div *ngSwitchCase="'boolean'">
-                <p-triStateCheckbox [ngModel]="filters[column.field]?.value"
-                  (ngModelChange)="update(column, $event, '=')"></p-triStateCheckbox>
+                <j-tri-state-checkbox [ngModel]="filters[column.field]?.value"
+                  (ngModelChange)="update(column, $event, '=')"></j-tri-state-checkbox>
               </div>
               <div *ngSwitchCase="'number'">
                 <input [ngModel]="filters[column.field]?.value" pInputText type="numeric"

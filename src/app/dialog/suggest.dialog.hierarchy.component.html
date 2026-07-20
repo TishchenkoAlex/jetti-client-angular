@@ -118,10 +118,10 @@
               class="ui-fluid ui-column-filter"
             >
               <div *ngSwitchCase="'boolean'">
-                <p-triStateCheckbox
+                <j-tri-state-checkbox
                   [ngModel]="filters[column.field]?.value"
                   (ngModelChange)="update(column, $event, '=')"
-                ></p-triStateCheckbox>
+                ></j-tri-state-checkbox>
               </div>
               <div *ngSwitchCase="'number'">
                 <input
@@ -420,10 +420,10 @@
               class="ui-fluid ui-column-filter"
             >
               <div *ngSwitchCase="'boolean'">
-                <p-triStateCheckbox
+                <j-tri-state-checkbox
                   [ngModel]="filters[column.field]?.value"
                   (ngModelChange)="update(column, $event, '=')"
-                ></p-triStateCheckbox>
+                ></j-tri-state-checkbox>
               </div>
               <div *ngSwitchCase="'number'">
                 <input

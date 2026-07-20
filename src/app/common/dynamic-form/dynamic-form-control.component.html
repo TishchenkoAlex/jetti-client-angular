@@ -47,9 +47,10 @@
   </div>
 
   <div *ngSwitchCase="'number'" [ngClass]="{'ui-float-label' : control.showLabel}">
-    <p-spinner [required]="control.required" [formControlName]="control.key" [readonly]="control.readOnly"
-      (onFocus)="$event.target.select()" [id]="control.key" size="30" [step]="0.01" [formatInput]="true" precision=2>
-    </p-spinner>
+    <p-inputNumber [required]="control.required" [formControlName]="control.key" [readonly]="control.readOnly"
+      (onFocus)="$event.target.select()" [inputId]="control.key" [step]="0.01" [format]="true"
+      [minFractionDigits]="2" [maxFractionDigits]="2">
+    </p-inputNumber>
     <label *ngIf="control.showLabel" [for]="control.key">{{control.label}}</label>
   </div>
 
@@ -76,8 +77,9 @@
   </div>
 
   <div *ngSwitchCase="'boolean'" [style.marginTop]="control.showLabel ? '27px': ''">
-    <p-checkbox *ngSwitchCase="'boolean'" binary="true" [label]="control.showLabel ? control.label: ''"
+    <p-checkbox *ngSwitchCase="'boolean'" binary="true" [inputId]="control.key"
       [formControlName]="control.key"></p-checkbox>
+    <label *ngIf="control.showLabel" [for]="control.key">{{ control.label }}</label>
   </div>
 
   <div *ngSwitchCase="'table'">
