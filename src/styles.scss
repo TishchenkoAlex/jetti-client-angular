@@ -490,6 +490,23 @@ body .jetti-form-tabs .p-tabpanels,
   background: #ffffff;
 }
 
+body .jetti-form-tabs .p-tabpanel {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+body .jetti-form-tabs j-control,
+body .jetti-form-tabs j-table-part-png,
+body .jetti-form-tabs p-toolbar,
+body .jetti-form-tabs p-table {
+  display: block;
+}
+
+body .jetti-form-tabs .p-tabpanel > j-control > .jetti-form-control-labeled {
+  margin-top: 0;
+}
+
 body .jetti-workspace-tabs .p-tab {
   gap: 5px;
   user-select: none;

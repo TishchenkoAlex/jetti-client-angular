@@ -163,7 +163,8 @@ export class AutocompleteComponent
     this.onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    if (isDisabled) this.suggest.disable();
+    if (isDisabled) this.suggest.disable({ emitEvent: false });
+    else this.suggest.enable({ emitEvent: false });
   }
 
   writeValue(obj: any): void {

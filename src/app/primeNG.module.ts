@@ -14,7 +14,7 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
-import { Textarea } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { MenuModule } from 'primeng/menu';
 import { PaginatorModule } from 'primeng/paginator';
 import { PanelModule } from 'primeng/panel';
@@ -63,7 +63,7 @@ import { TriStateCheckboxComponent } from './common/tri-state-checkbox/tri-state
     InputTextModule,
     // ChipsModule,
     SelectModule,
-    Textarea,
+    TextareaModule,
     // InputMaskModule,
     // PasswordModule,
     // ToggleButtonModule,

@@ -86,7 +86,7 @@
 
     <h1 *ngIf="!selectedSettings.IsDescriptionOptional" class="headerText">Description</h1>
     <h1 *ngIf="selectedSettings.IsDescriptionOptional" class="headerText">Description (optional)</h1>
-    <textarea styleClass="editInput" style="width: 100%;" [rows]="5" pInputTextarea autoResize="false"
+    <textarea styleClass="editInput" style="width: 100%;" [rows]="5" pTextarea [autoResize]="false"
       spellcheck="false" [(ngModel)]="selectedAttachment.description"></textarea>
 
     <!-- <div *ngIf="selectedSettings.Tags.length">

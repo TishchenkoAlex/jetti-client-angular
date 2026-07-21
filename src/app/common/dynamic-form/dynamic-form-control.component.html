@@ -40,7 +40,7 @@
 
   <div *ngSwitchCase="'textarea'" class="jetti-control-field"
     [class.jetti-float-label]="control.showLabel">
-    <textarea [required]="control.required" pInputTextarea [id]="control.key"
+    <textarea [required]="control.required" pTextarea [id]="control.key"
       [formControlName]="control.key" [readonly]="control.readOnly" (focus)="$event.target.select()"
       spellcheck="false" [ngStyle]="control.style">
     </textarea>
