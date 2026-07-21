@@ -6,9 +6,12 @@ import {
   BusinessProcessTransition,
   BusinessProcessVisualMapping
 } from '../models/business-process-template.models';
+import { BusinessProcessRouteGraphService } from './business-process-route-graph.service';
 
 @Injectable({ providedIn: 'root' })
 export class BusinessProcessRouteMapperService {
+  constructor(private readonly routeGraph: BusinessProcessRouteGraphService) {}
+
   toDraft(value: any): BusinessProcessTemplateDraft {
     const addressing = this.asArray(value.addressing);
     const assignmentByStep: { [stepKey: string]: any } = {};
@@ -26,7 +29,7 @@ export class BusinessProcessRouteMapperService {
     const steps = this.asArray(value.steps).map(item => this.mapStep(item, assignmentByStep[item.key]));
     const transitions = this.asArray(value.transitions).map(item => this.mapTransition(item));
 
-    return {
+    return this.routeGraph.normalize({
       id: value.id || undefined,
       code: String(value.code || '').trim(),
       description: value.description ? String(value.description) : undefined,
@@ -38,26 +41,27 @@ export class BusinessProcessRouteMapperService {
       parameters: this.parseJson(value.parameters, undefined),
       bpmnXml: value.bpmnXml || undefined,
       visualMapping: this.parseJson(value.visualMapping, undefined) as BusinessProcessVisualMapping
-    };
+    });
   }
 
   toFormPatch(template: BusinessProcessTemplate): any {
+    const normalized = this.routeGraph.normalize(template);
     return {
       id: template.id,
-      code: template.code,
-      description: template.description || '',
+      code: normalized.code,
+      description: normalized.description || '',
       active: template.active,
       version: template.version,
       status: template.status,
-      objectTypes: this.formatJson(template.objectTypes),
-      startMode: template.startMode,
-      startCondition: this.formatJson(template.startCondition),
-      steps: template.steps || [],
-      transitions: template.transitions || [],
-      parameters: this.formatJson(template.parameters),
+      objectTypes: this.formatJson(normalized.objectTypes),
+      startMode: normalized.startMode,
+      startCondition: this.formatJson(normalized.startCondition),
+      steps: normalized.steps,
+      transitions: normalized.transitions,
+      parameters: this.formatJson(normalized.parameters),
       bpmnXml: template.bpmnXml || '',
       visualMapping: this.formatJson(template.visualMapping),
-      addressing: (template.steps || [])
+      addressing: normalized.steps
         .filter(step => !!step.assignmentRule)
         .map(step => ({ stepKey: step.key, ...step.assignmentRule })),
       createdBy: template.createdBy || '',
@@ -88,6 +92,7 @@ export class BusinessProcessRouteMapperService {
 
   private mapTransition(value: any): BusinessProcessTransition {
     return this.compact({
+      key: value.key,
       from: value.from,
       on: value.on,
       to: value.to,

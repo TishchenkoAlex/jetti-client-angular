@@ -143,6 +143,11 @@
 
         </p-panel>
 
+        <p-panel *ngIf="type === 'BusinessProcess.Template'" [toggleable]="true"
+          [header]="'Validation result [' + form.status + ']'" [collapsed]="true" toggler="header">
+          <pre class="jetti-form-validation-json">{{ formValidationResult | json }}</pre>
+        </p-panel>
+
         <div *ngIf="!isHistory && type !== 'BusinessProcess.Template'">
           <p-panel *ngIf="type === 'Catalog.Operation' && (isFolder$ | async) === false" [toggleable]="true"
             header="Post script (management)" [collapsed]="true" (collapsedChange)="mp.collapse();"

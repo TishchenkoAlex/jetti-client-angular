@@ -8,6 +8,7 @@
     "build": "ng build --configuration production --aot && firebase deploy",
     "build-az": "ng build --configuration az",
     "build-arch": "ng build --configuration arch",
+    "test:business-process": "node tools/run-business-process-tests.mjs",
     "lint": "eslint \"src/**/*.{ts,html}\""
   },
   "private": true,

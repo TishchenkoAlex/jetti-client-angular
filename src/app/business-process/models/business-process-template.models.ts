@@ -19,6 +19,7 @@ export interface BusinessProcessStep {
 }
 
 export interface BusinessProcessTransition {
+  key: string;
   from: string;
   on: string;
   to: string;
@@ -26,9 +27,13 @@ export interface BusinessProcessTransition {
 }
 
 export interface BusinessProcessVisualMapping {
+  schemaVersion?: 1 | 2;
   notation?: 'BPMN' | 'CUSTOM_GRAPH';
+  routeHash?: string;
+  startEventId?: string;
   nodeMap?: { [stepKey: string]: string };
   edgeMap?: { [transitionKey: string]: string };
+  endNodeMap?: { [endState: string]: string };
 }
 
 export interface BusinessProcessTemplateDraft {

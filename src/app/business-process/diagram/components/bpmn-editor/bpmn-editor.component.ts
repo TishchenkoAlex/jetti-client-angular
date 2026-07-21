@@ -63,6 +63,10 @@ interface BpmnSelection {
   select(elements: BpmnElementLike[] | null): void;
 }
 
+interface BpmnElementRegistry {
+  get(id: string): BpmnElementLike | undefined;
+}
+
 interface BpmnModelerLike {
   importXML(xml: string): Promise<{ warnings?: unknown[] }>;
   saveXML(options: { format: boolean }): Promise<{ xml?: string }>;
@@ -132,10 +136,8 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
   private readonly commandStackChangedHandler = () => {
     this.syncCommandStackState();
     if (!this.isImporting && !this.readonly && !this.destroyed) {
-      if (!this.diagramDirty) {
-        this.diagramDirty = true;
-        this.ngZone.run(() => this.diagramChanged.emit());
-      }
+      this.diagramDirty = true;
+      this.ngZone.run(() => this.diagramChanged.emit());
       this.exportRequests$.next();
     }
   };
@@ -212,6 +214,20 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
   markDiagramSaved(xml = this.lastExportedXml): void {
     this.lastExportedXml = xml;
     this.diagramDirty = false;
+  }
+
+  selectElementById(id?: string): boolean {
+    const selection = this.modeler?.get<BpmnSelection>('selection');
+    if (!selection) return false;
+    if (!id) {
+      selection.select(null);
+      return true;
+    }
+
+    const element = this.modeler?.get<BpmnElementRegistry>('elementRegistry')?.get(id);
+    if (!element) return false;
+    selection.select([element]);
+    return true;
   }
 
   saveXml(): void {

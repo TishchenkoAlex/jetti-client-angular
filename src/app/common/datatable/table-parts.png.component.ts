@@ -4,6 +4,8 @@ import { BehaviorSubject, merge, Subscription } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 import { TableDynamicControl } from '../../common/dynamic-form/dynamic-form-base';
 import { cloneFormGroup, patchOptionsNoEvents } from '../../common/dynamic-form/dynamic-form.service';
+import { DynamicTableRefreshService } from '../../common/dynamic-form/dynamic-table-refresh.service';
+import { DynamicTableSelectionService } from '../../common/dynamic-form/dynamic-table-selection.service';
 import { ApiService } from '../../services/api.service';
 import { EditableColumn, Table } from 'primeng/table';
 import { DocService } from '../doc.service';
@@ -99,11 +101,14 @@ export class TablePartsComponent implements OnInit, OnDestroy {
 
   private _subscription$: Subscription = Subscription.EMPTY;
   private _valueChanges$: Subscription = Subscription.EMPTY;
+  private _selectionChanges$: Subscription = Subscription.EMPTY;
 
   constructor(
     private api: ApiService,
     private ds: DocService,
     private cd: ChangeDetectorRef,
+    private readonly tableRefresh: DynamicTableRefreshService,
+    private readonly tableSelection: DynamicTableSelectionService,
     filterService: FilterService
   ) {
     registerJettiTableFilters(filterService);
@@ -121,6 +126,20 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     this.dataSource = this.formGroup.getRawValue();
 
     this.recalcTotals();
+    this._valueChanges$ = this.tableRefresh.changes(this.formGroup).subscribe(() => {
+      this.dataSource = this.formGroup.getRawValue();
+      this.selection = [];
+      this.filteredValue = undefined;
+      this.recalcTotals();
+      this.cd.markForCheck();
+    });
+    this._selectionChanges$ = this.tableSelection.changes(this.formGroup).subscribe(event => {
+      if (event.source !== 'EXTERNAL') return;
+      const row = this.dataSource.find(item => event.identityField
+        && item[event.identityField] === event.identity);
+      this.selection = row ? [row] : [];
+      this.cd.markForCheck();
+    });
     this._subscription$ = merge(this.ds.save$, this.ds.delete$).pipe(
       filter(doc => doc.id === this.formGroup.root.value.id)).subscribe(doc => {
         this.dataSource = doc[this.control.key];
@@ -227,7 +246,12 @@ export class TablePartsComponent implements OnInit, OnDestroy {
     } else {
       this.lastSelectedIndex = event.data.index;
     }
+    this.tableSelection.selectFromTable(this.formGroup, event.data);
     this.recalcTotals()
+  }
+
+  onRowUnselect() {
+    if (!this.selection.length) this.tableSelection.selectFromTable(this.formGroup);
   }
 
   onEditComplete(event) { console.log('onEditComplete', event); this.recalcTotals(); }
@@ -327,6 +351,7 @@ export class TablePartsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._subscription$.unsubscribe();
     this._valueChanges$.unsubscribe();
+    this._selectionChanges$.unsubscribe();
   }
 
 }

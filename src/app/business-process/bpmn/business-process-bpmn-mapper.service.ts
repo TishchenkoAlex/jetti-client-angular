@@ -6,6 +6,7 @@ import {
   BusinessProcessVisualMapping
 } from '../models/business-process-template.models';
 import { DEFAULT_BPMN_XML } from './default-bpmn-xml';
+import { BusinessProcessRouteGraphService } from '../services/business-process-route-graph.service';
 
 export interface BusinessProcessBpmnRepresentation {
   xml: string;
@@ -35,6 +36,13 @@ interface DiagramFlow {
 
 @Injectable({ providedIn: 'root' })
 export class BusinessProcessBpmnMapperService {
+  private readonly bpmnNamespace = 'http://www.omg.org/spec/BPMN/20100524/MODEL';
+  private readonly bpmnDiNamespace = 'http://www.omg.org/spec/BPMN/20100524/DI';
+  private readonly dcNamespace = 'http://www.omg.org/spec/DD/20100524/DC';
+  private readonly diNamespace = 'http://www.omg.org/spec/DD/20100524/DI';
+
+  constructor(private readonly routeGraph: BusinessProcessRouteGraphService) {}
+
   toRepresentation(template: BusinessProcessTemplateDraft): BusinessProcessBpmnRepresentation {
     if (template.bpmnXml) {
       return {
@@ -46,28 +54,59 @@ export class BusinessProcessBpmnMapperService {
     if (!template.steps || !template.steps.length) {
       return {
         xml: DEFAULT_BPMN_XML,
-        visualMapping: { notation: 'BPMN', nodeMap: {}, edgeMap: {} }
+        visualMapping: {
+          schemaVersion: 2,
+          notation: 'BPMN',
+          routeHash: this.routeGraph.routeHash(template),
+          startEventId: 'StartEvent_1',
+          nodeMap: {},
+          edgeMap: {},
+          endNodeMap: {}
+        }
       };
     }
 
     return this.buildFromRoute(template);
   }
 
-  private buildFromRoute(template: BusinessProcessTemplateDraft): BusinessProcessBpmnRepresentation {
+  synchronizeFromRoute(
+    template: BusinessProcessTemplateDraft,
+    currentXml = '',
+    currentMapping?: BusinessProcessVisualMapping
+  ): BusinessProcessBpmnRepresentation {
+    const representation = this.buildFromRoute(this.routeGraph.normalize(template), currentMapping);
+    return {
+      ...representation,
+      xml: this.preserveDiagramGeometry(currentXml, representation.xml)
+    };
+  }
+
+  private buildFromRoute(
+    template: BusinessProcessTemplateDraft,
+    currentMapping?: BusinessProcessVisualMapping
+  ): BusinessProcessBpmnRepresentation {
     const usedIds: { [id: string]: boolean } = {};
+    const reservedIds = this.reservedMappingIds(currentMapping);
     const nodeMap: { [stepKey: string]: string } = {};
     const edgeMap: { [transitionKey: string]: string } = {};
+    const endNodeMap: { [endState: string]: string } = {};
     const nodes: DiagramNode[] = [];
 
     const start: DiagramNode = {
-      key: 'START', id: 'StartEvent_1', name: 'Start', tag: 'startEvent',
+      key: 'START',
+      id: this.mappedId(currentMapping?.startEventId, 'StartEvent_1', usedIds, reservedIds),
+      name: 'Start', tag: 'startEvent',
       x: 70, y: 172, width: 36, height: 36, timer: false
     };
-    usedIds[start.id] = true;
     nodes.push(start);
 
     template.steps.forEach((step, index) => {
-      const id = this.uniqueId('Step_' + this.safeId(step.key), usedIds);
+      const id = this.mappedId(
+        currentMapping?.nodeMap?.[step.key],
+        'Step_' + this.safeId(step.key),
+        usedIds,
+        reservedIds
+      );
       const node = this.stepNode(step, id, 180 + index * 190, 150);
       nodes.push(node);
       nodeMap[step.key] = id;
@@ -75,9 +114,14 @@ export class BusinessProcessBpmnMapperService {
 
     const terminalKeys = this.terminalKeys(template.transitions);
     terminalKeys.forEach((key, index) => {
-      nodes.push({
+      const node: DiagramNode = {
         key,
-        id: this.uniqueId('End_' + this.safeId(key), usedIds),
+        id: this.mappedId(
+          currentMapping?.endNodeMap?.[key],
+          'End_' + this.safeId(key),
+          usedIds,
+          reservedIds
+        ),
         name: this.terminalName(key),
         tag: 'endEvent',
         x: 190 + template.steps.length * 190,
@@ -85,7 +129,9 @@ export class BusinessProcessBpmnMapperService {
         width: 36,
         height: 36,
         timer: false
-      });
+      };
+      nodes.push(node);
+      endNodeMap[key] = node.id;
     });
 
     const nodeByKey: { [key: string]: DiagramNode } = {};
@@ -96,20 +142,40 @@ export class BusinessProcessBpmnMapperService {
     const startStepKey = parameters.startStepKey && nodeByKey[parameters.startStepKey]
       ? parameters.startStepKey
       : template.steps[0].key;
-    flows.push(this.flow('Flow_Start', undefined, start, nodeByKey[startStepKey]));
+    flows.push(this.flow(
+      this.uniqueId('Flow_Start', usedIds, reservedIds),
+      undefined,
+      start,
+      nodeByKey[startStepKey]
+    ));
 
     template.transitions.forEach((transition, index) => {
       const source = nodeByKey[transition.from];
       const target = nodeByKey[transition.to];
       if (!source || !target) return;
-      const id = this.uniqueId('Flow_' + (index + 1), usedIds);
+      const transitionKey = this.transitionKey(transition, index);
+      const legacyKey = transition.from + ':' + transition.on + ':' + transition.to + ':' + index;
+      const id = this.mappedId(
+        currentMapping?.edgeMap?.[transitionKey] || currentMapping?.edgeMap?.[legacyKey],
+        'Flow_' + (index + 1),
+        usedIds,
+        reservedIds
+      );
       flows.push(this.flow(id, transition.on, source, target));
-      edgeMap[this.transitionKey(transition, index)] = id;
+      edgeMap[transitionKey] = id;
     });
 
     return {
       xml: this.renderXml(template.code || 'Business process', nodes, flows),
-      visualMapping: { notation: 'BPMN', nodeMap, edgeMap }
+      visualMapping: {
+        schemaVersion: 2,
+        notation: 'BPMN',
+        routeHash: this.routeGraph.routeHash(template),
+        startEventId: start.id,
+        nodeMap,
+        edgeMap,
+        endNodeMap
+      }
     };
   }
 
@@ -201,19 +267,155 @@ export class BusinessProcessBpmnMapperService {
   }
 
   private transitionKey(transition: BusinessProcessTransition, index: number): string {
-    return transition.from + ':' + transition.on + ':' + transition.to + ':' + index;
+    return transition.key || transition.from + ':' + transition.on + ':' + transition.to + ':' + index;
   }
 
   private safeId(value: string): string {
-    return String(value || 'Step').replace(/[^a-zA-Z0-9_\-]/g, '_');
+    return String(value || 'Step').replace(/[^a-zA-Z0-9_-]/g, '_');
   }
 
-  private uniqueId(base: string, used: { [id: string]: boolean }): string {
+  private uniqueId(
+    base: string,
+    used: { [id: string]: boolean },
+    reserved: { [id: string]: boolean } = {}
+  ): string {
     let id = base || 'Element';
     let index = 2;
-    while (used[id]) id = base + '_' + index++;
+    while (used[id] || reserved[id]) id = base + '_' + index++;
     used[id] = true;
     return id;
+  }
+
+  private mappedId(
+    candidate: string | undefined,
+    fallback: string,
+    used: { [id: string]: boolean },
+    reserved: { [id: string]: boolean }
+  ): string {
+    const value = String(candidate || '').trim();
+    if (value && /^[A-Za-z_][A-Za-z0-9_.-]*$/.test(value) && !used[value]) {
+      used[value] = true;
+      return value;
+    }
+    return this.uniqueId(fallback, used, reserved);
+  }
+
+  private reservedMappingIds(mapping?: BusinessProcessVisualMapping): { [id: string]: boolean } {
+    const result: { [id: string]: boolean } = {};
+    const reserve = (value: unknown): void => {
+      const id = typeof value === 'string' ? value.trim() : '';
+      if (id && /^[A-Za-z_][A-Za-z0-9_.-]*$/.test(id)) result[id] = true;
+    };
+
+    reserve(mapping?.startEventId);
+    Object.keys(mapping?.nodeMap || {}).forEach(key => reserve(mapping?.nodeMap?.[key]));
+    Object.keys(mapping?.edgeMap || {}).forEach(key => reserve(mapping?.edgeMap?.[key]));
+    Object.keys(mapping?.endNodeMap || {}).forEach(key => reserve(mapping?.endNodeMap?.[key]));
+    return result;
+  }
+
+  private preserveDiagramGeometry(currentXml: string, generatedXml: string): string {
+    if (!currentXml || typeof DOMParser === 'undefined' || typeof XMLSerializer === 'undefined') {
+      return generatedXml;
+    }
+
+    try {
+      const parser = new DOMParser();
+      const currentDocument = parser.parseFromString(currentXml, 'application/xml');
+      const generatedDocument = parser.parseFromString(generatedXml, 'application/xml');
+      if (this.hasParserError(currentDocument) || this.hasParserError(generatedDocument)) return generatedXml;
+
+      const currentElements = this.semanticElementsById(currentDocument);
+      const generatedElements = this.semanticElementsById(generatedDocument);
+      const currentShapes = this.diagramElementsByBpmnId(currentDocument, 'BPMNShape');
+      const generatedShapes = this.diagramElementsByBpmnId(generatedDocument, 'BPMNShape');
+
+      Object.keys(generatedShapes).forEach(id => {
+        const currentShape = currentShapes[id];
+        const generatedShape = generatedShapes[id];
+        if (!currentShape || !generatedShape) return;
+
+        const currentBounds = this.firstChild(currentShape, this.dcNamespace, 'Bounds');
+        const generatedBounds = this.firstChild(generatedShape, this.dcNamespace, 'Bounds');
+        if (!currentBounds || !generatedBounds) return;
+
+        this.copyAttributes(currentBounds, generatedBounds, ['x', 'y']);
+        if (currentElements[id]?.localName === generatedElements[id]?.localName) {
+          this.copyAttributes(currentBounds, generatedBounds, ['width', 'height']);
+        }
+      });
+
+      const currentEdges = this.diagramElementsByBpmnId(currentDocument, 'BPMNEdge');
+      const generatedEdges = this.diagramElementsByBpmnId(generatedDocument, 'BPMNEdge');
+      Object.keys(generatedEdges).forEach(id => {
+        const currentFlow = currentElements[id];
+        const generatedFlow = generatedElements[id];
+        if (!currentFlow || !generatedFlow || currentFlow.localName !== 'sequenceFlow') return;
+        if (currentFlow.getAttribute('sourceRef') !== generatedFlow.getAttribute('sourceRef')
+          || currentFlow.getAttribute('targetRef') !== generatedFlow.getAttribute('targetRef')) return;
+
+        const currentEdge = currentEdges[id];
+        const generatedEdge = generatedEdges[id];
+        if (!currentEdge || !generatedEdge) return;
+        this.copyWaypoints(currentEdge, generatedEdge, generatedDocument);
+      });
+
+      return new XMLSerializer().serializeToString(generatedDocument);
+    } catch {
+      return generatedXml;
+    }
+  }
+
+  private semanticElementsById(document: Document): { [id: string]: Element } {
+    const result: { [id: string]: Element } = {};
+    const elements = document.getElementsByTagNameNS(this.bpmnNamespace, '*');
+    for (let index = 0; index < elements.length; index++) {
+      const id = elements.item(index)?.getAttribute('id');
+      if (id) result[id] = elements.item(index) as Element;
+    }
+    return result;
+  }
+
+  private diagramElementsByBpmnId(document: Document, localName: string): { [id: string]: Element } {
+    const result: { [id: string]: Element } = {};
+    const elements = document.getElementsByTagNameNS(this.bpmnDiNamespace, localName);
+    for (let index = 0; index < elements.length; index++) {
+      const element = elements.item(index);
+      const id = element?.getAttribute('bpmnElement');
+      if (id && element) result[id] = element;
+    }
+    return result;
+  }
+
+  private firstChild(parent: Element, namespace: string, localName: string): Element | undefined {
+    const elements = parent.getElementsByTagNameNS(namespace, localName);
+    return elements.length ? elements.item(0) as Element : undefined;
+  }
+
+  private copyAttributes(source: Element, target: Element, names: string[]): void {
+    names.forEach(name => {
+      const value = source.getAttribute(name);
+      if (value !== null) target.setAttribute(name, value);
+    });
+  }
+
+  private copyWaypoints(currentEdge: Element, generatedEdge: Element, document: Document): void {
+    const currentWaypoints = currentEdge.getElementsByTagNameNS(this.diNamespace, 'waypoint');
+    if (!currentWaypoints.length) return;
+
+    Array.from(generatedEdge.getElementsByTagNameNS(this.diNamespace, 'waypoint'))
+      .forEach(waypoint => generatedEdge.removeChild(waypoint));
+    for (let index = 0; index < currentWaypoints.length; index++) {
+      const currentWaypoint = currentWaypoints.item(index);
+      if (!currentWaypoint) continue;
+      const waypoint = document.createElementNS(this.diNamespace, 'di:waypoint');
+      this.copyAttributes(currentWaypoint, waypoint, ['x', 'y']);
+      generatedEdge.appendChild(waypoint);
+    }
+  }
+
+  private hasParserError(document: Document): boolean {
+    return document.getElementsByTagName('parsererror').length > 0;
   }
 
   private escapeXml(value: string): string {

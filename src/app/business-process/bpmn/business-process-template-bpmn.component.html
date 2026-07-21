@@ -6,7 +6,7 @@
   <div *ngIf="loading" class="bp-template-bpmn-status">Loading process map...</div>
   <div *ngIf="error" class="bp-template-bpmn-error">{{error}}</div>
   <div *ngIf="mappingInvalidated" class="bp-template-bpmn-warning" role="status">
-    Visual mapping was cleared because the route or diagram changed.
+    Visual mapping is out of date because the route or diagram changed.
   </div>
 
   <bp-bpmn-editor
@@ -15,6 +15,19 @@
     [readonly]="readonly"
     (diagramChanged)="onDiagramChanged()"
     (xmlChange)="onXmlChange($event)"
+    (elementSelected)="onDiagramElementSelected($event)"
     (diagramError)="onError($event)">
   </bp-bpmn-editor>
+
+  <details *ngIf="routePreview" class="bp-template-bpmn-preview" [open]="!routePreview.valid">
+    <summary>
+      BPMN route preview [{{routePreview.valid ? 'VALID' : 'INVALID'}}]
+      - {{routePreview.statistics.steps}} steps,
+      {{routePreview.statistics.sequenceFlows}} flows,
+      {{routePreview.diagnostics.length}} diagnostics
+    </summary>
+    <pre>{{routePreview | json}}</pre>
+    <div class="bp-template-bpmn-preview-subtitle">Synchronization coordinator</div>
+    <pre>{{synchronizationState | json}}</pre>
+  </details>
 </div>

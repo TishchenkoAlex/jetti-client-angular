@@ -21,3 +21,34 @@
   border-radius: 4px;
   background: #fcf8e3;
 }
+
+.bp-template-bpmn-preview {
+  margin-top: 10px;
+  border: 1px solid #d5d9dd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.bp-template-bpmn-preview summary {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #f5f6f7;
+}
+
+.bp-template-bpmn-preview pre {
+  max-height: 360px;
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  font: 12px/1.45 Consolas, "Courier New", monospace;
+  white-space: pre-wrap;
+}
+
+.bp-template-bpmn-preview-subtitle {
+  padding: 8px 12px;
+  font-weight: 600;
+  border-top: 1px solid #d5d9dd;
+  border-bottom: 1px solid #d5d9dd;
+  background: #f5f6f7;
+}

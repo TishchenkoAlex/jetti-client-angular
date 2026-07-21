@@ -12,7 +12,8 @@
 </p-toolbar>
 
 <p-table #tablePart [columns]="columns" [value]="dataSource$ | async" selectionMode="multiple" [metaKeySelection]="true"
-  (onRowSelect)="onRowSelect($event)" (onFilter)="onFilter($event)" [(selection)]="selection" dataKey="index"
+  (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect()"
+  (onFilter)="onFilter($event)" [(selection)]="selection" dataKey="index"
   [scrollable]="true" (onEditComplete)="onEditComplete($event)" (onEditCancel)="onEditCancel($event)"
   (onEditInit)="onEditInit($event)" scrollHeight="37vh" [reorderableColumns]="true" [resizableColumns]="true"
   columnResizeMode="expand" [customSort]="true" (sortFunction)="customSort($event)">

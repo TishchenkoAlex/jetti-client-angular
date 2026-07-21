@@ -806,6 +806,20 @@ body .jetti-suggest-dialog .jetti-suggest-content > div {
   min-width: 0;
 }
 
+body .jetti-form-validation-json {
+  max-height: 360px;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: auto;
+  border: 1px solid var(--jetti-border-color);
+  border-radius: var(--jetti-border-radius);
+  background: var(--surface-ground);
+  color: var(--text-color);
+  font: 12px/1.45 Consolas, "Courier New", monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 body .jetti-hierarchy-tree-table .jetti-tree-description-cell,
 body .jetti-hierarchy-tree-table .jetti-tree-node-icons {
   display: inline-flex;

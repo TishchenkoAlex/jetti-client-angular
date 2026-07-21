@@ -1,5 +1,6 @@
 import { _baseDocFormComponent } from './_base.form.component';
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoadingService } from '../loading.service';
 import { AuthService } from '../../auth/auth.service';
@@ -10,6 +11,7 @@ import { patchOptionsNoEvents } from '../dynamic-form/dynamic-form.service';
 import { BusinessProcessRouteMapperService } from '../../business-process/services/business-process-route-mapper.service';
 import { BusinessProcessTemplateApiService } from '../../business-process/services/business-process-template-api.service';
 import { BusinessProcessTemplateBpmnComponent } from '../../business-process/bpmn/business-process-template-bpmn.component';
+import { BusinessProcessRouteGraphService } from '../../business-process/services/business-process-route-graph.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,16 +27,47 @@ export class BaseDocFormComponent extends _baseDocFormComponent implements OnIni
     public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService,
     public lds: LoadingService, public cd: ChangeDetectorRef,
     private readonly templateApi: BusinessProcessTemplateApiService,
-    private readonly routeMapper: BusinessProcessRouteMapperService) {
+    private readonly routeMapper: BusinessProcessRouteMapperService,
+    private readonly routeGraph: BusinessProcessRouteGraphService) {
     super(router, route, auth, ds, tabStore, dss, cd);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    if (this.type === 'BusinessProcess.Template' && this.form.get('status').value !== 'DRAFT') {
-      this.readonly = true;
-      this.form.disable(patchOptionsNoEvents);
+    if (this.type === 'BusinessProcess.Template') {
+      this.form.addValidators(() => {
+        const issues = this.businessProcessValidation().issues
+          .filter(issue => issue.severity === 'error');
+        return issues.length ? { businessProcess: issues } : null;
+      });
+      this.form.updateValueAndValidity(patchOptionsNoEvents);
+
+      if (this.form.get('status').value !== 'DRAFT') {
+        this.readonly = true;
+        this.form.disable(patchOptionsNoEvents);
+      }
     }
+  }
+
+  get formValidationResult(): Record<string, unknown> {
+    const errors = this.collectValidationErrors(this.form);
+    const result: Record<string, unknown> = {
+      status: this.form?.status || 'UNKNOWN',
+      valid: !!this.form?.valid,
+      pending: !!this.form?.pending,
+      errors: errors || {}
+    };
+
+    if (this.type === 'BusinessProcess.Template' && this.form) {
+      const domain = this.businessProcessValidation();
+      result['businessProcess'] = {
+        valid: domain.valid,
+        routeHash: domain.routeHash,
+        issues: domain.issues
+      };
+    }
+
+    return result;
   }
 
   save() {
@@ -83,6 +116,31 @@ export class BaseDocFormComponent extends _baseDocFormComponent implements OnIni
       if (error.error.error) return error.error.error;
     }
     return error && error.message ? error.message : 'Process template could not be saved';
+  }
+
+  private collectValidationErrors(control: AbstractControl | null): Record<string, unknown> | null {
+    if (!control) return null;
+
+    const result: Record<string, unknown> = {};
+    if (control.errors) result['$self'] = control.errors;
+
+    if (control instanceof UntypedFormGroup) {
+      Object.keys(control.controls).forEach(key => {
+        const childErrors = this.collectValidationErrors(control.controls[key]);
+        if (childErrors) result[key] = childErrors;
+      });
+    } else if (control instanceof UntypedFormArray) {
+      control.controls.forEach((child, index) => {
+        const childErrors = this.collectValidationErrors(child);
+        if (childErrors) result[index] = childErrors;
+      });
+    }
+
+    return Object.keys(result).length ? result : null;
+  }
+
+  private businessProcessValidation() {
+    return this.routeGraph.analyze(this.routeMapper.toDraft(this.form.getRawValue()));
   }
 
   ngOnDestroy() {
