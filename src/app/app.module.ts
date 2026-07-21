@@ -19,6 +19,7 @@ import { AppMenuComponent, AppSubMenuComponent } from './app.menu.component';
 import { RoutingModule } from './app.routing.module';
 import { AppTopBarComponent } from './app.topbar.component';
 import { AppProfileComponent } from './auth/app.profile.component';
+import { AuthCallbackComponent } from './auth/auth-callback.component';
 import { AuthService } from './auth/auth.service';
 import { JETTI_PRESET } from './jetti.preset';
 import { MSAL_INSTANCE } from './auth/msal-instance';
@@ -42,6 +43,7 @@ export function msalInstanceFactory(): IPublicClientApplication {
     AppSubMenuComponent,
     AppTopBarComponent,
     AppProfileComponent,
+    AuthCallbackComponent,
   ],
   imports: [
     BrowserModule,

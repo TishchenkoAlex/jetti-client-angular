@@ -3,6 +3,7 @@ import { Injectable, NgModule } from '@angular/core';
 import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { environment } from '../environments/environment';
 import { AuthGuardService } from './auth/auth.guard.service';
+import { AuthCallbackComponent } from './auth/auth-callback.component';
 import { DynamicFormService } from './common/dynamic-form/dynamic-form.service';
 import { TabControllerComponent } from './common/tabcontroller/tabcontroller.component';
 import { TabsStore } from './common/tabcontroller/tabs.store';
@@ -60,6 +61,7 @@ const developmentRoutes: Routes = environment.production ? [] : [
 
 export const routes: Routes = [
   ...developmentRoutes,
+  { path: 'auth-callback-v2', component: AuthCallbackComponent },
   { path: ':type/:id', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },
   { path: ':type', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },
   { path: ':type/used/:used', component: TabControllerComponent, resolve: { detail: TabResolver }, canActivate: [AuthGuardService] },
