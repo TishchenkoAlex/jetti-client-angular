@@ -445,7 +445,7 @@ export class SuggestDialogHierarchyComponent implements OnInit, OnDestroy {
         "Element is archived",
         `Selected element "${sel.description}" is archived and can't be used`
       );
-    const selection: ISuggest = {
+    const selection: ISuggest & {archived?: boolean} = {
       id: sel.id,
       type: sel.type,
       code: sel.code,

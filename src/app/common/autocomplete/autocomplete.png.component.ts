@@ -270,7 +270,7 @@ export class AutocompleteComponent
     console.log("Clicked folder:", data);
   }
 
-  searchComplete(row: ISuggest) {
+  searchComplete(row: ISuggest & { archived?: boolean }) {
     console.debug("searchComplete", row);
     if (row && row.archived) {
       this.handleReset(undefined);

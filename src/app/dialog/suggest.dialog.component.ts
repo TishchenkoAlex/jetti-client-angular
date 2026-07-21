@@ -256,7 +256,7 @@ export class SuggestDialogComponent implements OnInit, OnDestroy {
             `Selected element "${row.description}" is archived and can't be used`
           );
 
-    const selection: ISuggest = {
+    const selection: ISuggest & { archived?: boolean } = {
       id: row.id,
       type: row.type,
       code: row.code,
