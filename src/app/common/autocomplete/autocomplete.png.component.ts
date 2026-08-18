@@ -238,7 +238,9 @@ export class AutocompleteComponent
     this.router.navigate([this.value.type || this.type, this.value.id]);
   handleSearch = async (event: Event) => {
     // this.useHierarchyList = !this.isTypeValue && this.hierarchy === 'folders';
-    this.useHierarchyList = !this.isTypeValue && !Type.isDocument(this.type);
+    this.useHierarchyList = !this.isTypeValue
+      && !Type.isDocument(this.type)
+      && !this.type.startsWith('BusinessProcess.');
     // if (this.useHierarchyList && this.value.type && this.typeBefore !== this.value.type) {
     //   this.api.getDocPropValuesByType(this.value.type, ['hierarchy'])
     //     .then(PropValues => {

@@ -444,7 +444,10 @@ export class BusinessProcessBpmnParserService {
       ...(existing || {} as BusinessProcessStep),
       key,
       title: node.element.getAttribute('name') || existing?.title || key,
-      type: node.stepType || existing?.type || 'AUTO'
+      type: node.stepType || existing?.type || 'AUTO',
+      rules: existing?.rules || [],
+      decisions: existing?.decisions || [],
+      completionPolicy: existing?.completionPolicy || 'ANY'
     };
   }
 

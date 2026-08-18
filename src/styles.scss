@@ -837,6 +837,12 @@ body .jetti-form-validation-json {
   overflow-wrap: anywhere;
 }
 
+body .jetti-form-validation-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
 body .jetti-hierarchy-tree-table .jetti-tree-description-cell,
 body .jetti-hierarchy-tree-table .jetti-tree-node-icons {
   display: inline-flex;

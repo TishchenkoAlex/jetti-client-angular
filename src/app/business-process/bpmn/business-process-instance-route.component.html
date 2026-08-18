@@ -1,0 +1,20 @@
+<div class="bp-instance-route">
+  <div *ngIf="!form.get('templateId')?.value" class="bp-instance-route__hint">
+    Select a process template to preview its route.
+  </div>
+  <div *ngIf="loading" class="bp-instance-route__status">Loading process route...</div>
+  <div *ngIf="error" class="bp-instance-route__error">{{error}}</div>
+
+  <div *ngIf="currentStepTitles.length" class="bp-instance-route__current" role="status">
+    <strong>Current task:</strong>
+    <span *ngFor="let title of currentStepTitles">{{title}}</span>
+  </div>
+
+  <bp-bpmn-editor
+    *ngIf="xml && !loading"
+    [xml]="xml"
+    [readonly]="true"
+    [compact]="true"
+    [highlightedElementIds]="highlightedElementIds">
+  </bp-bpmn-editor>
+</div>

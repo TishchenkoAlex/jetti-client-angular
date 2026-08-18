@@ -4,15 +4,25 @@ export type BusinessProcessStartMode = 'MANUAL' | 'ON_SAVE' | 'ON_POST' | 'ON_ST
 
 export type BusinessProcessStepType = 'USER_TASK' | 'SYSTEM_TASK' | 'TIMER' | 'AUTO';
 
+export interface BusinessProcessRuleBinding {
+  rule: string;
+  order: number;
+  settings?: Record<string, unknown>;
+}
+
+export interface BusinessProcessDecision {
+  key: string;
+  title: string;
+  commentRequired?: boolean;
+}
+
 export interface BusinessProcessStep {
   key: string;
   title: string;
   type: BusinessProcessStepType;
-  assignmentRule?: any;
-  dueRule?: any;
-  penaltyRule?: any;
-  waitUntilRule?: any;
-  autoCompleteCondition?: any;
+  rules: BusinessProcessRuleBinding[];
+  decisions: BusinessProcessDecision[];
+  completionPolicy: 'ANY' | 'ALL';
   allowRedirect?: boolean;
   allowDelegate?: boolean;
   rejectPolicy?: string;
@@ -42,6 +52,7 @@ export interface BusinessProcessTemplateDraft {
   description?: string;
   objectTypes: string[];
   startMode: BusinessProcessStartMode;
+  rules: BusinessProcessRuleBinding[];
   startCondition?: any;
   steps: BusinessProcessStep[];
   transitions: BusinessProcessTransition[];

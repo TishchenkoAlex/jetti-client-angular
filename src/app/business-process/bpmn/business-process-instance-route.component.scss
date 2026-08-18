@@ -1,0 +1,26 @@
+.bp-instance-route__hint,
+.bp-instance-route__status {
+  padding: 12px;
+  color: #555;
+}
+
+.bp-instance-route__error {
+  padding: 12px;
+  color: #a94442;
+}
+
+.bp-instance-route__current {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.bp-instance-route__current span {
+  padding: 3px 9px;
+  color: #7a4b00;
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  background: #fff3cd;
+}

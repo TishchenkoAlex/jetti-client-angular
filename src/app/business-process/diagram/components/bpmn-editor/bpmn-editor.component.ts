@@ -7,6 +7,7 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
+  HostBinding,
   Input,
   NgZone,
   OnChanges,
@@ -45,6 +46,8 @@ interface BpmnEventBus {
 interface BpmnCanvas {
   zoom(): number;
   zoom(value: number | 'fit-viewport', center?: 'auto'): number;
+  addMarker(elementId: string, marker: string): void;
+  removeMarker(elementId: string, marker: string): void;
 }
 
 interface BpmnCommandStack {
@@ -95,6 +98,11 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
 
   @Input() xml = '';
   @Input() readonly = false;
+  @Input() compact = false;
+  @Input() highlightedElementIds: string[] = [];
+
+  @HostBinding('class.bp-bpmn-editor-host--compact')
+  get compactHost(): boolean { return this.compact; }
 
   @Output() readonly xmlChange = new EventEmitter<string>();
   @Output() readonly diagramChanged = new EventEmitter<void>();
@@ -118,6 +126,7 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
   private pendingImports = 0;
   private diagramDirty = false;
   private destroyed = false;
+  private appliedHighlightIds = new Set<string>();
 
   private readonly selectionChangedHandler = (event: BpmnSelectionChangedEvent) => {
     const selectedElement = event.newSelection?.[0];
@@ -170,6 +179,7 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
     }
 
     const xmlChange = changes['xml'];
+    if (changes['highlightedElementIds'] && this.modeler) this.syncHighlightMarkers();
     if (!xmlChange || xmlChange.firstChange || !this.modeler) return;
 
     const nextXml = xmlChange.currentValue as string;
@@ -294,6 +304,7 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
       this.diagramDirty = false;
       this.clearSelection();
       this.fitViewport();
+      this.syncHighlightMarkers();
       this.syncCommandStackState();
       this.ngZone.run(() => {
         this.importCompleted.emit({ warnings: result.warnings || [] });
@@ -370,6 +381,22 @@ export class BpmnEditorComponent implements AfterViewInit, OnChanges {
 
   private clearSelection(): void {
     this.modeler?.get<BpmnSelection>('selection')?.select(null);
+  }
+
+  private syncHighlightMarkers(): void {
+    const canvas = this.modeler?.get<BpmnCanvas>('canvas');
+    const registry = this.modeler?.get<BpmnElementRegistry>('elementRegistry');
+    if (!canvas || !registry) return;
+
+    this.appliedHighlightIds.forEach(id => {
+      if (registry.get(id)) canvas.removeMarker(id, 'bp-current-task');
+    });
+    this.appliedHighlightIds.clear();
+    (this.highlightedElementIds || []).filter(id => !!id).forEach(id => {
+      if (!registry.get(id)) return;
+      canvas.addMarker(id, 'bp-current-task');
+      this.appliedHighlightIds.add(id);
+    });
   }
 
   private syncCommandStackState(): void {

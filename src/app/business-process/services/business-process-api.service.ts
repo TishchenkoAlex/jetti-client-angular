@@ -6,6 +6,8 @@ import { environment } from '../../../environments/environment';
 import {
   BusinessProcessEvent,
   BusinessProcessInstance,
+  BusinessProcessInstanceDetails,
+  BusinessProcessStartResult,
   BusinessProcessTask,
   BusinessProcessTaskActionResult,
   MyTasksQuery,
@@ -33,12 +35,12 @@ export class BusinessProcessApiService {
     );
   }
 
-  startInstance(body: StartBusinessProcessRequest): Observable<BusinessProcessInstance> {
-    return this.http.post<BusinessProcessInstance>(this.buildUrl('/instances/start'), body);
+  startInstance(body: StartBusinessProcessRequest): Observable<BusinessProcessStartResult> {
+    return this.http.post<BusinessProcessStartResult>(this.buildUrl('/instances/start'), body);
   }
 
-  getInstance(instanceId: string): Observable<BusinessProcessInstance> {
-    return this.http.get<BusinessProcessInstance>(
+  getInstance(instanceId: string): Observable<BusinessProcessInstanceDetails> {
+    return this.http.get<BusinessProcessInstanceDetails>(
       this.buildUrl('/instances/' + encodeURIComponent(instanceId))
     );
   }

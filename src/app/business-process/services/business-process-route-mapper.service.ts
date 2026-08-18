@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
+  BusinessProcessDecision,
+  BusinessProcessRuleBinding,
   BusinessProcessStep,
   BusinessProcessTemplate,
   BusinessProcessTemplateDraft,
@@ -13,28 +15,22 @@ export class BusinessProcessRouteMapperService {
   constructor(private readonly routeGraph: BusinessProcessRouteGraphService) {}
 
   toDraft(value: any): BusinessProcessTemplateDraft {
-    const addressing = this.asArray(value.addressing);
-    const assignmentByStep: { [stepKey: string]: any } = {};
-
-    addressing.forEach(item => {
-      if (!item || !item.stepKey) return;
-      assignmentByStep[item.stepKey] = this.compact({
-        type: item.type,
-        userId: item.userId,
-        role: item.role,
-        field: item.field
-      });
-    });
-
-    const steps = this.asArray(value.steps).map(item => this.mapStep(item, assignmentByStep[item.key]));
+    const stepRules = this.asArray(value.stepRules);
+    const stepDecisions = this.asArray(value.stepDecisions);
+    const steps = this.asArray(value.steps).map(item => this.mapStep(
+      item,
+      stepRules.filter(rule => rule?.stepKey === item?.key),
+      stepDecisions.filter(decision => decision?.stepKey === item?.key)
+    ));
     const transitions = this.asArray(value.transitions).map(item => this.mapTransition(item));
 
     return this.routeGraph.normalize({
       id: value.id || undefined,
       code: String(value.code || '').trim(),
       description: value.description ? String(value.description) : undefined,
-      objectTypes: this.asStringArray(value.objectTypes),
+      objectTypes: this.asObjectTypeArray(value.objectTypes),
       startMode: value.startMode || 'MANUAL',
+      rules: this.asArray(value.rules).map(item => this.mapRuleBinding(item)),
       startCondition: this.parseJson(value.startCondition, undefined),
       steps,
       transitions,
@@ -53,17 +49,29 @@ export class BusinessProcessRouteMapperService {
       active: template.active,
       version: template.version,
       status: template.status,
-      objectTypes: this.formatJson(normalized.objectTypes),
+      objectTypes: normalized.objectTypes.map(objectType => ({ objectType })),
       startMode: normalized.startMode,
+      rules: normalized.rules.map(rule => this.ruleBindingToForm(rule)),
       startCondition: this.formatJson(normalized.startCondition),
-      steps: normalized.steps,
-      transitions: normalized.transitions,
+      steps: normalized.steps.map(step => {
+        const { rules, decisions, ...fields } = step;
+        return fields;
+      }),
+      stepRules: normalized.steps.reduce((rows, step) => [
+        ...rows,
+        ...step.rules.map(rule => ({ stepKey: step.key, ...this.ruleBindingToForm(rule) }))
+      ], [] as any[]),
+      stepDecisions: normalized.steps.reduce((rows, step) => [
+        ...rows,
+        ...step.decisions.map(decision => ({ stepKey: step.key, ...decision }))
+      ], [] as any[]),
+      transitions: normalized.transitions.map(transition => ({
+        ...transition,
+        condition: this.formatJson(transition.condition)
+      })),
       parameters: this.formatJson(normalized.parameters),
       bpmnXml: template.bpmnXml || '',
       visualMapping: this.formatJson(template.visualMapping),
-      addressing: normalized.steps
-        .filter(step => !!step.assignmentRule)
-        .map(step => ({ stepKey: step.key, ...step.assignmentRule })),
       createdBy: template.createdBy || '',
       activatedAt: template.activatedAt || null,
       archivedAt: template.archivedAt || null,
@@ -74,20 +82,41 @@ export class BusinessProcessRouteMapperService {
     };
   }
 
-  private mapStep(value: any, addressing: any): BusinessProcessStep {
+  private mapStep(value: any, rules: any[], decisions: any[]): BusinessProcessStep {
     return this.compact({
       key: value.key,
       title: value.title,
       type: value.type,
-      assignmentRule: addressing || value.assignmentRule,
-      dueRule: this.parseJson(value.dueRule, undefined),
-      penaltyRule: this.parseJson(value.penaltyRule, undefined),
-      waitUntilRule: this.parseJson(value.waitUntilRule, undefined),
-      autoCompleteCondition: this.parseJson(value.autoCompleteCondition, undefined),
+      rules: rules.map(item => this.mapRuleBinding(item)),
+      decisions: decisions.map(item => this.mapDecision(item)),
+      completionPolicy: value.completionPolicy || 'ANY',
       allowRedirect: value.allowRedirect,
       allowDelegate: value.allowDelegate,
       rejectPolicy: value.rejectPolicy
     }) as BusinessProcessStep;
+  }
+
+  private mapRuleBinding(value: any): BusinessProcessRuleBinding {
+    return this.compact({
+      rule: this.referenceId(value?.rule),
+      order: value?.order === undefined || value?.order === null ? 0 : Number(value.order),
+      settings: this.parseJson(value?.settings, undefined)
+    }) as BusinessProcessRuleBinding;
+  }
+
+  private ruleBindingToForm(value: BusinessProcessRuleBinding): any {
+    return {
+      ...value,
+      settings: this.formatJson(value.settings)
+    };
+  }
+
+  private mapDecision(value: any): BusinessProcessDecision {
+    return {
+      key: String(value?.key || '').trim(),
+      title: String(value?.title || '').trim(),
+      commentRequired: value?.commentRequired === true
+    };
   }
 
   private mapTransition(value: any): BusinessProcessTransition {
@@ -105,8 +134,22 @@ export class BusinessProcessRouteMapperService {
     return Array.isArray(parsed) ? parsed : [];
   }
 
-  private asStringArray(value: any): string[] {
-    return this.asArray(value).map(item => String(item).trim()).filter(item => !!item);
+  private asObjectTypeArray(value: any): string[] {
+    return this.asArray(value).map(item => {
+      const selected = item && typeof item === 'object' && !Array.isArray(item)
+        ? item.objectType
+        : item;
+      if (typeof selected === 'string') return selected.trim();
+      if (selected && typeof selected === 'object' && typeof selected.id === 'string') {
+        return selected.id.trim();
+      }
+      return '';
+    }).filter(item => !!item);
+  }
+
+  private referenceId(value: any): string {
+    if (typeof value === 'string') return value.trim();
+    return value && typeof value.id === 'string' ? value.id.trim() : '';
   }
 
   private parseJson(value: any, fallback: any): any {

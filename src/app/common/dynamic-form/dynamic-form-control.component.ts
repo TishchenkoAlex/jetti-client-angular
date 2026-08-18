@@ -21,7 +21,7 @@ import { getFormGroup } from "./dynamic-form.service";
   templateUrl: "dynamic-form-control.component.html",
 })
 export class DynamicFormControlComponent implements OnInit, OnDestroy {
-  readonly scriptEditorOptions = { language: 'javascript', theme: 'vs' };
+  scriptEditorOptions = { language: 'javascript', theme: 'vs' };
 
   @Input() control: FormControlInfo;
   @Input() form: UntypedFormGroup;
@@ -134,6 +134,10 @@ export class DynamicFormControlComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    if (this.control.type === 'json') {
+      this.scriptEditorOptions = { ...this.scriptEditorOptions, language: 'json' };
+    }
+
     this.dateTimeValue = this.formControl.value;
 
     this.valueChanges$ = this.formControl.valueChanges.subscribe(

@@ -12,6 +12,7 @@ import { BusinessProcessRouteMapperService } from '../../business-process/servic
 import { BusinessProcessTemplateApiService } from '../../business-process/services/business-process-template-api.service';
 import { BusinessProcessTemplateBpmnComponent } from '../../business-process/bpmn/business-process-template-bpmn.component';
 import { BusinessProcessRouteGraphService } from '../../business-process/services/business-process-route-graph.service';
+import { BusinessProcessApiService } from '../../business-process/services/business-process-api.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +28,7 @@ export class BaseDocFormComponent extends _baseDocFormComponent implements OnIni
     public ds: DocService, public tabStore: TabsStore, public dss: DynamicFormService,
     public lds: LoadingService, public cd: ChangeDetectorRef,
     private readonly templateApi: BusinessProcessTemplateApiService,
+    private readonly businessProcessApi: BusinessProcessApiService,
     private readonly routeMapper: BusinessProcessRouteMapperService,
     private readonly routeGraph: BusinessProcessRouteGraphService) {
     super(router, route, auth, ds, tabStore, dss, cd);
@@ -46,6 +48,11 @@ export class BaseDocFormComponent extends _baseDocFormComponent implements OnIni
         this.readonly = true;
         this.form.disable(patchOptionsNoEvents);
       }
+    }
+
+    if (this.type === 'BusinessProcess.Instance' && !this.isNew) {
+      this.readonly = true;
+      this.form.disable(patchOptionsNoEvents);
     }
   }
 
@@ -70,7 +77,20 @@ export class BaseDocFormComponent extends _baseDocFormComponent implements OnIni
     return result;
   }
 
+  async copyValidationResult(): Promise<void> {
+    try {
+      await this.ds.copyToClipboard(JSON.stringify(this.formValidationResult, null, 2));
+      this.ds.openSnackBar('success', 'Validation result', 'Copied to clipboard');
+    } catch (error) {
+      this.ds.openSnackBar('error', 'Validation result', 'Could not copy to clipboard');
+    }
+  }
+
   save() {
+    if (this.type === 'BusinessProcess.Instance') {
+      this.startBusinessProcess(false);
+      return;
+    }
     if (this.type !== 'BusinessProcess.Template') {
       super.save();
       return;
@@ -80,6 +100,73 @@ export class BaseDocFormComponent extends _baseDocFormComponent implements OnIni
 
   saveTemplateAndClose() {
     this.saveBusinessProcessTemplate(true);
+  }
+
+  postClose() {
+    if (this.type === 'BusinessProcess.Instance') {
+      this.startBusinessProcess(true);
+      return;
+    }
+    super.postClose();
+  }
+
+  private startBusinessProcess(close: boolean): void {
+    if (!this.isNew) return;
+    this.beforeSave();
+    const value = this.form.getRawValue();
+    const template = value.templateId || {};
+    const templateCode = String(template.code || value.templateCode || '').trim();
+    const objectType = String(value.objectType || '').trim();
+    const objectId = String(value.objectId || '').trim();
+
+    if (!templateCode || !objectType || !objectId) {
+      this.form.markAllAsTouched();
+      this.ds.openSnackBar('error', 'Process start', 'Template, object type and object are required');
+      return;
+    }
+
+    this.businessProcessApi.startInstance({
+      templateCode,
+      objectType,
+      objectId,
+      context: this.parseJsonValue(value.context)
+    }).subscribe(result => {
+      const instance = result.instance;
+      this.form.patchValue({
+        ...instance,
+        templateId: template,
+        timestamp: instance.updatedAt || new Date(),
+        context: instance.context ? JSON.stringify(instance.context, null, 2) : ''
+      }, patchOptionsNoEvents);
+      this.form.markAsPristine();
+      this._form$.next(this.form);
+      this.cd.markForCheck();
+      this.ds.openSnackBar(
+        'success',
+        instance.templateCode || templateCode,
+        result.alreadyRunning ? 'Process is already running' : 'Process started'
+      );
+
+      if (close) {
+        this.close();
+      } else {
+        this.router.navigate([this.type, instance.id], { replaceUrl: true });
+      }
+    }, error => {
+      this.ds.openSnackBar('error', 'Process start', this.templateErrorMessage(error));
+    });
+  }
+
+  private parseJsonValue(value: unknown): Record<string, unknown> {
+    if (!value) return {};
+    if (typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>;
+    if (typeof value !== 'string') return {};
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch (error) {
+      return {};
+    }
   }
 
   private saveBusinessProcessTemplate(close: boolean) {

@@ -8,7 +8,8 @@
           <p-toolbar styleClass="jetti-form-toolbar">
             <ng-template pTemplate="start">
               <div *ngIf="!isHistory && !readonly" class="jetti-toolbar-actions">
-              <button pButton type="button" id="PostClose" icon="fa fa-check-square" label="Post&Close"
+              <button pButton type="button" id="PostClose" icon="fa fa-check-square"
+                [label]="type === 'BusinessProcess.Instance' ? 'Start & Close' : 'Post&Close'"
                 pTooltip="Post and close" tooltipPosition="top" showDelay="2000" class="p-button-warn"
                 [disabled]="!form.valid || (lds.busy$ | async)" (click)="postClose()"
                 *ngIf="!(isDeleted$ | async) && type !== 'BusinessProcess.Template'"></button>
@@ -30,7 +31,7 @@
                 *ngIf="!(isDeleted$ | async)  && !(isNew$ | async)"></button>
               <button pButton type="button" id="Delete" icon="far fa-trash-alt" class="p-button-danger"
                 pTooltip="Delete" tooltipPosition="top" showDelay="2000"
-                *ngIf="!(isNew$ | async) && type !== 'BusinessProcess.Template'" (click)="delete()"
+                *ngIf="!(isNew$ | async) && type !== 'BusinessProcess.Template' && type !== 'BusinessProcess.Instance'" (click)="delete()"
                 [disabled]="(lds.busy$ | async)"></button>
               </div>
             </ng-template>
@@ -143,8 +144,18 @@
 
         </p-panel>
 
+        <p-panel *ngIf="type === 'BusinessProcess.Instance'" [toggleable]="true"
+          header="Process route" [collapsed]="false" toggler="header">
+          <bp-business-process-instance-route [form]="form"></bp-business-process-instance-route>
+        </p-panel>
+
         <p-panel *ngIf="type === 'BusinessProcess.Template'" [toggleable]="true"
           [header]="'Validation result [' + form.status + ']'" [collapsed]="true" toggler="header">
+          <div class="jetti-form-validation-actions">
+            <button pButton type="button" icon="far fa-copy" label="Copy"
+              class="p-button-secondary" pTooltip="Copy validation result"
+              tooltipPosition="top" (click)="copyValidationResult()"></button>
+          </div>
           <pre class="jetti-form-validation-json">{{ formValidationResult | json }}</pre>
         </p-panel>
 

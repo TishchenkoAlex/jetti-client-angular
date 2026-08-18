@@ -34,6 +34,7 @@ export interface BusinessProcessTaskAvailableActions {
 
 export interface BusinessProcessInstance {
   id: string;
+  templateId?: string;
   templateCode?: string;
   templateVersion?: number;
   objectType: string;
@@ -42,6 +43,9 @@ export interface BusinessProcessInstance {
   currentStepKey?: string;
   startedAt: string;
   completedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  context?: Record<string, unknown>;
 }
 
 export interface BusinessProcessTask {
@@ -85,8 +89,17 @@ export interface MyTasksQuery {
 export interface StartBusinessProcessRequest {
   objectType: string;
   objectId: string;
-  templateCode?: string;
+  templateCode: string;
   context?: any;
+}
+
+export interface BusinessProcessInstanceDetails {
+  instance: BusinessProcessInstance;
+  tasks: BusinessProcessTask[];
+}
+
+export interface BusinessProcessStartResult extends BusinessProcessInstanceDetails {
+  alreadyRunning?: boolean;
 }
 
 export interface TaskDecisionRequest {
